@@ -11,15 +11,18 @@ import {
 } from "react-router-dom";
 
 import Login from "./Login";
+import Clock from "../components/test/Clock";
 export default class HP extends Component{
   render() {
     return  (
         <div>
             <title>HomePage</title>
             <Navibar/>
+            {/*<Clock/>*/}
         </div>
 
     )
   }
+  
 }
 

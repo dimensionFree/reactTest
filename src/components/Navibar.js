@@ -39,6 +39,7 @@ export default class Navibar extends Component{
                 <input className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"/>
                 <button className="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
               </form>
+              <p style={{color:"red"}}>name</p>
             </div>
 
           </nav>

@@ -26,9 +26,21 @@ export default class RegisterForm extends Component{
     Register(e){
         e.preventDefault();
         alert(this.state.username+"  "+this.state.password);
-        axios.post('http://localhost/user', {
-            username:this.state.username,
-            password:this.state.password
+        const formData = new FormData();
+        formData.append("username", this.state.username);
+        formData.append("password", this.state.password);
+        //backend @RequestParam -> formData 可用 json 不可用
+        axios.post('http://localhost/user/register',formData
+        //     {
+        //     username:this.state.username,
+        //     password:this.state.password
+        // }
+        ,{
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded', // 设置请求内容类型为 JSON
+                // 还可以添加其他自定义请求头
+                // 'Authorization': 'Bearer YourAccessToken' // 例如添加身份验证令牌
+            }
         }).then(function (response) {
             if (response.status==200){
                 //本地窗口
