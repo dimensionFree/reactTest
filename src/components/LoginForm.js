@@ -3,12 +3,64 @@
 import React, {Component} from "react";
 import '../css/signin.css'
 import bt from '../assets/brand/bootstrap-solid.svg'
+import axios from "axios";
 export default class LoginForm extends Component{
+    constructor(props) {
+        super(props);
+        this.state={
+            username:"",
+            password:""
+        };
+        this.Login=this.Login.bind(this)
 
-    login(){
+    }
+    handleChange(name,event){
+        var newState={};
+        newState[name]=event.target.value;
+        this.setState(newState);
 
     }
 
+
+    Login(e){
+        e.preventDefault();
+        alert(this.state.username+"  "+this.state.password);
+        const formData = new FormData();
+        formData.append("username", this.state.username);
+        formData.append("password", this.state.password);
+        //backend @RequestParam -> formData 可用 json 不可用
+        axios.post('http://localhost/user/register',formData
+            //     {
+            //     username:this.state.username,
+            //     password:this.state.password
+            // }
+            ,{
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded', // 设置请求内容类型为 JSON
+                    // 还可以添加其他自定义请求头
+                    // 'Authorization': 'Bearer YourAccessToken' // 例如添加身份验证令牌
+                }
+            }).then(function (response) {
+            if (response.status==200){
+                alert( response.data)
+                // localStorage.setItem(response.data)
+                //本地窗口
+                window.location.href="/"
+
+                //新窗口
+                // const w = window.open('_black') //这里是打开新窗口
+                // let url = 'http://localhost:3000/'
+                //     // '这里是url，可以写../../index，也可以写http://www.baidu.com'
+                // w.location.href = url //这样就可以跳转了
+
+            }
+            alert(this.state.username+"  "+this.state.password+response);
+            // alert()
+            console.log(response);
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
 
   render() {
     return  (
@@ -16,10 +68,10 @@ export default class LoginForm extends Component{
               <img className="mb-4" src={bt}  alt="" width="72" height="72"/>
               <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
               <label htmlFor="inputEmail" className="sr-only">Email address</label>
-              <input type="text" id="userName" className="form-control" placeholder="Username" required
+              <input type="text" id="userName" className="form-control" onChange={this.handleChange.bind(this,"username")} placeholder="Username" required
                      autoFocus/>
                 <label htmlFor="inputPassword" className="sr-only">Password</label>
-                <input type="password" id="inputPassword" className="form-control" placeholder="Password" required/>
+                <input type="password" id="inputPassword" onChange={this.handleChange.bind(this,"password")} className="form-control" placeholder="Password" required/>
                   <div className="checkbox mb-3">
                     <label>
                       <input type="checkbox" value="remember-me"/> Remember me

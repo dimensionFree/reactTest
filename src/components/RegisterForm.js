@@ -44,7 +44,7 @@ export default class RegisterForm extends Component{
         }).then(function (response) {
             if (response.status==200){
                 //本地窗口
-                window.location.href="/"
+                // window.location.href="/"
 
                 //新窗口
                 // const w = window.open('_black') //这里是打开新窗口
@@ -68,10 +68,10 @@ export default class RegisterForm extends Component{
               <img className="mb-4" src={bt}  alt="" width="72" height="72"/>
               <h1 className="h3 mb-3 font-weight-normal">Please sign up</h1>
               <label htmlFor="inputEmail" className="sr-only">Email address</label>
-              <input type="text" id="inputUserName" className="form-control" onChange={this.handleChange.bind(this,"username")} value={this.state.username} placeholder="User Name" required
+              <input type="text" id="inputUserName" className="form-control" onChange={(e) => this.handleChange("username", e)} value={this.state.username} placeholder="User Name" required
                      autoFocus/>
                 <label htmlFor="inputPassword" className="sr-only">Password</label>
-                <input type="password" id="inputPassword" className="form-control" onChange={this.handleChange.bind(this,"password")} value={this.state.password} placeholder="Password" required/>
+                <input type="password" id="inputPassword" className="form-control" onChange={(e) => this.handleChange("password", e)} value={this.state.password} placeholder="Password" required/>
                 <br/>
                   <button className="btn btn-lg btn-primary btn-block" type="submit"  >Sign up</button>
                  <p className="mt-5 mb-3 text-muted">&copy; 2017-2021</p>

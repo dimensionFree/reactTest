@@ -13,7 +13,12 @@ import {
 import Login from "./Login";
 import Clock from "../components/test/Clock";
 export default class HP extends Component{
-  render() {
+
+    componentDidMount() {
+        document.title="welcome to HP"
+    }
+
+    render() {
     return  (
         <div>
             <title>HomePage</title>
