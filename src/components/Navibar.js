@@ -2,6 +2,27 @@
 // import 'bootstrap/js/dist/dropdown'
 import React, {Component} from "react";
 export default class Navibar extends Component{
+
+  constructor() {
+    super();
+    this.state={
+      username:""
+    };
+  }
+
+  componentDidMount() {
+    // 从 localStorage 中获取用户信息
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (userInfo){
+      // 如果 userInfo 存在，则获取其中的 name 并更新组件状态
+      this.setState({
+        username:userInfo.user.username
+          }
+      )
+    }
+  }
+
+
   render() {
     return  (
         <div className="Navibar">
@@ -39,7 +60,7 @@ export default class Navibar extends Component{
                 <input className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"/>
                 <button className="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
               </form>
-              <p style={{color:"red"}}>name</p>
+              <p className="username">{this.state.username}</p>
             </div>
 
           </nav>

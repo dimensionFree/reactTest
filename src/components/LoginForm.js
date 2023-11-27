@@ -1,51 +1,54 @@
-
-
 import React, {Component} from "react";
 import '../css/signin.css'
 import bt from '../assets/brand/bootstrap-solid.svg'
 import axios from "axios";
-export default class LoginForm extends Component{
+
+export default class LoginForm extends Component {
     constructor(props) {
         super(props);
-        this.state={
-            username:"",
-            password:""
+        this.state = {
+            username: "",
+            password: ""
         };
-        this.Login=this.Login.bind(this)
+        this.Login = this.Login.bind(this)
 
     }
-    handleChange(name,event){
-        var newState={};
-        newState[name]=event.target.value;
+
+    handleChange(name, event) {
+        var newState = {};
+        newState[name] = event.target.value;
         this.setState(newState);
 
     }
 
 
-    Login(e){
+    Login(e) {
         e.preventDefault();
-        alert(this.state.username+"  "+this.state.password);
+        alert(this.state.username + "  " + this.state.password);
         const formData = new FormData();
         formData.append("username", this.state.username);
         formData.append("password", this.state.password);
         //backend @RequestParam -> formData 可用 json 不可用
-        axios.post('http://localhost/user/register',formData
+        axios.post('http://localhost/user/login', formData
             //     {
             //     username:this.state.username,
             //     password:this.state.password
             // }
-            ,{
+            , {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded', // 设置请求内容类型为 JSON
                     // 还可以添加其他自定义请求头
                     // 'Authorization': 'Bearer YourAccessToken' // 例如添加身份验证令牌
                 }
             }).then(function (response) {
-            if (response.status==200){
-                alert( response.data)
-                // localStorage.setItem(response.data)
+            if (response.status == 200) {
+                alert(response.data)
+                const data = response.data; // 获取响应数据
+                const userInfo = data.dataContent; // 从响应数据中获取令牌
+                // 将令牌存储到localStorage
+                localStorage.setItem('userInfo', JSON.stringify(userInfo));
                 //本地窗口
-                window.location.href="/"
+                // window.location.href="/"
 
                 //新窗口
                 // const w = window.open('_black') //这里是打开新窗口
@@ -54,7 +57,7 @@ export default class LoginForm extends Component{
                 // w.location.href = url //这样就可以跳转了
 
             }
-            alert(this.state.username+"  "+this.state.password+response);
+            alert(this.state.username + "  " + this.state.password + response);
             // alert()
             console.log(response);
         }).catch(function (error) {
@@ -62,24 +65,26 @@ export default class LoginForm extends Component{
         });
     }
 
-  render() {
-    return  (
-          <form className="form-signin">
-              <img className="mb-4" src={bt}  alt="" width="72" height="72"/>
-              <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
-              <label htmlFor="inputEmail" className="sr-only">Email address</label>
-              <input type="text" id="userName" className="form-control" onChange={this.handleChange.bind(this,"username")} placeholder="Username" required
-                     autoFocus/>
+    render() {
+        return (
+            <form className="form-signin" onSubmit={this.Login}>
+                <img className="mb-4" src={bt} alt="" width="72" height="72"/>
+                <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
+                <label htmlFor="inputEmail" className="sr-only">Email address</label>
+                <input type="text" id="userName" className="form-control"
+                       onChange={this.handleChange.bind(this, "username")} placeholder="Username" required
+                       autoFocus/>
                 <label htmlFor="inputPassword" className="sr-only">Password</label>
-                <input type="password" id="inputPassword" onChange={this.handleChange.bind(this,"password")} className="form-control" placeholder="Password" required/>
-                  <div className="checkbox mb-3">
+                <input type="password" id="inputPassword" onChange={this.handleChange.bind(this, "password")}
+                       className="form-control" placeholder="Password" required/>
+                <div className="checkbox mb-3">
                     <label>
-                      <input type="checkbox" value="remember-me"/> Remember me
+                        <input type="checkbox" value="remember-me"/> Remember me
                     </label>
-                  </div>
-                  <button className="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-                 <p className="mt-5 mb-3 text-muted">&copy; 2017-2021</p>
-          </form>
-    )
-  }
+                </div>
+                <button className="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+                <p className="mt-5 mb-3 text-muted">&copy; 2017-2021</p>
+            </form>
+        )
+    }
 }

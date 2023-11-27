@@ -16,6 +16,8 @@ export default class HP extends Component{
 
     componentDidMount() {
         document.title="welcome to HP"
+        let user = JSON.parse(localStorage.getItem("userInfo")).user;
+        alert(user.username)
     }
 
     render() {
