@@ -1,7 +1,7 @@
 
 
 import React, {Component} from "react";
-import '../css/signin.css'
+import '../css/loginForm.css'
 import bt from '../assets/brand/bootstrap-solid.svg'
 import axios from "axios";
 export default class RegisterForm extends Component{
@@ -43,8 +43,13 @@ export default class RegisterForm extends Component{
             }
         }).then(function (response) {
             if (response.status==200){
+                const data = response.data; // 获取响应数据
+                const userInfo = data.dataContent; // 从响应数据中获取令牌
+                // 将令牌存储到localStorage
+                localStorage.setItem('userInfo', JSON.stringify(userInfo));
+
                 //本地窗口
-                // window.location.href="/"
+                window.location.href="/"
 
                 //新窗口
                 // const w = window.open('_black') //这里是打开新窗口
@@ -53,7 +58,7 @@ export default class RegisterForm extends Component{
                 // w.location.href = url //这样就可以跳转了
 
             }
-            alert(this.state.username+"  "+this.state.password+response);
+            // alert(this.state.username+"  "+this.state.password+response);
             // alert()
             console.log(response);
         }).catch(function (error) {

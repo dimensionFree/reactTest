@@ -14,17 +14,31 @@ import Login from "./Login";
 import Clock from "../components/test/Clock";
 export default class HP extends Component{
 
+    constructor() {
+        super();
+        this.state={
+            username:""
+        };
+    }
+
     componentDidMount() {
+        // 从 localStorage 中获取用户信息
+        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        if (userInfo){
+            // 如果 userInfo 存在，则获取其中的 name 并更新组件状态
+            this.setState({
+                    username:userInfo.user.username
+                }
+            )
+        }
         document.title="welcome to HP"
-        let user = JSON.parse(localStorage.getItem("userInfo")).user;
-        alert(user.username)
     }
 
     render() {
     return  (
         <div>
             <title>HomePage</title>
-            <Navibar/>
+            <Navibar username={this.state.username}/>
             {/*<Clock/>*/}
         </div>
 

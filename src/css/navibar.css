@@ -1,0 +1,18 @@
+.username{
+    color: #36aabf;
+    font-size: 20px;
+    font-family: Arial;
+    margin-left: 20px;
+    height: 20px;
+    /*margin-top: 20px;*/
+}
+
+/* 修改下拉菜单链接的颜色 */
+.nav-item.dropdown .nav-link{
+    color: white; /* 设置颜色为黑色或您想要的颜色 */
+}
+
+/*!* 修改下拉菜单中的选项颜色 *!*/
+/*.dropdown-item {*/
+/*    color: #000; !* 设置颜色为黑色或您想要的颜色 *!*/
+/*}*/
