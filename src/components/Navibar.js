@@ -22,15 +22,21 @@ export default class Navibar extends Component{
     const userAvaterContent=!username?(
         <a className="nav-link" style={{color:"white"}} href="/login">sign in</a>
     ):(
-        <div className="nav-item dropdown" >
-          <a className = "nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
-             aria-expanded = "false">welcome,{username}!</a>
-          <div className="dropdown-menu" aria-labelledby="dropdown01">
-            <a className="dropdown-item" href="#">Action</a>
-            <a className="dropdown-item" href="#">Another action</a>
-            <a className="dropdown-item" onClick={this.quit} href="#">quit</a>
+        <div className="d-flex justify-content-between">
+          <a className="btn btn-primary btn-lg" href="/article/create" role="button">create article</a>
+
+          <div className="nav-item dropdown" >
+            <a className = "nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
+               aria-expanded = "false">welcome,{username}!</a>
+            <div className="dropdown-menu" aria-labelledby="dropdown01">
+              <a className="dropdown-item" href="#">Action</a>
+              <a className="dropdown-item" href="#">Another action</a>
+              <a className="dropdown-item" onClick={this.quit} href="#">quit</a>
+            </div>
           </div>
+
         </div>
+
     );
 
     return  (
@@ -59,7 +65,7 @@ export default class Navibar extends Component{
                   </div>
                 </li>
               </ul>
-              <form className="form-inline my-2 my-lg-0">
+              <form className="form-inline my-2 my-lg-0 mr-auto">
                 <input className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"/>
                 <button className="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
               </form>

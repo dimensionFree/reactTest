@@ -12,6 +12,7 @@ import {
 
 import Login from "./Login";
 import Clock from "../components/test/Clock";
+import LatestArticle from "../components/article/LatestArticle";
 export default class HP extends Component{
 
     constructor() {
@@ -39,6 +40,7 @@ export default class HP extends Component{
         <div>
             <title>HomePage</title>
             <Navibar username={this.state.username}/>
+            <LatestArticle></LatestArticle>
             {/*<Clock/>*/}
         </div>
 
