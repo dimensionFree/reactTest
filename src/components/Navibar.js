@@ -6,7 +6,7 @@ export default class Navibar extends Component{
 
   constructor() {
     super();
-    this.props={
+    this.state={
       username:""
     }
   }
@@ -16,8 +16,20 @@ export default class Navibar extends Component{
     window.location.href="/"
   }
 
+  componentDidMount() {
+    // 从 localStorage 中获取用户信息
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (userInfo){
+      // 如果 userInfo 存在，则获取其中的 name 并更新组件状态
+      this.setState({
+            username:userInfo.user.username
+          }
+      )
+    }
+  }
+
   render() {
-    const username=this.props.username;
+    const username=this.state.username;
 
     const userAvaterContent=!username?(
         <a className="nav-link" style={{color:"white"}} href="/login">sign in</a>

@@ -17,21 +17,13 @@ export default class HP extends Component{
 
     constructor() {
         super();
-        this.state={
-            username:""
-        };
+        // this.state={
+        //     username:""
+        // };
     }
 
     componentDidMount() {
-        // 从 localStorage 中获取用户信息
-        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-        if (userInfo){
-            // 如果 userInfo 存在，则获取其中的 name 并更新组件状态
-            this.setState({
-                    username:userInfo.user.username
-                }
-            )
-        }
+
         document.title="welcome to HP"
     }
 
@@ -39,7 +31,7 @@ export default class HP extends Component{
     return  (
         <div>
             <title>HomePage</title>
-            <Navibar username={this.state.username}/>
+            <Navibar/>
             <LatestArticle></LatestArticle>
             {/*<Clock/>*/}
         </div>
