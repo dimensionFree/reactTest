@@ -25,19 +25,21 @@ export default class RegisterForm extends Component{
 
     Register(e){
         e.preventDefault();
-        alert(this.state.username+"  "+this.state.password);
-        const formData = new FormData();
-        formData.append("username", this.state.username);
-        formData.append("password", this.state.password);
+        // alert(this.state.username+"  "+this.state.password);
+        // const formData = new FormData();
+        // formData.append("username", this.state.username);
+        // formData.append("password", this.state.password);
         //backend @RequestParam -> formData 可用 json 不可用
-        axios.post('http://localhost/user/register',formData
-        //     {
-        //     username:this.state.username,
-        //     password:this.state.password
-        // }
+        axios.post('http://localhost/user/register',
+        // formData
+            {
+            "username":this.state.username,
+            "password":this.state.password
+        }
         ,{
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded', // 设置请求内容类型为 JSON
+                // 'Content-Type': 'application/x-www-form-urlencoded', // 设置请求内容类型为 表单FORM
+                'Content-Type': 'application/json', // 设置请求内容类型为 JSON
                 // 还可以添加其他自定义请求头
                 // 'Authorization': 'Bearer YourAccessToken' // 例如添加身份验证令牌
             }
@@ -57,12 +59,16 @@ export default class RegisterForm extends Component{
                 //     // '这里是url，可以写../../index，也可以写http://www.baidu.com'
                 // w.location.href = url //这样就可以跳转了
 
+            }else if(response.status==400){
+                console.log(response.data);
+                alert(response.data);
             }
             // alert(this.state.username+"  "+this.state.password+response);
             // alert()
-            console.log(response);
+            
         }).catch(function (error) {
-            console.log(error);
+            alert(error.response.data.message);
+            // alert(error);
         });
     }
 
