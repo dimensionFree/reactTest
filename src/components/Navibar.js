@@ -2,6 +2,7 @@
 // import 'bootstrap/js/dist/dropdown'
 import React, {Component} from "react";
 import "../css/navibar.css"
+import axios, { Axios } from "axios";
 export default class Navibar extends Component{
 
   constructor() {
@@ -17,12 +18,47 @@ export default class Navibar extends Component{
   }
 
   componentDidMount() {
+
     // 从 localStorage 中获取用户信息
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     if (userInfo){
+      var userId= userInfo.user4Display.id;
+      var token= userInfo.token;
+      axios.get('http://localhost/user/find/'+userId,{
+            headers: {
+              'Content-Type': 'application/json', // 设置请求内容类型为 JSON
+              // 还可以添加其他自定义请求头
+              'Authorization': 'Bearer '+token // 例如添加身份验证令牌
+            }
+          }).then(function (response) {
+        if (response.status == 200) {
+          alert(response.data)
+          // const data = response.data; // 获取响应数据
+          // const userInfo = data.dataContent; // 从响应数据中获取令牌
+          // // 将令牌存储到localStorage
+          // localStorage.setItem('userInfo', JSON.stringify(userInfo));
+          // //本地窗口
+          // window.location.href="/"
+
+          //新窗口
+          // const w = window.open('_black') //这里是打开新窗口
+          // let url = 'http://localhost:3000/'
+          //     // '这里是url，可以写../../index，也可以写http://www.baidu.com'
+          // w.location.href = url //这样就可以跳转了
+
+        }
+        // alert(this.state.username + "  " + this.state.password + response);
+        // alert()
+        // console.log(response);
+      }).catch(function (error) {
+        localStorage.removeItem("userInfo")
+        window.location.href="/"
+        alert(error.response.data.message);
+      });
+
       // 如果 userInfo 存在，则获取其中的 name 并更新组件状态
       this.setState({
-            username:userInfo.user.username
+            username:userInfo.user4Display.username
           }
       )
     }
@@ -77,7 +113,7 @@ export default class Navibar extends Component{
                   </div>
                 </li>
               </ul>
-              <form className="form-inline my-2 my-lg-0 mr-auto">
+              <form className="form-inline my-2 my-lg-0 mr-auto" >
                 <input className="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"/>
                 <button className="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
               </form>
