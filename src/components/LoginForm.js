@@ -24,7 +24,7 @@ export default class LoginForm extends Component {
 
     Login(e) {
         e.preventDefault();
-        alert(this.state.username + "  " + this.state.password);
+        // alert(this.state.username + "  " + this.state.password);
         const formData = new FormData();
         // formData.append("username", this.state.username);
         // formData.append("password", this.state.password);

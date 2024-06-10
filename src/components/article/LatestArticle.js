@@ -19,23 +19,23 @@ export default class LatestArticle extends Component {
 
 
     getLatestArticle() {
-        axios.get('http://localhost/user/login'
-            , {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded', // 设置请求内容类型为 JSON
-                    // 还可以添加其他自定义请求头
-                    // 'Authorization': 'Bearer YourAccessToken' // 例如添加身份验证令牌
-                }
-            }).then(function (response) {
-            if (response.status == 200) {
-                // alert(response.data)
-                const data = response.data; // 获取响应数据
-                const userInfo = data.dataContent; // 从响应数据中获取令牌
-
-            }
-        }).catch(function (error) {
-            console.log(error);
-        });
+        // axios.get('http://localhost/article/latest'
+        //     , {
+        //         headers: {
+        //             'Content-Type': 'application/x-www-form-urlencoded', // 设置请求内容类型为 JSON
+        //             // 还可以添加其他自定义请求头
+        //             // 'Authorization': 'Bearer YourAccessToken' // 例如添加身份验证令牌
+        //         }
+        //     }).then(function (response) {
+        //     if (response.status == 200) {
+        //         // alert(response.data)
+        //         const data = response.data; // 获取响应数据
+        //         const userInfo = data.dataContent; // 从响应数据中获取令牌
+        //
+        //     }
+        // }).catch(function (error) {
+        //     console.log(error);
+        // });
     }
 
     render() {
