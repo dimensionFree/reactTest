@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import '../../css/LatestArticle.css'
 import axios from "axios";
+import LoginForm from "../LoginForm";
 
 export default class LatestArticle extends Component {
     constructor(props) {
@@ -13,7 +14,9 @@ export default class LatestArticle extends Component {
 
     }
     componentDidMount() {
-
+        let loginForm = new LoginForm();
+        // let s = loginForm.testMethod();
+        // alert(s);
         this.getLatestArticle();
     }
 

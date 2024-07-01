@@ -3,13 +3,17 @@
 import React, {Component} from "react";
 import "../css/navibar.css"
 import axios, { Axios } from "axios";
+import RequestSendUtils from "../Utils/RequestSendUtils";
 
 function quitUser() {
   localStorage.removeItem("userInfo")
   window.location.href="/"
 }
 
+
 export default class Navibar extends Component{
+
+
 
   constructor() {
     super();
@@ -59,11 +63,10 @@ export default class Navibar extends Component{
         // alert()
         // console.log(response);
       }).catch(function (error) {
-
         // localStorage.removeItem("userInfo")
         // window.location.href="/"
+        alert(error.response.data.body.message);
         quitUser();
-        console.log(error.response.data.message)
       });
 
       // 如果 userInfo 存在，则获取其中的 name 并更新组件状态
@@ -76,6 +79,7 @@ export default class Navibar extends Component{
 
   render() {
     const username=this.state.username;
+    const isAdmin=true;
 
     const userAvaterContent=!username?(
         <a className="nav-link" style={{color:"white"}} href="/login">sign in</a>
@@ -87,6 +91,7 @@ export default class Navibar extends Component{
             <a className = "nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
                aria-expanded = "false">welcome,{username}!</a>
             <div className="dropdown-menu" aria-labelledby="dropdown01">
+              {isAdmin && <a className="dropdown-item" href="#">user management</a>}
               <a className="dropdown-item" href="#"> Action</a>
               <a className="dropdown-item" href="#">Another action</a>
               <a className="dropdown-item" onClick={this.quit} href="#">quit</a>
