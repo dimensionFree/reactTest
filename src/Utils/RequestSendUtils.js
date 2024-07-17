@@ -28,8 +28,10 @@ export default class RequestSendUtils {
 
 
     setToken(token, headers) {
+
         if (token) {
             headers.Authorization = "Bearer " + token;
+            // 'Authorization': 'Bearer YourAccessToken' // 添加身份验证令牌
         }
     }
 
@@ -37,7 +39,6 @@ export default class RequestSendUtils {
         let headers = {
             'Content-Type': 'application/json', // 设置请求内容类型为 JSON
             // 还可以添加其他自定义请求头
-            // 'Authorization': 'Bearer YourAccessToken' // 例如添加身份验证令牌
         }
 
         this.setToken(token, headers);

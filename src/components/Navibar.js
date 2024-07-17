@@ -38,26 +38,8 @@ export default class Navibar extends Component {
                     if (response.status == 200) {
                         // alert(response.data.message)
                         console.log(response.data.message)
-                        // const data = response.data; // 获取响应数据
-                        // const userInfo = data.dataContent; // 从响应数据中获取令牌
-                        // // 将令牌存储到localStorage
-                        // localStorage.setItem('userInfo', JSON.stringify(userInfo));
-                        // //本地窗口
-                        // window.location.href="/"
-
-                        //新窗口
-                        // const w = window.open('_black') //这里是打开新窗口
-                        // let url = 'http://localhost:3000/'
-                        //     // '这里是url，可以写../../index，也可以写http://www.baidu.com'
-                        // w.location.href = url //这样就可以跳转了
-
                     }
-                    // alert(this.state.username + "  " + this.state.password + response);
-                    // alert()
-                    // console.log(response);
                 }, (error) => {
-                    // localStorage.removeItem("userInfo")
-                    // window.location.href="/"
                     alert(error.response.data.body.message);
                     quitUser();
                 }
@@ -85,9 +67,8 @@ export default class Navibar extends Component {
                     <a className="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
                        aria-expanded="false">welcome,{username}!</a>
                     <div className="dropdown-menu" aria-labelledby="dropdown01">
-                        {isAdmin && <a className="dropdown-item" href="#">user management</a>}
+                        {isAdmin && <a className="dropdown-item" href="/userManage">user management</a>}
                         <a className="dropdown-item" href="#"> Action</a>
-                        <a className="dropdown-item" href="#">Another action</a>
                         <a className="dropdown-item" onClick={this.quit} href="#">quit</a>
                     </div>
                 </div>
