@@ -8,7 +8,7 @@ const hostAndPort=host+":"+port
 
 export default class RequestSendUtils {
 
-    SendPost(url, payload, token, callBackFunc,errbackFunc) {
+    static SendPost(url, payload, token, callBackFunc,errbackFunc) {
         let headers = {
             'Content-Type': 'application/json', // 设置请求内容类型为 JSON
             // 还可以添加其他自定义请求头
@@ -27,7 +27,7 @@ export default class RequestSendUtils {
     }
 
 
-    setToken(token, headers) {
+    static setToken(token, headers) {
 
         if (token) {
             headers.Authorization = "Bearer " + token;
@@ -35,7 +35,7 @@ export default class RequestSendUtils {
         }
     }
 
-    SendGet(url, token, callBackFunc,errbackFunc) {
+    static SendGet(url, token, callBackFunc,errbackFunc) {
         let headers = {
             'Content-Type': 'application/json', // 设置请求内容类型为 JSON
             // 还可以添加其他自定义请求头

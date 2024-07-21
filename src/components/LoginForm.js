@@ -5,7 +5,6 @@ import axios from "axios";
 import RequestSendUtils from "../Utils/RequestSendUtils";
 
 
-let requestSendUtils = new RequestSendUtils();
 
 export default class LoginForm extends Component {
     constructor(props) {
@@ -33,7 +32,7 @@ export default class LoginForm extends Component {
     Login(e) {
         e.preventDefault();
         // alert(this.state.username + "  " + this.state.password);
-        const formData = new FormData();
+        // const formData = new FormData();
         // formData.append("username", this.state.username);
         // formData.append("password", this.state.password);
         //backend @RequestParam -> formData 可用 json 不可用
@@ -41,7 +40,7 @@ export default class LoginForm extends Component {
             username:this.state.username,
             password:this.state.password
         };
-        requestSendUtils.SendPost("/user/login",payload,null,(response) => {
+        RequestSendUtils.SendPost("/user/login",payload,null,(response) => {
             if (response.status == 200) {
                 // alert(response.data)
                 const data = response.data; // 获取响应数据

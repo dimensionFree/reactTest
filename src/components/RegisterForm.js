@@ -4,6 +4,7 @@ import React, {Component} from "react";
 import '../css/loginForm.css'
 import bt from '../assets/brand/bootstrap-solid.svg'
 import axios from "axios";
+import RequestSendUtils from "../Utils/RequestSendUtils";
 export default class RegisterForm extends Component{
 
     constructor(props) {
@@ -30,20 +31,11 @@ export default class RegisterForm extends Component{
         // formData.append("username", this.state.username);
         // formData.append("password", this.state.password);
         //backend @RequestParam -> formData 可用 json 不可用
-        axios.post('http://localhost/user/register',
-        // formData
-            {
-            "username":this.state.username,
-            "password":this.state.password
-        }
-        ,{
-            headers: {
-                // 'Content-Type': 'application/x-www-form-urlencoded', // 设置请求内容类型为 表单FORM
-                'Content-Type': 'application/json', // 设置请求内容类型为 JSON
-                // 还可以添加其他自定义请求头
-                // 'Authorization': 'Bearer YourAccessToken' // 例如添加身份验证令牌
-            }
-        }).then(function (response) {
+        let payload = {
+            username:this.state.username,
+            password:this.state.password
+        };
+        RequestSendUtils.SendPost("/user/register",payload,null,(response) => {
             if (response.status==200){
                 const data = response.data; // 获取响应数据
                 const userInfo = data.dataContent; // 从响应数据中获取令牌
@@ -63,13 +55,10 @@ export default class RegisterForm extends Component{
                 console.log(response.data);
                 alert(response.data);
             }
-            // alert(this.state.username+"  "+this.state.password+response);
-            // alert()
-            
-        }).catch(function (error) {
+        },(error)=>{
             alert(error.response.data.message);
             // alert(error);
-        });
+        })
     }
 
 

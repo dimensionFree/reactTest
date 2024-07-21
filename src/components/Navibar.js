@@ -9,7 +9,6 @@ function quitUser() {
     window.location.href = "/"
 }
 
-let requestSendUtils = new RequestSendUtils();
 
 export default class Navibar extends Component {
 
@@ -34,7 +33,7 @@ export default class Navibar extends Component {
         if (userInfo) {
             var userId = userInfo.user4Display.id;
             var token = userInfo.token;
-            requestSendUtils.SendGet("/user/find/" + userId, token, (response) => {
+            RequestSendUtils.SendGet("/user/find/" + userId, token, (response) => {
                     if (response.status == 200) {
                         // alert(response.data.message)
                         console.log(response.data.message)
