@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
 import { Pagination, Table } from 'antd';
 
 
@@ -36,19 +35,6 @@ const PaginatedTable = ({ columns, fetchData }) => {
 
     return (
         <div style={{ height: 400, width: '100%' }}>
-            {/*<DataGrid*/}
-            {/*    rows={data}*/}
-            {/*    columns={columns}*/}
-            {/*    pagination*/}
-            {/*    page={page}*/}
-            {/*    pageSize={pageSize}*/}
-            {/*    rowCount={rowCount}*/}
-            {/*    paginationMode="server"*/}
-            {/*    onPageChange={(newPage) => setPage(newPage)}*/}
-            {/*    onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}*/}
-            {/*    loading={loading}*/}
-            {/*    checkboxSelection*/}
-            {/*/>*/}
             <Table
                 dataSource={data}
                 columns={columns}
