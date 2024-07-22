@@ -46,7 +46,8 @@ export default class Navibar extends Component {
 
             // 如果 userInfo 存在，则获取其中的 name 并更新组件状态
             this.setState({
-                    username: userInfo.user4Display.username
+                username: userInfo.user4Display.username,
+                isAdmin:userInfo.user4Display.role.roleName=="admin"
                 }
             )
         }
@@ -54,7 +55,7 @@ export default class Navibar extends Component {
 
     render() {
         const username = this.state.username;
-        const isAdmin = true;
+        const isAdmin = this.state.isAdmin;
 
         const userAvaterContent = !username ? (
             <a className="nav-link" style={{color: "white"}} href="/login">sign in</a>

@@ -34,11 +34,25 @@ const fetchData = (page, pageSize) => {
     });
 };
 
+// const columns = [
+//     {field: 'id', headerName: '#', width: 90},
+//     {field: 'username', headerName: 'Name', width: 150},
+//     {field: 'email', headerName: 'Email', width: 150},
+//     {field: 'roleName', headerName: 'Role', width: 110},
+// ];
+
 const columns = [
-    {field: 'id', headerName: '#', width: 90},
-    {field: 'username', headerName: 'Name', width: 150},
-    {field: 'email', headerName: 'Email', width: 150},
-    {field: 'roleName', headerName: 'Role', width: 110},
+    {
+        title: 'username',
+        dataIndex: 'username',
+        key: 'username',
+    },
+    {
+        title: 'Role Name',
+        dataIndex: ['role', 'roleName'],
+        key: 'roleName',
+    }
+    // 添加其他需要显示的列
 ];
 
 const UserManage = () => {
@@ -47,6 +61,9 @@ const UserManage = () => {
             <Navibar/>
             <h1 className="mb-4">User Management</h1>
             <PaginatedTable columns={columns} fetchData={fetchData}/>
+            {/*<BasicPagination/>*/}
+            {/*<PaginatedTableAnt/>*/}
+
         </div>
     );
 };
