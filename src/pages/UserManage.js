@@ -2,9 +2,9 @@ import logo from '../logo.svg';
 import Navibar from "../components/Navibar";
 import React, {Component} from "react";
 import PaginatedTable from "../components/common/PaginatedTable";
-import requestSendUtils from "../Utils/RequestSendUtils";
 import RequestSendUtils from "../Utils/RequestSendUtils";
-
+import Link from "antd/es/typography/Link";
+import {Button, Space, message } from 'antd';
 
 
 const fetchData = (page, pageSize) => {
@@ -18,10 +18,10 @@ const fetchData = (page, pageSize) => {
         RequestSendUtils.SendGet(`/user/findAll/?currentPage=${page}&pageSize=${pageSize}`, token, (response) => {
             if (response.status === 200) {
 
-                response.data.dataContent.list = response.data.dataContent.list.map(user => ({
-                    ...user,
-                    roleName: user.role.roleName
-                }));
+                // response.data.dataContent.list = response.data.dataContent.list.map(user => ({
+                //     ...user,
+                //     roleName: user.role.roleName
+                // }));
                 // resolve({ data: processedData});
                 resolve(response.data); // 解析响应数据
             } else {
@@ -34,35 +34,35 @@ const fetchData = (page, pageSize) => {
     });
 };
 
-// const columns = [
-//     {field: 'id', headerName: '#', width: 90},
-//     {field: 'username', headerName: 'Name', width: 150},
-//     {field: 'email', headerName: 'Email', width: 150},
-//     {field: 'roleName', headerName: 'Role', width: 110},
-// ];
 
 const columns = [
     {
         title: 'username',
         dataIndex: 'username',
         key: 'username',
+        render: (text, record) => <Link to={`/userDetail/${record.id}`}>{text}</Link>,
     },
     {
         title: 'Role Name',
         dataIndex: ['role', 'roleName'],
         key: 'roleName',
-    }
+    },
     // 添加其他需要显示的列
 ];
 
+
+
 const UserManage = () => {
     return (
-        <div className="container mt-5 pt-5">
+        <div className=" mt-5 pt-5">
+            <title>user manage</title>
             <Navibar/>
             <h1 className="mb-4">User Management</h1>
-            <PaginatedTable columns={columns} fetchData={fetchData}/>
-            {/*<BasicPagination/>*/}
-            {/*<PaginatedTableAnt/>*/}
+            <PaginatedTable
+                columns={columns}
+                fetchData={fetchData}
+
+            />
 
         </div>
     );

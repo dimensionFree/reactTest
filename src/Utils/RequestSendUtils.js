@@ -53,4 +53,41 @@ export default class RequestSendUtils {
             errbackFunc(error);
         });
     }
+
+
+    static SendDelete(url, token, callBackFunc,errbackFunc) {
+        let headers = {
+            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
+            // 还可以添加其他自定义请求头
+        }
+
+        this.setToken(token, headers);
+
+        // console.log(!token);
+        // console.log(headers);
+        axios.delete(hostAndPort + url,{
+            headers
+        }).then(function (response) {
+            callBackFunc(response);
+        }).catch(function (error) {
+            errbackFunc(error);
+        });
+    }
+    static SendDeleteWithoutCallBack(url, token) {
+        let headers = {
+            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
+            // 还可以添加其他自定义请求头
+        }
+
+        this.setToken(token, headers);
+
+        // console.log(!token);
+        // console.log(headers);
+        axios.delete(hostAndPort + url,{
+            headers
+        });
+
+    }
+
+
 }
