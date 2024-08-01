@@ -7,7 +7,7 @@ import {TestLoginForm} from "../components/test";
 export default class Register extends Component{
   render() {
     return  (
-        <div>
+        <div className="container-form">
           <title>Register</title>
           <RegisterForm/>
           {/*<TestLoginForm></TestLoginForm>*/}

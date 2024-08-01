@@ -54,7 +54,7 @@ const columns = [
 
 const UserManage = () => {
     return (
-        <div className=" mt-5 pt-5">
+        <div className="container mt-5 pt-5">
             <title>user manage</title>
             <Navibar/>
             <h1 className="mb-4">User Management</h1>

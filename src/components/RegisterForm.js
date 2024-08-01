@@ -64,18 +64,21 @@ export default class RegisterForm extends Component{
 
   render() {
     return  (
-          <form className="form-signin" onSubmit={this.Register}>
-              <img className="mb-4" src={bt}  alt="" width="72" height="72"/>
-              <h1 className="h3 mb-3 font-weight-normal">Please sign up</h1>
-              <label htmlFor="inputEmail" className="sr-only">Email address</label>
-              <input type="text" id="inputUserName" className="form-control" onChange={(e) => this.handleChange("username", e)} value={this.state.username} placeholder="User Name" required
-                     autoFocus/>
+        <div className="my-form">
+            <form className="form-signin" onSubmit={this.Register}>
+                {/*<img className="mb-4" src={bt}  alt="" width="72" height="72"/>*/}
+                <h1 className="h3 mb-3 font-weight-normal">Please sign up</h1>
+                <label htmlFor="inputEmail" className="sr-only">Email address</label>
+                <input type="text" id="inputUserName" className="form-control" onChange={(e) => this.handleChange("username", e)} value={this.state.username} placeholder="User Name" required
+                       autoFocus/>
                 <label htmlFor="inputPassword" className="sr-only">Password</label>
                 <input type="password" id="inputPassword" className="form-control" onChange={(e) => this.handleChange("password", e)} value={this.state.password} placeholder="Password" required/>
                 <br/>
-                  <button className="btn btn-lg btn-primary btn-block" type="submit"  >Sign up</button>
-                 <p className="mt-5 mb-3 text-muted">&copy; 2017-2021</p>
-          </form>
+                <button className="btn btn-lg btn-primary btn-block" type="submit"  >Sign up</button>
+                <p className="mt-5 mb-3 text-muted">&copy; 2017-2021</p>
+            </form>
+        </div>
+
     )
   }
 }

@@ -57,10 +57,10 @@ export default class LoginForm extends Component {
 
     render() {
         return (
-            <div>
+            <div className="my-form">
 
                 <form className="form-signin" onSubmit={this.Login}>
-                    <img className="mb-4" src={bt} alt="" width="72" height="72"/>
+                    {/*<img className="mb-4" src={bt} alt="" width="72" height="72"/>*/}
                     <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
                     <label htmlFor="inputEmail" className="sr-only">Email address</label>
                     <input type="text" id="userName" className="form-control"
@@ -75,7 +75,7 @@ export default class LoginForm extends Component {
                         </label>
                     </div>
                     <button className="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-                    <p className="mt-5 mb-3 text-muted">&copy; 2017-2021</p>
+                    <p className="mt-5 mb-3 text-muted">&copy; 2017-2024</p>
                 </form>
                 <a className="nav-link" style={{color:"blue"}} href="/register">no account yet? sign up</a>
             </div>
