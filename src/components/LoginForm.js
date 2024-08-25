@@ -69,11 +69,11 @@ export default class LoginForm extends Component {
                     <label htmlFor="inputPassword" className="sr-only">Password</label>
                     <input type="password" id="inputPassword" onChange={this.handleChange.bind(this, "password")}
                            className="form-control" placeholder="Password" required/>
-                    <div className="checkbox mb-3">
-                        <label>
-                            <input type="checkbox" value="remember-me"/> Remember me
-                        </label>
-                    </div>
+                    {/*<div className="checkbox mb-3">*/}
+                    {/*    <label>*/}
+                    {/*        <input type="checkbox" value="remember-me"/> Remember me*/}
+                    {/*    </label>*/}
+                    {/*</div>*/}
                     <button className="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
                     <p className="mt-5 mb-3 text-muted">&copy; 2017-2024</p>
                 </form>

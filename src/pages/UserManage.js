@@ -40,7 +40,7 @@ const columns = [
         title: 'username',
         dataIndex: 'username',
         key: 'username',
-        render: (text, record) => <Link to={`/userDetail/${record.id}`}>{text}</Link>,
+        render: (text, record) => <Link href={`/userDetail/${record.id}`}>{text}</Link>,
     },
     {
         title: 'Role Name',

@@ -55,6 +55,33 @@ export default class RequestSendUtils {
     }
 
 
+    static SendGetWithReturn(url, token) {
+        let headers = {
+            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
+            // 还可以添加其他自定义请求头
+        }
+
+        this.setToken(token, headers);
+
+        // console.log(!token);
+        // console.log(headers);
+
+        // 返回一个 Promise
+        return axios.get(hostAndPort + url, {
+            headers,
+        })
+            .then((response) => {
+                // 返回成功的结果
+                return response.data;
+            })
+            .catch((error) => {
+                // 抛出错误以便在调用时进行处理
+                throw error;
+            });
+
+    }
+
+
     static SendDelete(url, token, callBackFunc,errbackFunc) {
         let headers = {
             'Content-Type': 'application/json', // 设置请求内容类型为 JSON
