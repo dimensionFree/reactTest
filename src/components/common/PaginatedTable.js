@@ -55,7 +55,7 @@ const PaginatedTable = ({ columns, fetchData }) => {
 
     const handleDelete = async (id) => {
         try {
-            await RequestSendUtils.SendDelete(`/user/delete/${id}`, token, (response) => {
+            await RequestSendUtils.sendDelete(`/user/delete/${id}`, token, (response) => {
                 if (response.status === 200) {
 
                     message.success('Deleted successfully');

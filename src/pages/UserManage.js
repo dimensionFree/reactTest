@@ -15,7 +15,7 @@ const fetchData = (page, pageSize) => {
             var token = userInfo.token;
         }
 
-        RequestSendUtils.SendGet(`/user/findAll/?currentPage=${page}&pageSize=${pageSize}`, token, (response) => {
+        RequestSendUtils.sendGet(`/user/findAll/?currentPage=${page}&pageSize=${pageSize}`, token, (response) => {
             if (response.status === 200) {
 
                 // response.data.dataContent.list = response.data.dataContent.list.map(user => ({

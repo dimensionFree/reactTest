@@ -12,8 +12,6 @@ function quitUser() {
 export default class Navibar extends Component {
 
 
-
-
     constructor() {
         super();
         this.state = {
@@ -34,7 +32,7 @@ export default class Navibar extends Component {
         if (userInfo) {
             var userId = userInfo.user4Display.id;
             var token = userInfo.token;
-            RequestSendUtils.SendGet("/user/find/" + userId, token, (response) => {
+            RequestSendUtils.sendGet("/user/find/" + userId, token, (response) => {
                     if (response.status == 200) {
                         // alert(response.data.message)
                         console.log(response.data.message)
@@ -47,8 +45,8 @@ export default class Navibar extends Component {
 
             // 如果 userInfo 存在，则获取其中的 name 并更新组件状态
             this.setState({
-                username: userInfo.user4Display.username,
-                isAdmin:userInfo.user4Display.role.roleName=="admin"
+                    username: userInfo.user4Display.username,
+                    isAdmin: userInfo.user4Display.role.roleName == "admin"
                 }
             )
         }
@@ -114,7 +112,6 @@ export default class Navibar extends Component {
                         {/*    /!*    </div>*!/*/}
                         {/*    /!*</li>*!/*/}
                         {/*</ul>*/}
-
 
 
                         {/*<form className="form-inline my-2 my-lg-0 mr-3 ml-auto">*/}

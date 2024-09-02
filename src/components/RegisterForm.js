@@ -35,7 +35,7 @@ export default class RegisterForm extends Component{
             username:this.state.username,
             password:this.state.password
         };
-        RequestSendUtils.SendPost("/user/register",payload,null,(response) => {
+        RequestSendUtils.sendPost("/user/register",payload,null,(response) => {
             if (response.status==200){
                 const data = response.data; // 获取响应数据
                 const userInfo = data.dataContent; // 从响应数据中获取令牌

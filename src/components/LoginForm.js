@@ -40,7 +40,7 @@ export default class LoginForm extends Component {
             username:this.state.username,
             password:this.state.password
         };
-        RequestSendUtils.SendPost("/user/login",payload,null,(response) => {
+        RequestSendUtils.sendPost("/user/login",payload,null,(response) => {
             if (response.status == 200) {
                 // alert(response.data)
                 const data = response.data; // 获取响应数据

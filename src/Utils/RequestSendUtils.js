@@ -8,7 +8,7 @@ const hostAndPort=host+":"+port
 
 export default class RequestSendUtils {
 
-    static SendPost(url, payload, token, callBackFunc,errbackFunc) {
+    static sendPost(url, payload, token, callBackFunc, errbackFunc) {
         let headers = {
             'Content-Type': 'application/json', // 设置请求内容类型为 JSON
             // 还可以添加其他自定义请求头
@@ -35,7 +35,7 @@ export default class RequestSendUtils {
         }
     }
 
-    static SendGet(url, token, callBackFunc,errbackFunc) {
+    static sendGet(url, token, callBackFunc, errbackFunc) {
         let headers = {
             'Content-Type': 'application/json', // 设置请求内容类型为 JSON
             // 还可以添加其他自定义请求头
@@ -55,7 +55,7 @@ export default class RequestSendUtils {
     }
 
 
-    static SendGetWithReturn(url, token) {
+    static sendGetWithReturn(url, token) {
         let headers = {
             'Content-Type': 'application/json', // 设置请求内容类型为 JSON
             // 还可以添加其他自定义请求头
@@ -82,7 +82,59 @@ export default class RequestSendUtils {
     }
 
 
-    static SendDelete(url, token, callBackFunc,errbackFunc) {
+    static sendPutWithReturn(url,payload, token) {
+        let headers = {
+            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
+            // 还可以添加其他自定义请求头
+        }
+
+        this.setToken(token, headers);
+
+        // console.log(!token);
+        // console.log(headers);
+
+        // 返回一个 Promise
+        return axios.put(hostAndPort + url,payload, {
+            headers,
+        })
+            .then((response) => {
+                // 返回成功的结果
+                return response.data;
+            })
+            .catch((error) => {
+                // 抛出错误以便在调用时进行处理
+                throw error;
+            });
+
+    }
+    static sendPatchWithReturn(url,payload, token) {
+        let headers = {
+            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
+            // 还可以添加其他自定义请求头
+        }
+
+        this.setToken(token, headers);
+
+        // console.log(!token);
+        // console.log(headers);
+
+        // 返回一个 Promise
+        return axios.patch(hostAndPort + url,payload, {
+            headers,
+        })
+            .then((response) => {
+                // 返回成功的结果
+                return response.data;
+            })
+            .catch((error) => {
+                // 抛出错误以便在调用时进行处理
+                throw error;
+            });
+
+    }
+
+
+    static sendDelete(url, token, callBackFunc, errbackFunc) {
         let headers = {
             'Content-Type': 'application/json', // 设置请求内容类型为 JSON
             // 还可以添加其他自定义请求头
@@ -100,7 +152,7 @@ export default class RequestSendUtils {
             errbackFunc(error);
         });
     }
-    static SendDeleteWithoutCallBack(url, token) {
+    static sendDeleteWithoutCallBack(url, token) {
         let headers = {
             'Content-Type': 'application/json', // 设置请求内容类型为 JSON
             // 还可以添加其他自定义请求头
