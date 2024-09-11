@@ -85,7 +85,7 @@ export default class Navibar extends Component {
                         alignItems: 'center'
                     }
                 }>
-                    <a className="navbar-brand" href="#">Home</a>
+                    <a className="navbar-brand" href="/">Home</a>
                     <button className="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarsExampleDefault"
                             aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">

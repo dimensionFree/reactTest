@@ -25,6 +25,26 @@ export default class RequestSendUtils {
             errbackFunc(error);
         });
     }
+    static sendPostWithReturn(url, payload, token) {
+        let headers = {
+            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
+            // 还可以添加其他自定义请求头
+            // 'Authorization': 'Bearer YourAccessToken' // 例如添加身份验证令牌
+        }
+        this.setToken(token, headers);
+        axios.post(hostAndPort + url,
+            payload
+            , {
+                headers
+            }).then((response) => {
+            // 返回成功的结果
+            return response.data;
+        })
+            .catch((error) => {
+                // 抛出错误以便在调用时进行处理
+                throw error;
+            });
+    }
 
 
     static setToken(token, headers) {

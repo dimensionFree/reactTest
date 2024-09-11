@@ -99,6 +99,39 @@ const PaginatedTable = ({ columns, fetchData }) => {
                 // pageSizeOptions={['5', '10', '20', '50']} // Custom page size options
             />
         </div>
+
+
+    // <div style={{ width: '100%' }}>
+    //     {/* 遍历 data 数据，并展示每条数据的内容 */}
+    //     {data.map((item, index) => (
+    //         <div key={item.id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
+    //             <div>
+    //                 <strong>ID: </strong> {item.id}
+    //             </div>
+    //             {/* 你可以根据 columns 动态展示每条记录的字段 */}
+    //             {columns.map((col) => (
+    //                 <p key={col.key}>
+    //                     <strong>{col.title}: </strong> {item[col.dataIndex]}
+    //                 </p>
+    //             ))}
+    //             <Space size="middle">
+    //                 <Button type="primary" danger onClick={() => handleDelete(item.id)}>
+    //                     Delete
+    //                 </Button>
+    //             </Space>
+    //         </div>
+    //     ))}
+    //     {/* Pagination 控件 */}
+    //     <Pagination
+    //         current={page}
+    //         pageSize={pageSize}
+    //         total={total}
+    //         onChange={handlePageChange}
+    //         showSizeChanger={true}
+    //     />
+    // </div>
+
+
     );
 };
 

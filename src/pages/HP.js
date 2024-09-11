@@ -13,6 +13,7 @@ import {
 import Login from "./Login";
 import Clock from "../components/test/Clock";
 import LatestArticle from "../components/article/LatestArticle";
+import FindArticle from "../components/article/FindArticles";
 export default class HP extends Component{
 
     constructor() {
@@ -33,6 +34,7 @@ export default class HP extends Component{
             <title>HomePage</title>
             <Navibar/>
             <LatestArticle></LatestArticle>
+            <FindArticle></FindArticle>
             {/*<Clock/>*/}
         </div>
 
