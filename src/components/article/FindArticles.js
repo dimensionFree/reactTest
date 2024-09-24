@@ -32,7 +32,9 @@ const renderItem = (item, index, handleDelete, showDeleteButton) => (
                 {item.title}
             </a>
             <p style={{ fontSize: '16px', fontStyle: 'italic' }}>
-                {item.preface}
+                {item.preface}Dockerfile
+                buildspec.yml
+                appspec.yml
             </p>
             <p style={{ fontSize: '14px' }}>
                 {new Date(item.createdDate).toISOString().slice(0, 16).replace('T', ' ')}
