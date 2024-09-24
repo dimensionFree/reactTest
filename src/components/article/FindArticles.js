@@ -27,21 +27,21 @@ const fetchData = (page, pageSize) => {
 
 const renderItem = (item, index, handleDelete, showDeleteButton) => (
     <div className={"d-flex justify-content-between ml-auto"} key={item.id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
-        <div>
-            <a href={`/article/${item.id}`}>
+        <div className="text-left">
+            <a href={`/article/${item.id}`} style={{ fontSize: '30px', fontWeight: 'bold' }}>
                 {item.title}
             </a>
-            <p>
+            <p style={{ fontSize: '16px', fontStyle: 'italic' }}>
                 {item.preface}
             </p>
-            <p>
-                {item.content}
-            </p>
-            <p>
+            <p style={{ fontSize: '14px' }}>
                 {new Date(item.createdDate).toISOString().slice(0, 16).replace('T', ' ')}
             </p>
-
+            <p style={{ fontSize: '14px', fontWeight: 'bold' }}>
+                {item.createdUserName}
+            </p>
         </div>
+
         <Space size="middle">
             {showDeleteButton && (
                 <Button type="primary" danger onClick={() => handleDelete(item.id)}>
