@@ -4,7 +4,7 @@ const host = " http://localhost";
 
 const port = "8080";
 
-const hostAndPort=host+":"+port
+const hostAndPort=host+":"+port+"/api"
 
 export default class RequestSendUtils {
 
