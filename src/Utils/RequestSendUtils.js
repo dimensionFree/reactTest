@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const host = " http://ec2-54-95-222-201.ap-northeast-1.compute.amazonaws.com";
+// const host = " http://localhost";
+const host = " http://my-backend-service-backend-1";
 
 const port = "8080";
 

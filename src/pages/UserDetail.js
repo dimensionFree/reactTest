@@ -51,7 +51,7 @@ const UserDetail = () => {
                 // 假设 API 返回的数据是 userData
                 const response = await RequestSendUtils.sendGetWithReturn("/user/find/" + id, token);
                 const data = await response.dataContent;
-                console.log("user:"+data.role.roleName);
+                console.log("user:"+(data.role ? data.role.roleName : ""));
                 setUserData(data); // 更新 userData 的状态
             } catch (error) {
                 alert(error.response.data.body.message);
@@ -96,7 +96,7 @@ const UserDetail = () => {
                 {/*</div>*/}
                 <div className="form-group form-inline mx-auto">
                     <span className="mr-2">role</span>
-                    <select className="form-control" id="role" defaultValue={userData.role.id} required>
+                    <select className="form-control" id="role" defaultValue={userData.role ? userData.role.id : ""} required>
                         {roleList.map(role => (
                             <option key={role.id} value={role.id}>
                                 {role.roleName}
