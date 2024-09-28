@@ -1,5 +1,11 @@
 version: 0.2
 
+env:
+  variables:
+    DOMAIN: "lllspread.xyz"
+  parameter-store:
+    DEV_MAIL_USERNAME: "/myapp/email_username"
+
 phases:
   pre_build:
     commands:
@@ -10,6 +16,14 @@ phases:
       - echo $REPOSITORY_URI
   build:
     commands:
+      - echo Getting SSL certificate...
+      # 假设使用 Certbot 获取证书，你可以执行命令来生成或更新证书
+      - certbot certonly --standalone --non-interactive --agree-tos --email $DEV_MAIL_USERNAME -d $DOMAIN
+      - echo SSL certificate generated.
+      # Certbot 会将证书存储在 /etc/letsencrypt/live/your-domain.com/ 目录下
+      # 将证书复制到项目目录的 /ssl 目录下
+      - cp /etc/letsencrypt/live/$DOMAIN/fullchain.pem ./ssl/cert.pem
+      - cp /etc/letsencrypt/live/$DOMAIN/privkey.pem ./ssl/cert.key
       - echo Build the Docker image...
       - docker build -t $REPOSITORY_NAME .
       - docker tag $REPOSITORY_NAME:latest $REPOSITORY_URI:latest
