@@ -10,8 +10,7 @@ phases:
   pre_build:
     commands:
       - echo Installing certbot...
-      - yum install -y epel-release
-      - yum install -y certbot
+      - sudo yum install -y certbot
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - REPOSITORY_NAME=frontend
