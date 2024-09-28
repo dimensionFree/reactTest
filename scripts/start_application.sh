@@ -21,8 +21,8 @@ aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --
 echo "pulling docker"
 docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPOSITORY_NAME:latest
 
-docker run -d --name frontend --network my-backend-service_app-network  -p 443:443 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPOSITORY_NAME:latest
-#-p 80:80
+docker run -d --name frontend --network my-backend-service_app-network -p 80:80 -p 443:443 $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$REPOSITORY_NAME:latest
+
 
 
 echo "docker run excuted"

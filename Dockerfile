@@ -24,7 +24,7 @@ COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 #COPY ./ssl/cert.key /etc/nginx/ssl/cert.key
 
 # 暴露 80 和 443 端口
-EXPOSE 443
-#80
+EXPOSE 80 443
+
 # 启动 Nginx
 CMD ["nginx", "-g", "daemon off;"]
