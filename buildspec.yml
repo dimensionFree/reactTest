@@ -9,8 +9,8 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Installing certbot...
-      - sudo yum install -y certbot
+#      - echo Installing certbot...
+#      - sudo yum install -y certbot
       - echo Logging in to Amazon ECR...
       - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - REPOSITORY_NAME=frontend
@@ -18,14 +18,14 @@ phases:
       - echo $REPOSITORY_URI
   build:
     commands:
-      - echo Getting SSL certificate...
+#      - echo Getting SSL certificate...
       # 假设使用 Certbot 获取证书，你可以执行命令来生成或更新证书
-      - certbot certonly --standalone --non-interactive --agree-tos --email mailsenderblogweb@gmail.com -d lllspread.xyz
-      - echo SSL certificate generated.
-      # Certbot 会将证书存储在 /etc/letsencrypt/live/your-domain.com/ 目录下
-      # 将证书复制到项目目录的 /ssl 目录下
-      - cp /etc/letsencrypt/live/lllspread.xyz/fullchain.pem ./ssl/cert.pem
-      - cp /etc/letsencrypt/live/lllspread.xyz/privkey.pem ./ssl/cert.key
+#      -sudo certbot certonly --standalone --non-interactive --agree-tos --email mailsenderblogweb@gmail.com -d lllspread.xyz
+#      - echo SSL certificate generated.
+#      # Certbot 会将证书存储在 /etc/letsencrypt/live/your-domain.com/ 目录下
+#      # 将证书复制到项目目录的 /ssl 目录下
+#      - cp /etc/letsencrypt/live/lllspread.xyz/fullchain.pem ./ssl/cert.pem
+#      - cp /etc/letsencrypt/live/lllspread.xyz/privkey.pem ./ssl/cert.key
       - echo Build the Docker image...
       - docker build -t $REPOSITORY_NAME .
       - docker tag $REPOSITORY_NAME:latest $REPOSITORY_URI:latest
