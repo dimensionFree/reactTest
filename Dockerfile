@@ -20,8 +20,8 @@ COPY --from=build /app/build /usr/share/nginx/html
 COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
 
 # 复制 SSL 证书（如果需要使用 HTTPS）
-COPY ./ssl/cert.pem /etc/nginx/ssl/cert.pem
-COPY ./ssl/cert.key /etc/nginx/ssl/cert.key
+#COPY ./ssl/cert.pem /etc/nginx/ssl/cert.pem
+#COPY ./ssl/cert.key /etc/nginx/ssl/cert.key
 
 # 暴露 80 和 443 端口
 EXPOSE 80 443
