@@ -1,11 +1,11 @@
 import axios from "axios";
 
 // const host = " http://localhost";
-const host = "my-backend-service-backend-1";
+const host = " http://ec2-54-95-222-201.ap-northeast-1.compute.amazonaws.com/";
 
 const port = "8080";
-// ":"+port+
-const hostAndPort=host+"/api"
+
+const hostAndPort=host+":"+port+"/api"
 
 export default class RequestSendUtils {
 
