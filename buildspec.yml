@@ -20,6 +20,7 @@ phases:
     commands:
 #      # Certbot 会将证书存储在 /etc/letsencrypt/live/your-domain.com/ 目录下
       # 将证书复制到项目目录的 /ssl 目录下
+      - ls /
       - cp /etc/letsencrypt/live/$DOMAIN/fullchain.pem ./ssl/cert.pem
       - cp /etc/letsencrypt/live/$DOMAIN/privkey.pem ./ssl/cert.key
       - echo Build the Docker image...
