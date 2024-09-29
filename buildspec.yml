@@ -16,13 +16,12 @@ phases:
       - REPOSITORY_NAME=frontend
       - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$REPOSITORY_NAME
       - echo $REPOSITORY_URI
+
   build:
     commands:
-#      # Certbot 会将证书存储在 /etc/letsencrypt/live/your-domain.com/ 目录下
-      # 将证书复制到项目目录的 /ssl 目录下
-      - ls /
-      - cp /etc/letsencrypt/live/$DOMAIN/fullchain.pem ./ssl/cert.pem
-      - cp /etc/letsencrypt/live/$DOMAIN/privkey.pem ./ssl/cert.key
+      - echo Downloading SSL certificates from S3...
+      - aws s3 cp s3://your-bucket/ssl/cert.pem ./ssl/cert.pem
+      - aws s3 cp s3://your-bucket/ssl/cert.key ./ssl/cert.key
       - echo Build the Docker image...
       - docker build -t $REPOSITORY_NAME .
       - docker tag $REPOSITORY_NAME:latest $REPOSITORY_URI:latest
