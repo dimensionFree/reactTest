@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const host = "http://localhost:8080";
-// const host = "";
+// const host = "http://localhost:8080";
+const host = "";
 
 const hostAndPort=host+"/api"
 
