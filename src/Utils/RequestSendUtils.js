@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const host = "http://localhost:8080";
-const host = "";
+const host = "http://localhost:8080";
+// const host = "";
 
 const hostAndPort=host+"/api"
 
@@ -31,7 +31,7 @@ export default class RequestSendUtils {
             // 'Authorization': 'Bearer YourAccessToken' // 例如添加身份验证令牌
         }
         this.setToken(token, headers);
-        axios.post(hostAndPort + url,
+        return  axios.post(hostAndPort + url,
             payload
             , {
                 headers
@@ -50,7 +50,6 @@ export default class RequestSendUtils {
 
         if (token) {
             headers.Authorization = "Bearer " + token;
-            // 'Authorization': 'Bearer YourAccessToken' // 添加身份验证令牌
         }
     }
 
@@ -185,6 +184,16 @@ export default class RequestSendUtils {
             headers
         });
 
+    }
+
+    static getToken(){
+        // 从 localStorage 中获取用户信息
+        var token="";
+        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        if (userInfo) {
+            token = userInfo.token;
+        }
+        return token;
     }
 
 

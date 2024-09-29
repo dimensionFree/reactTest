@@ -28,7 +28,7 @@ const fetchData = (page, pageSize) => {
 const renderItem = (item, index, handleDelete, showDeleteButton) => (
     <div className={"d-flex justify-content-between ml-auto"} key={item.id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
         <div className="text-left">
-            <a href={`/article/${item.id}`} style={{ fontSize: '30px', fontWeight: 'bold' }}>
+            <a href={`/article/read/${item.id}`} style={{ fontSize: '30px', fontWeight: 'bold' }}>
                 {item.title}
             </a>
             <p style={{ fontSize: '16px', fontStyle: 'italic' }}>

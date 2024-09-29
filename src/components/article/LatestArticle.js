@@ -4,6 +4,7 @@ import RequestSendUtils from "../../Utils/RequestSendUtils";
 
 const LatestArticle = () => {
     // 使用 useState 初始化状态
+    const [id, setId] = useState("");
     const [title, setTitle] = useState("");
     const [preface, setPreface] = useState("");
 
@@ -19,6 +20,7 @@ const LatestArticle = () => {
             const data = await response.dataContent;
 
             // 更新状态
+            setId(data.id||"");
             setTitle(data.title || ""); // 如果没有 title，设置为空字符串
             setPreface(data.preface || ""); // 如果没有 preface，设置为空字符串
         } catch (error) {
@@ -38,7 +40,7 @@ const LatestArticle = () => {
                         {preface ? preface : "got some preface pls"}
                     </p>
                     <p className="lead mb-0">
-                        <a href="#" className="text-dark font-weight-bold">Continue reading...</a>
+                        <a href={`/article/read/${id}`} className="text-dark font-weight-bold">Continue reading...</a>
                     </p>
                 </div>
             </div>

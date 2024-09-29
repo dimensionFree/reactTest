@@ -8,6 +8,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import UserManage from "./pages/UserManage";
 import UserDetail from "./pages/UserDetail";
+import ReadArticle from "./pages/ReadArticle";
+import CreateArticle from "./pages/CreateArticle";
 
 ReactDOM.render(
     <Router>
@@ -16,6 +18,8 @@ ReactDOM.render(
             <Route path="/login" component={Login}/>
             <Route path="/userManage" component={UserManage}/>
             <Route path="/userDetail/:id" component={UserDetail}/>
+            <Route path="/article/read/:id" component={ReadArticle}/>
+            <Route path="/article/create" component={CreateArticle} />
             <Route path="/" component={App}/>
 
         </Switch>
