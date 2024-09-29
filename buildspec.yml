@@ -20,8 +20,8 @@ phases:
   build:
     commands:
       - echo Downloading SSL certificates from S3...
-      - aws s3 cp s3://your-bucket/ssl/cert.pem ./ssl/cert.pem
-      - aws s3 cp s3://your-bucket/ssl/cert.key ./ssl/cert.key
+      - aws s3 cp s3://my-ssl-lllspread-bucket/ssl/cert.pem ./ssl/cert.pem
+      - aws s3 cp s3://my-ssl-lllspread-bucket/ssl/cert.key ./ssl/cert.key
       - echo Build the Docker image...
       - docker build -t $REPOSITORY_NAME .
       - docker tag $REPOSITORY_NAME:latest $REPOSITORY_URI:latest
