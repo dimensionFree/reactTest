@@ -34,7 +34,9 @@ export default class HP extends Component{
             <title>HomePage</title>
             <Navibar/>
             <LatestArticle></LatestArticle>
-            <FindArticle></FindArticle>
+            {/* 在这里可以通过用户输入或选择更改 sortBy 和 filters */}
+            <FindArticle/>
+            {/*filters= {{ id: 1 }}*/}
             {/*<Clock/>*/}
         </div>
 

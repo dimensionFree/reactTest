@@ -46,7 +46,8 @@ export default class Navibar extends Component {
             // 如果 userInfo 存在，则获取其中的 name 并更新组件状态
             this.setState({
                     username: userInfo.user4Display.username,
-                    isAdmin: userInfo.user4Display.role.roleName == "admin"
+                    isAdmin: userInfo.user4Display.role.roleName == "admin",
+                    userId: userInfo.user4Display.id
                 }
             )
         }
@@ -55,6 +56,7 @@ export default class Navibar extends Component {
     render() {
         const username = this.state.username;
         const isAdmin = this.state.isAdmin;
+        const userId = this.state.userId;
 
         const userAvaterContent = !username ? (
             <a className="nav-link ml-auto" style={{color: "white"}} href="/login">sign in/sign up</a>
@@ -66,8 +68,9 @@ export default class Navibar extends Component {
                     <a className="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
                        aria-expanded="false">welcome,{username}!</a>
                     <div className="dropdown-menu" aria-labelledby="dropdown01">
+
                         {isAdmin && <a className="dropdown-item" href="/userManage">user management</a>}
-                        <a className="dropdown-item" href="#" hidden={true}> Action</a>
+                        <a className="dropdown-item" href={'/articleManage/'+userId}>article management</a>
                         <a className="dropdown-item" onClick={this.quit} href="#">quit</a>
                     </div>
                 </div>

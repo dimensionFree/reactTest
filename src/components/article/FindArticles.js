@@ -4,15 +4,32 @@ import {Button, Space} from 'antd';
 import PaginatedCommon from "../common/PaginatedCommon";
 
 
-const fetchData = (page, pageSize) => {
+const fetchData = (page, pageSize,filters) => {
     return new Promise((resolve, reject) => {
-        // 从 localStorage 中获取用户信息
-        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-        if (userInfo) {
-            var token = userInfo.token;
+
+
+        // 构造查询参数
+        let queryParams = `currentPage=${page}&pageSize=${pageSize}`;
+
+        // 如果有筛选条件
+        if (filters) {
+            //filters is string "{"id":1}"
+            // alert(JSON.stringify(filters))
+            // 提取出 filters 对象
+            const extractedFilters = filters.filters;
+
+            // 将提取出的 filters 对象转换为 JSON 字符串
+            const filtersString = JSON.stringify(extractedFilters);
+
+            console.log(filtersString); // 输出: '{"id":1}'
+            if (filtersString){
+                const encodedFilters = encodeURIComponent(filtersString);
+                queryParams += `&filtersStr=${encodedFilters}`;
+            }
+
         }
 
-        RequestSendUtils.sendGet(`/article/findAll/?currentPage=${page}&pageSize=${pageSize}`, null, (response) => {
+        RequestSendUtils.sendGet(`/article/findAll/?${queryParams}`, null, (response) => {
             if (response.status === 200) {
                 resolve(response.data); // 解析响应数据
             } else {
@@ -43,7 +60,7 @@ const renderItem = (item, index, handleDelete, showDeleteButton) => (
         </div>
 
         <Space size="middle">
-            {showDeleteButton && (
+            {showDeleteButton===true && (
                 <Button type="primary" danger onClick={() => handleDelete(item.id)}>
                     Delete
                 </Button>
@@ -56,15 +73,19 @@ const renderItem = (item, index, handleDelete, showDeleteButton) => (
 
 
 
-const FindArticle = () => {
+const FindArticle = (filter= {},isShowDeleteButton) => {
+
     return (
 
         // 在父组件中调用
         <PaginatedCommon
             fetchData={fetchData}
             renderItem={renderItem}
-            showDeleteButton={false}  // 控制是否显示删除按钮
+            showDeleteButton={isShowDeleteButton}  // 控制是否显示删除按钮
             deleteApiBasePath="/article" // 控制删除 API 的基础路径
+            initFilter={filter}   //{filter} //'{"id": 1}'
+
+            // 控制删除 API 的基础路径
         />
     );
 };

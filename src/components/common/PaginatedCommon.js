@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {message, Pagination} from 'antd';
 import RequestSendUtils from "../../Utils/RequestSendUtils"; // 假设你有用于发送删除请求的工具类
 
-const PaginatedCommon = ({fetchData, renderItem, showDeleteButton = true, deleteApiBasePath = '' }) => {
+const PaginatedCommon = ({fetchData, renderItem, showDeleteButton, deleteApiBasePath = '' ,initFilter=''}) => {
     const [data, setData] = useState([]);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -17,7 +17,7 @@ const PaginatedCommon = ({fetchData, renderItem, showDeleteButton = true, delete
 
     useEffect(() => {
         setLoading(true);
-        fetchData(page, pageSize).then((result) => {
+        fetchData(page, pageSize,initFilter).then((result) => {
             let total = result.dataContent.total;
             let list = result.dataContent.list;
             setData(list);

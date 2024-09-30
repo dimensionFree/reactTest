@@ -10,6 +10,7 @@ import UserManage from "./pages/UserManage";
 import UserDetail from "./pages/UserDetail";
 import ReadArticle from "./pages/ReadArticle";
 import CreateArticle from "./pages/CreateArticle";
+import ArticleManage from "./pages/ArticleManage";
 
 ReactDOM.render(
     <Router>
@@ -20,7 +21,13 @@ ReactDOM.render(
             <Route path="/userDetail/:id" component={UserDetail}/>
             <Route path="/article/read/:id" component={ReadArticle}/>
             <Route path="/article/create" component={CreateArticle} />
+            <Route path="/articleManage/:id" component={ArticleManage}/>
+            <Route path="/article/edit/:id" component={ArticleManage}/>
+
+
+
             <Route path="/" component={App}/>
+
 
         </Switch>
     </Router>,
