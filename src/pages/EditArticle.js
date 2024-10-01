@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import RequestSendUtils from "../Utils/RequestSendUtils";
 import Navibar from "../components/Navibar";
-import { useParams } from 'react-router-dom';
+import { useParams,useHistory } from 'react-router-dom';
+import {message} from "antd";
 
 const EditArticle = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const { id } = useParams(); // 从路由参数中获取 id
+    const history = useHistory();
 
     // 如果是编辑模式，从后端获取文章数据
     useEffect(() => {
@@ -24,6 +26,8 @@ const EditArticle = () => {
                     setContent(data.content);
                 } catch (error) {
                     alert("Error fetching article: " + error);
+
+                    message.error("Error fetching article: " + error)
                 }
             };
             fetchArticle();
@@ -53,19 +57,21 @@ const EditArticle = () => {
                 const response = await RequestSendUtils.sendPostWithReturn("/article/create", payload, token);
                 const data = await response.dataContent;
                 if (data) {
-                    alert("Save successful! " + data);
-                    window.location.href = "/article/read/" + data;
+                    message.success("Save successful! ");
+                    history.push("/article/read/" + data);  // 使用 React Router 进行路由跳转
                 }
             } else {
                 // 更新已有文章
                 const response = await RequestSendUtils.sendPutWithReturn(`/article/update/${id}`, payload, token);
                 if (response) {
-                    alert("Update successful!");
-                    window.location.href = "/article/read/" + id;
+                    message.success("Update successful!");
+                    history.push("/article/read/" + id);  // 使用 React Router 进行路由跳转
+
                 }
             }
         } catch (error) {
-            alert("Error: " + error);
+            message.error(error.response.data.body.message);
+
         }
     };
 
@@ -109,7 +115,7 @@ const EditArticle = () => {
                 <div className="col-md-6" style={{ height: '100%' }}>
                     <h2>Preview</h2>
                     <div className="border p-3" style={{ textAlign: 'left', height: 'calc(100% - 40px)' }}>
-                        <h3>{title}</h3>
+                        <h3 style={{ textAlign: 'center'}}>{title}</h3>
                         <ReactMarkdown>{content}</ReactMarkdown>
                     </div>
                 </div>

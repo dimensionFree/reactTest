@@ -1,10 +1,11 @@
 import React, {Component, useState, useEffect} from "react";
 import Navibar from "../components/Navibar";
-import {useParams} from 'react-router-dom';
+import {useParams,useHistory} from 'react-router-dom';
 import RequestSendUtils from "../Utils/RequestSendUtils";
 
 
 const UserDetail = () => {
+    const history = useHistory();
 
     function saveUserInfo() {
         const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -27,7 +28,7 @@ const UserDetail = () => {
                 // setUserData(data); // 更新 userData 的状态
             } catch (error) {
                 alert(error.response.data.body.message);
-                window.location.href = "/"
+                history.push( "/");
             }
         };
 
@@ -55,7 +56,7 @@ const UserDetail = () => {
                 setUserData(data); // 更新 userData 的状态
             } catch (error) {
                 alert(error.response.data.body.message);
-                window.location.href = "/"
+                history.push( "/");
             }
         };
         const fetchAllRoles = async () => {

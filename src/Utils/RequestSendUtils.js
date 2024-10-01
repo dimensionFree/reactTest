@@ -1,4 +1,6 @@
 import axios from "axios";
+import Navibar from "../components/Navibar";
+import {message} from "antd";
 
 
 const host = process.env.REACT_APP_API_HOST || "";
@@ -20,6 +22,8 @@ export default class RequestSendUtils {
             }).then(function (response) {
                 callBackFunc(response);
         }).catch(function (error) {
+            RequestSendUtils.checkQuit(error);
+
             errbackFunc(error);
         });
     }
@@ -39,11 +43,23 @@ export default class RequestSendUtils {
             return response.data;
         })
             .catch((error) => {
-                // 抛出错误以便在调用时进行处理
+                RequestSendUtils.checkQuit(error);
                 throw error;
             });
     }
 
+
+    static checkQuit(error) {
+        // 安全访问 error.response.data.body.code，防止未定义属性导致错误
+        console.log("checking quit")
+        const errorCode = error.response?.data?.body?.code;
+        console.log(errorCode)
+
+        if (errorCode === "3000") {
+            // 如果是 token 失效的错误码，调用退出登录逻辑
+            RequestSendUtils.quitUser();
+        }
+    }
 
     static setToken(token, headers) {
 
@@ -65,8 +81,14 @@ export default class RequestSendUtils {
         axios.get(hostAndPort + url,{
             headers
         }).then(function (response) {
+            console.log("response")
             callBackFunc(response);
         }).catch(function (error) {
+            console.log("error")
+            console.log(error.response)
+            message.error(error.response.data.body.message);
+
+            RequestSendUtils.checkQuit(error);
             errbackFunc(error);
         });
     }
@@ -92,6 +114,8 @@ export default class RequestSendUtils {
                 return response.data;
             })
             .catch((error) => {
+                RequestSendUtils.checkQuit(error);
+
                 // 抛出错误以便在调用时进行处理
                 throw error;
             });
@@ -119,6 +143,8 @@ export default class RequestSendUtils {
                 return response.data;
             })
             .catch((error) => {
+                RequestSendUtils.checkQuit(error);
+
                 // 抛出错误以便在调用时进行处理
                 throw error;
             });
@@ -144,6 +170,8 @@ export default class RequestSendUtils {
                 return response.data;
             })
             .catch((error) => {
+                RequestSendUtils.checkQuit(error);
+
                 // 抛出错误以便在调用时进行处理
                 throw error;
             });
@@ -166,6 +194,8 @@ export default class RequestSendUtils {
         }).then(function (response) {
             callBackFunc(response);
         }).catch(function (error) {
+            RequestSendUtils.checkQuit(error);
+
             errbackFunc(error);
         });
     }
@@ -184,6 +214,8 @@ export default class RequestSendUtils {
         }).then(function (response) {
             return response;
         }).catch(function (error) {
+            RequestSendUtils.checkQuit(error);
+
             throw error;
         });
     }
@@ -198,6 +230,11 @@ export default class RequestSendUtils {
             token = userInfo.token;
         }
         return token;
+    }
+
+    static quitUser() {
+        localStorage.removeItem("userInfo")
+        window.location.href = "/"
     }
 
 

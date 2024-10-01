@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import '../../css/LatestArticle.css';
 import RequestSendUtils from "../../Utils/RequestSendUtils";
+import {message} from "antd";
 
 const LatestArticle = () => {
     // 使用 useState 初始化状态
@@ -24,8 +25,8 @@ const LatestArticle = () => {
             setTitle(data.title || ""); // 如果没有 title，设置为空字符串
             setPreface(data.preface || ""); // 如果没有 preface，设置为空字符串
         } catch (error) {
-            alert(error.response.data.body.message);
-            window.location.href = "/";
+            message.error(error.response.data.body.message);
+
         }
     };
 

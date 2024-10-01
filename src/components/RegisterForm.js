@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import '../css/loginForm.css';
 import bt from '../assets/brand/bootstrap-solid.svg';
 import RequestSendUtils from "../Utils/RequestSendUtils";
+import { useParams,useHistory } from 'react-router-dom';
+import {message} from "antd";
 
 const RegisterForm = () => {
     const [formState, setFormState] = useState({
@@ -10,6 +12,9 @@ const RegisterForm = () => {
         email: "",
         verificationCode: ""
     });
+    const history = useHistory();
+
+
     const [isSending, setIsSending] = useState(false);
     const [timer, setTimer] = useState(0);
 
@@ -59,12 +64,12 @@ const RegisterForm = () => {
             if (response.status === 200) {
                 const userInfo = response.data.dataContent;
                 localStorage.setItem('userInfo', JSON.stringify(userInfo));
-                window.location.href = "/";
+                history.push( "/");
             } else if (response.status === 400) {
                 alert(response.data);
             }
         }, (error) => {
-            alert(error.response?.data?.message || "Registration error");
+            message.error(error.response?.data?.message || "Registration error")
         });
     };
 

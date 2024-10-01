@@ -13,12 +13,6 @@ const fetchData = (page, pageSize,filters) => {
 
         // 如果有筛选条件
         if (filters) {
-            //filters is string "{"id":1}"
-            // alert(JSON.stringify(filters))
-            // // 提取出 filters 对象
-            // const extractedFilters = filters.filters;
-
-            // 将提取出的 filters 对象转换为 JSON 字符串
             const filtersString = JSON.stringify(filters);
 
             console.log(filtersString); // 输出: '{"id":1}'

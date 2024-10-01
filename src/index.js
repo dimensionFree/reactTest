@@ -20,7 +20,7 @@ ReactDOM.render(
             <Route path="/userManage" component={UserManage}/>
             <Route path="/userDetail/:id" component={UserDetail}/>
             <Route path="/article/read/:id" component={ReadArticle}/>
-            <Route path="/article/create" component={EditArticle} />
+            <Route path="/article/edit/:id" component={EditArticle} />
             <Route path="/articleManage/:id" component={ArticleManage}/>
             <Route path="/article/edit/:id" component={EditArticle}/>
 

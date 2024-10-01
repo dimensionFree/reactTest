@@ -3,11 +3,9 @@ import React, {Component} from "react";
 import "../css/navibar.css"
 import axios, {Axios} from "axios";
 import RequestSendUtils from "../Utils/RequestSendUtils";
+import {message} from "antd";
 
-function quitUser() {
-    localStorage.removeItem("userInfo")
-    window.location.href = "/"
-}
+
 
 export default class Navibar extends Component {
 
@@ -21,7 +19,7 @@ export default class Navibar extends Component {
     }
 
     quit(e) {
-        quitUser()
+        RequestSendUtils.quitUser()
     }
 
 
@@ -38,8 +36,7 @@ export default class Navibar extends Component {
                         console.log(response.data.message)
                     }
                 }, (error) => {
-                    alert(error.response.data.body.message);
-                    quitUser();
+                    RequestSendUtils.quitUser()
                 }
             )
 
@@ -62,7 +59,7 @@ export default class Navibar extends Component {
             <a className="nav-link ml-auto" style={{color: "white"}} href="/login">sign in/sign up</a>
         ) : (
             <div className="d-flex justify-content-between ml-auto">
-                <a className="btn btn-primary btn-lg" href="/article/create" role="button">create article</a>
+                <a className="btn btn-primary btn-lg" href="/article/edit/NEW" role="button">create article</a>
 
                 <div className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown"
