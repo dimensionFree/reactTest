@@ -10,10 +10,10 @@ const ArticleManage = () => {
 
     return (
         <div className="container mt-5 pt-5">
-            <title>user manage</title>
+            <title>article manage</title>
             <Navibar/>
             <h1 className="mb-4">Article Management</h1>
-            <FindArticle filters={{ created_by: id}} isShowDeleteButton={true} />
+            <FindArticle filters={{ created_by: id}} isShowDeleteButton={true} isShowEditButton={true} />
 
         </div>
     );

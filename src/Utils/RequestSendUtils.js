@@ -1,8 +1,7 @@
 import axios from "axios";
 
-// const host = "http://localhost:8080";
-const host = "";
 
+const host = process.env.REACT_APP_API_HOST || "";
 const hostAndPort=host+"/api"
 
 export default class RequestSendUtils {
@@ -170,7 +169,7 @@ export default class RequestSendUtils {
             errbackFunc(error);
         });
     }
-    static sendDeleteWithoutCallBack(url, token) {
+    static sendDeleteWithReturn(url, token) {
         let headers = {
             'Content-Type': 'application/json', // 设置请求内容类型为 JSON
             // 还可以添加其他自定义请求头
@@ -180,11 +179,16 @@ export default class RequestSendUtils {
 
         // console.log(!token);
         // console.log(headers);
-        axios.delete(hostAndPort + url,{
+        return  axios.delete(hostAndPort + url,{
             headers
+        }).then(function (response) {
+            return response;
+        }).catch(function (error) {
+            throw error;
         });
-
     }
+
+
 
     static getToken(){
         // 从 localStorage 中获取用户信息

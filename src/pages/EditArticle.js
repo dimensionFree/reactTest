@@ -1,11 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import RequestSendUtils from "../Utils/RequestSendUtils";
 import Navibar from "../components/Navibar";
+import { useParams } from 'react-router-dom';
 
-const CreateArticle = () => {
+const EditArticle = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const { id } = useParams(); // 从路由参数中获取 id
+
+    // 如果是编辑模式，从后端获取文章数据
+    useEffect(() => {
+        if (id && id !== 'NEW') {
+            // 调用后端 API 获取文章数据
+            const fetchArticle = async () => {
+                try {
+                    let token = RequestSendUtils.getToken();
+                    const response = await RequestSendUtils.sendGetWithReturn(`/article/find/${id}`, token);
+                    // const response = await RequestSendUtils.sendGetWithReturn("/article/find/"+id, null);
+                    const data = await response.dataContent;
+
+                    setTitle(data.title);
+                    setContent(data.content);
+                } catch (error) {
+                    alert("Error fetching article: " + error);
+                }
+            };
+            fetchArticle();
+        }
+    }, [id]);
 
     const handleContentChange = (e) => {
         setContent(e.target.value);
@@ -15,8 +38,7 @@ const CreateArticle = () => {
         setTitle(e.target.value);
     };
 
-    // 触发保存事件的函数
-
+    // 保存或更新文章
     const handleSave = async () => {
         try {
             let token = RequestSendUtils.getToken();
@@ -26,32 +48,37 @@ const CreateArticle = () => {
                 content: content
             };
 
-            const response = await RequestSendUtils.sendPostWithReturn("/article/create", payload, token);
-            // while (!response){
-            //
-            // }
-            const data = await response.dataContent;
-            console.log(data)
-            if (data){
-                alert("save successful!"+data);
-                window.location.href = "/article/read/"+data
+            if (id === 'NEW') {
+                // 创建新文章
+                const response = await RequestSendUtils.sendPostWithReturn("/article/create", payload, token);
+                const data = await response.dataContent;
+                if (data) {
+                    alert("Save successful! " + data);
+                    window.location.href = "/article/read/" + data;
+                }
+            } else {
+                // 更新已有文章
+                const response = await RequestSendUtils.sendPutWithReturn(`/article/update/${id}`, payload, token);
+                if (response) {
+                    alert("Update successful!");
+                    window.location.href = "/article/read/" + id;
+                }
             }
-
         } catch (error) {
-            alert("error:"+ error);
+            alert("Error: " + error);
         }
     };
 
     return (
         <div className="container my-5">
-            <Navibar/>
-            <h1>Create New Article</h1>
+            <Navibar />
+            <h1>{id === 'NEW' ? "Create New Article" : "Edit Article"}</h1>
             <div className="row" style={{ display: 'flex', height: '50vh' }}>
                 {/* 左边的输入区域 */}
-                <div className="col-md-6" style={{ height: '100%'}}>
+                <div className="col-md-6" style={{ height: '100%' }}>
                     <div className="form-group">
                         <label htmlFor="title">Article Title</label>
-                        <input style={{overflow: 'auto' }}
+                        <input
                             type="text"
                             className="form-control"
                             id="title"
@@ -68,28 +95,27 @@ const CreateArticle = () => {
                             value={content}
                             onChange={handleContentChange}
                             placeholder="Enter content in Markdown format"
-                            style={{ height: '100%', resize: 'none',overflow: 'auto' }}
+                            style={{ height: '100%', resize: 'none' }}
                         />
                     </div>
 
                     {/* 保存按钮 */}
                     <button onClick={handleSave} className="btn btn-primary mt-5">
-                        Save Article
+                        {id === 'NEW' ? "Save Article" : "Update Article"}
                     </button>
                 </div>
 
                 {/* 右边的预览区域 */}
                 <div className="col-md-6" style={{ height: '100%' }}>
                     <h2>Preview</h2>
-                    <div className="border p-3" style={{ textAlign: 'left', height: 'calc(100% - 40px)',overflow: 'auto' }}>
+                    <div className="border p-3" style={{ textAlign: 'left', height: 'calc(100% - 40px)' }}>
                         <h3>{title}</h3>
                         <ReactMarkdown>{content}</ReactMarkdown>
                     </div>
                 </div>
             </div>
-
         </div>
     );
 };
 
-export default CreateArticle;
+export default EditArticle;

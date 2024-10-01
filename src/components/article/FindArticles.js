@@ -15,11 +15,11 @@ const fetchData = (page, pageSize,filters) => {
         if (filters) {
             //filters is string "{"id":1}"
             // alert(JSON.stringify(filters))
-            // 提取出 filters 对象
-            const extractedFilters = filters.filters;
+            // // 提取出 filters 对象
+            // const extractedFilters = filters.filters;
 
             // 将提取出的 filters 对象转换为 JSON 字符串
-            const filtersString = JSON.stringify(extractedFilters);
+            const filtersString = JSON.stringify(filters);
 
             console.log(filtersString); // 输出: '{"id":1}'
             if (filtersString){
@@ -42,7 +42,7 @@ const fetchData = (page, pageSize,filters) => {
     });
 };
 
-const renderItem = (item, index, handleDelete, showDeleteButton) => (
+const renderItem = (item, index, handleDelete,handleEdit, showDeleteButton,showEditButton) => (
     <div className={"d-flex justify-content-between ml-auto"} key={item.id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
         <div className="text-left">
             <a href={`/article/read/${item.id}`} style={{ fontSize: '30px', fontWeight: 'bold' }}>
@@ -65,6 +65,11 @@ const renderItem = (item, index, handleDelete, showDeleteButton) => (
                     Delete
                 </Button>
             )}
+            {showEditButton===true && (
+                <Button type="primary" danger onClick={() => handleEdit(item.id)}>
+                    Edit
+                </Button>
+            )}
         </Space>
     </div>
 );
@@ -73,8 +78,11 @@ const renderItem = (item, index, handleDelete, showDeleteButton) => (
 
 
 
-const FindArticle = (filter= {},isShowDeleteButton) => {
-
+const FindArticle = ({ filters = {}, isShowDeleteButton=false, isShowEditButton=false }) => {
+    // console.log("filter");
+    // console.log(filters);
+    // console.log("isShowDeleteButton");
+    // console.log(isShowDeleteButton);
     return (
 
         // 在父组件中调用
@@ -82,8 +90,9 @@ const FindArticle = (filter= {},isShowDeleteButton) => {
             fetchData={fetchData}
             renderItem={renderItem}
             showDeleteButton={isShowDeleteButton}  // 控制是否显示删除按钮
-            deleteApiBasePath="/article" // 控制删除 API 的基础路径
-            initFilter={filter}   //{filter} //'{"id": 1}'
+            showEditButton={isShowEditButton}  // 控制是否显示删除按钮
+            crudApiBasePath="/article" // 控制删除 API 的基础路径
+            initFilter={filters}   //{filter} //'{"id": 1}'
 
             // 控制删除 API 的基础路径
         />

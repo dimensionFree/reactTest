@@ -9,7 +9,7 @@ import Register from "./pages/Register";
 import UserManage from "./pages/UserManage";
 import UserDetail from "./pages/UserDetail";
 import ReadArticle from "./pages/ReadArticle";
-import CreateArticle from "./pages/CreateArticle";
+import EditArticle from "./pages/EditArticle";
 import ArticleManage from "./pages/ArticleManage";
 
 ReactDOM.render(
@@ -20,9 +20,9 @@ ReactDOM.render(
             <Route path="/userManage" component={UserManage}/>
             <Route path="/userDetail/:id" component={UserDetail}/>
             <Route path="/article/read/:id" component={ReadArticle}/>
-            <Route path="/article/create" component={CreateArticle} />
+            <Route path="/article/create" component={EditArticle} />
             <Route path="/articleManage/:id" component={ArticleManage}/>
-            <Route path="/article/edit/:id" component={ArticleManage}/>
+            <Route path="/article/edit/:id" component={EditArticle}/>
 
 
 
