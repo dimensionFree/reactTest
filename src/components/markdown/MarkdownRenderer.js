@@ -1,28 +1,21 @@
-import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import CodeBlockWithCopy from './CodeBlockWithCopy';
-
-const markdown = `
-\`\`\`sql
-CREATE INDEX idx_content ON blog_posts (content(100));
-\`\`\`
-`;
+import React from "react";
 
 const MarkdownRenderer = ({ content = '' }) => (
     <ReactMarkdown
         components={{
-            code({ node, inline, className, children, ...props }) {
-                // 尝试匹配 language- 的类，如果没有匹配到，语言可以为空字符串
+            code({ node, inline = false, className, children, ...props }) {
                 const match = /language-(\w+)/.exec(className || '');
-                return !inline ? (
+                const isInlineCode = !className; // 如果没有 className，则为行内代码
+                console.log('Is Inline: ', isInlineCode); // 打印出是否为行内代码
+
+                return (
                     <CodeBlockWithCopy
-                        language={match ? match[1] : ''}  // 如果没有指定语言，传空字符串
-                        value={String(children).replace(/\n$/, '')}
+                        language={match ? match[1] : ''} // 如果存在语言类型，则传递
+                        value={String(children).replace(/\n$/, '')} // 将代码字符串化并传递
+                        inline={isInlineCode} // 传递 isInlineCode 来判断行内代码
                     />
-                ) : (
-                    <code className={className} {...props}>
-                        {children}
-                    </code>
                 );
             },
         }}
@@ -32,4 +25,3 @@ const MarkdownRenderer = ({ content = '' }) => (
 );
 
 export default MarkdownRenderer;
-
