@@ -4,6 +4,8 @@ import RequestSendUtils from "../Utils/RequestSendUtils";
 import Navibar from "../components/Navibar";
 import { useParams,useHistory } from 'react-router-dom';
 import {message} from "antd";
+import remarkGfm from "remark-gfm";
+import MarkdownRenderer from "../components/markdown/MarkdownRenderer";
 
 const EditArticle = () => {
     const [title, setTitle] = useState('');
@@ -116,7 +118,8 @@ const EditArticle = () => {
                     <h2>Preview</h2>
                     <div className="border p-3" style={{ textAlign: 'left', height: 'calc(100% - 40px)' }}>
                         <h3 style={{ textAlign: 'center'}}>{title}</h3>
-                        <ReactMarkdown>{content}</ReactMarkdown>
+                        {/*<ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>*/}
+                        <MarkdownRenderer content={content}></MarkdownRenderer>
                     </div>
                 </div>
             </div>

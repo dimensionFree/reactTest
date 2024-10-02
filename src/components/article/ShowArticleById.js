@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import RequestSendUtils from "../../Utils/RequestSendUtils";  // 导入 react-markdown
+import RequestSendUtils from "../../Utils/RequestSendUtils";
+import MarkdownRenderer from "../markdown/MarkdownRenderer";  // 导入 react-markdown
 
 const ShowArticleById = () => {
     const { id } = useParams();
@@ -54,7 +55,9 @@ const ShowArticleById = () => {
                     </div>
                 </div>
                 <div className="container" style={{ padding: '20px'}}>
-                    <ReactMarkdown>{article.content}</ReactMarkdown>
+                    <MarkdownRenderer content={article.content}></MarkdownRenderer>
+
+                    {/*<ReactMarkdown>{article.content}</ReactMarkdown>*/}
                 </div>
 
             </div>
