@@ -54,7 +54,7 @@ const ShowArticleById = () => {
                         </p>
                     </div>
                 </div>
-                <div className="container" style={{ padding: '20px'}}>
+                <div className="border container" style={{ padding: '20px'}}>
                     <MarkdownRenderer content={article.content}></MarkdownRenderer>
 
                     {/*<ReactMarkdown>{article.content}</ReactMarkdown>*/}

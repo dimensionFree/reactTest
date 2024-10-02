@@ -116,11 +116,11 @@ const EditArticle = () => {
                 {/* 右边的预览区域 */}
                 <div className="col-md-6" style={{ height: '100%' }}>
                     <h2>Preview</h2>
-                    <div className="border p-3" style={{ textAlign: 'left', height: 'calc(100% - 40px)' }}>
-                        <h3 style={{ textAlign: 'center'}}>{title}</h3>
-                        {/*<ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>*/}
+                    <div className="border p-3" style={{ textAlign: 'left', minHeight: '50vh', height: 'auto' }}>
+                        <h3 style={{ textAlign: 'center' }}>{title}</h3>
                         <MarkdownRenderer content={content}></MarkdownRenderer>
                     </div>
+
                 </div>
             </div>
         </div>
