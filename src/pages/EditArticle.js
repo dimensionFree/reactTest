@@ -79,6 +79,7 @@ const EditArticle = () => {
 
     return (
         <div className="container my-5">
+            <title>edit article</title>
             <Navibar />
             <h1>{id === 'NEW' ? "Create New Article" : "Edit Article"}</h1>
             <div className="row" style={{ display: 'flex', height: '50vh' }}>
