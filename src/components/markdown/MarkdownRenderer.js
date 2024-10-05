@@ -1,9 +1,10 @@
 import ReactMarkdown from 'react-markdown';
 import CodeBlockWithCopy from './CodeBlockWithCopy';
 import React from "react";
+import remarkGfm from "remark-gfm";
 
 const MarkdownRenderer = ({ content = '' }) => (
-    <ReactMarkdown
+    <ReactMarkdown remarkPlugins={[remarkGfm]}
         components={{
             code({ node, inline = false, className, children, ...props }) {
                 const match = /language-(\w+)/.exec(className || '');

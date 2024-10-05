@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import RequestSendUtils from "../Utils/RequestSendUtils";
 import Navibar from "../components/Navibar";
 import { useParams,useHistory } from 'react-router-dom';
