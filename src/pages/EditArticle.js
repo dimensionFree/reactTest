@@ -76,11 +76,11 @@ const EditArticle = () => {
     };
 
     return (
-        <div className="container my-5">
+        <div className="container-fluid my-5">
             <title>edit article</title>
             <Navibar />
             <h1>{id === 'NEW' ? "Create New Article" : "Edit Article"}</h1>
-            <div className="row" style={{ display: 'flex', height: '50vh' }}>
+            <div className="row" style={{ display: 'flex', height: '70vh' }}>
                 {/* 左边的输入区域 */}
                 <div className="col-md-6" style={{ height: '100%' }}>
                     <div className="form-group">
