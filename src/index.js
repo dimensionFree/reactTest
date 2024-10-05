@@ -11,6 +11,7 @@ import UserDetail from "./pages/UserDetail";
 import ReadArticle from "./pages/ReadArticle";
 import EditArticle from "./pages/EditArticle";
 import ArticleManage from "./pages/ArticleManage";
+import ArticleSearch from "./pages/ArticleSearch";
 
 ReactDOM.render(
     <Router>
@@ -23,6 +24,7 @@ ReactDOM.render(
             <Route path="/article/edit/:id" component={EditArticle} />
             <Route path="/articleManage/:id" component={ArticleManage}/>
             <Route path="/article/edit/:id" component={EditArticle}/>
+            <Route path="/article/search/:keyword" component={ArticleSearch}/>
 
 
 
