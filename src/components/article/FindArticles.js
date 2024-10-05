@@ -1,6 +1,6 @@
 import React from "react";
 import RequestSendUtils from "../../Utils/RequestSendUtils"; // 假设你有用于发送删除请求的工具类
-import {Button, Space} from 'antd';
+import {Button, message, Space} from 'antd';
 import PaginatedCommon from "../common/PaginatedCommon";
 
 
@@ -30,7 +30,6 @@ const fetchData = (page, pageSize,filters) => {
                 reject(new Error('Failed to fetch data'));
             }
         }, (error) => {
-            alert(error.response.data.body.message);
             reject(error); // 拒绝错误
         });
     });

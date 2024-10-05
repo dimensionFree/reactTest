@@ -29,6 +29,7 @@ const fetchData = (page, pageSize) => {
             }
         }, (error) => {
             alert(error.response.data.body.message);
+
             reject(error); // 拒绝错误
         });
     });

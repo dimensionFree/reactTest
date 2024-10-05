@@ -25,8 +25,7 @@ const LatestArticle = () => {
             setTitle(data.title || ""); // 如果没有 title，设置为空字符串
             setPreface(data.preface || ""); // 如果没有 preface，设置为空字符串
         } catch (error) {
-            message.error(error.response.data.body.message);
-
+            message.error(error.response?.data?.message || "Error occurs");
         }
     };
 

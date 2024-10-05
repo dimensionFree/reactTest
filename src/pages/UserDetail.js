@@ -2,6 +2,7 @@ import React, {Component, useState, useEffect} from "react";
 import Navibar from "../components/Navibar";
 import {useParams,useHistory} from 'react-router-dom';
 import RequestSendUtils from "../Utils/RequestSendUtils";
+import {message} from "antd";
 
 
 const UserDetail = () => {
@@ -24,10 +25,10 @@ const UserDetail = () => {
                 const response = await RequestSendUtils.sendPutWithReturn("/user/update/" + id,updatedUserData, token);
                 const data = await response.dataContent;
                 console.log(data);
-                alert("update success")
+                message.success("update success");
                 // setUserData(data); // 更新 userData 的状态
             } catch (error) {
-                alert(error.response.data.body.message);
+                message.error(error.response.data.body.message);
                 history.push( "/");
             }
         };
@@ -55,7 +56,8 @@ const UserDetail = () => {
                 console.log("user:"+(data.role ? data.role.roleName : ""));
                 setUserData(data); // 更新 userData 的状态
             } catch (error) {
-                alert(error.response.data.body.message);
+                message.error(error.response.data.body.message);
+
                 history.push( "/");
             }
         };

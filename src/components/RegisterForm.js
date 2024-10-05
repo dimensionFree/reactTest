@@ -30,15 +30,43 @@ const RegisterForm = () => {
             let payload = {
                 email: formState.email
             };
-            await RequestSendUtils.sendPost("/user/send-verification-code", payload, null);
+            await RequestSendUtils.sendPostWithReturn("/user/send-verification-code", payload, null);
 
             // Start countdown
             setIsSending(true);
             setTimer(60);
         } catch (error) {
-            alert(error.response?.data?.body?.message || "Error sending verification code");
+            // console.log("error")
+            // console.log(error.response)
+            message.error(error.response?.data?.message || "Error sending verification code");
         }
     };
+
+    const newRegister = async(e) =>{
+        e.preventDefault(); // 阻止表单的默认提交行为
+        try{
+            let payload = {
+                username: formState.username,
+                password: formState.password,
+                email: formState.email,
+                verificationCode: formState.verificationCode
+            };
+            const responseData = await RequestSendUtils.sendPostWithReturn("/user/register", payload, null);
+
+            // console.log()
+
+            if (responseData.code === "200") {
+                const userInfo = responseData.dataContent;
+                message.success("register success!")
+                localStorage.setItem('userInfo', JSON.stringify(userInfo));
+                history.push( "/");
+            }
+
+        }catch (error) {
+            message.error(error.response?.data?.message || "Registration error")
+        }
+    }
+
 
     useEffect(() => {
         let interval = null;
@@ -52,30 +80,31 @@ const RegisterForm = () => {
         return () => clearInterval(interval);
     }, [isSending, timer]);
 
-    const Register = (e) => {
-        e.preventDefault();
-        let payload = {
-            username: formState.username,
-            password: formState.password,
-            email: formState.email,
-            verificationCode: formState.verificationCode
-        };
-        RequestSendUtils.sendPost("/user/register", payload, null, (response) => {
-            if (response.status === 200) {
-                const userInfo = response.data.dataContent;
-                localStorage.setItem('userInfo', JSON.stringify(userInfo));
-                history.push( "/");
-            } else if (response.status === 400) {
-                alert(response.data);
-            }
-        }, (error) => {
-            message.error(error.response?.data?.message || "Registration error")
-        });
-    };
+    // const Register = (e) => {
+    //     e.preventDefault();
+    //     let payload = {
+    //         username: formState.username,
+    //         password: formState.password,
+    //         email: formState.email,
+    //         verificationCode: formState.verificationCode
+    //     };
+    //     RequestSendUtils.sendPost("/user/register", payload, null, (response) => {
+    //         if (response.status === 200) {
+    //             const userInfo = response.data.dataContent;
+    //             localStorage.setItem('userInfo', JSON.stringify(userInfo));
+    //             history.push( "/");
+    //         } else if (response.status === 400) {
+    //             message.error(response.data)
+    //             alert(response.data);
+    //         }
+    //     }, (error) => {
+    //         message.error(error.response?.data?.message || "Registration error")
+    //     });
+    // };
 
     return (
         <div className="my-form">
-            <form className="form-signin" onSubmit={Register}>
+            <form className="form-signin" onSubmit={newRegister}>
                 <h1 className="h3 mb-3 font-weight-normal">Please sign up</h1>
 
                 {/* Username */}

@@ -27,8 +27,6 @@ const EditArticle = () => {
                     setTitle(data.title);
                     setContent(data.content);
                 } catch (error) {
-                    alert("Error fetching article: " + error);
-
                     message.error("Error fetching article: " + error)
                 }
             };
