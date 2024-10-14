@@ -2,6 +2,7 @@ import React from "react";
 import RequestSendUtils from "../../Utils/RequestSendUtils"; // 假设你有用于发送删除请求的工具类
 import {Button, message, Space} from 'antd';
 import PaginatedCommon from "../common/PaginatedCommon";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 
 const fetchData = (page, pageSize,filters) => {
@@ -47,9 +48,15 @@ const renderItem = (item, index, handleDelete,handleEdit, showDeleteButton,showE
             <p style={{ fontSize: '14px' }}>
                 {new Date(item.createdDate).toISOString().slice(0, 16).replace('T', ' ')}
             </p>
-            <p style={{ fontSize: '14px', fontWeight: 'bold' }}>
-                {item.createdUserName}
-            </p>
+            <div className={"d-flex  ml-auto"}>
+                <p style={{ fontSize: '14px', fontWeight: 'bold' }}>
+                    {item.createdUserName}
+                </p>
+                <p className={"ml-2"} style={{ fontSize: '14px' }}>
+                    <i className="fas fa-eye"></i> {item.viewCount}
+                </p>
+            </div>
+
         </div>
 
         <Space size="middle">
