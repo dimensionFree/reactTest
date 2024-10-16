@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import RequestSendUtils from "../../Utils/RequestSendUtils";
-import MarkdownRenderer from "../markdown/MarkdownRenderer";  // 导入 react-markdown
+import MarkdownRenderer from "../markdown/MarkdownRenderer";
+import SEO from "../common/SEO";  // 导入 react-markdown
 
 const ShowArticleById = () => {
     const { id } = useParams();
@@ -37,6 +38,8 @@ const ShowArticleById = () => {
 
     return (
         <div >
+            <SEO title={article.title} description={article.title}/>
+
             <h1>{article.title}</h1>
             {/* 使用 ReactMarkdown 渲染 Markdown 格式的内容 */}
             <div style={{ textAlign: 'left',display: 'flex', flexDirection: 'column' }}>

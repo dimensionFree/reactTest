@@ -22,7 +22,7 @@ ReactDOM.render(
             <Route path="/userDetail/:id" component={UserDetail}/>
             <Route path="/article/read/:id" component={ReadArticle}/>
             <Route path="/article/edit/:id" component={EditArticle} />
-            <Route path="/articleManage/:id" component={ArticleManage}/>
+            <Route path="/articleManage" component={ArticleManage}/>
             <Route path="/article/edit/:id" component={EditArticle}/>
             <Route path="/article/search/:keyword" component={ArticleSearch}/>
 

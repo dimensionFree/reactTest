@@ -5,6 +5,7 @@ import PaginatedTable from "../components/common/PaginatedTable";
 import RequestSendUtils from "../Utils/RequestSendUtils";
 import Link from "antd/es/typography/Link";
 import {Button, Space, message } from 'antd';
+import SEO from "../components/common/SEO";
 
 
 const fetchData = (page, pageSize) => {
@@ -56,6 +57,8 @@ const columns = [
 const UserManage = () => {
     return (
         <div className="container mt-5 pt-5">
+            <SEO title={"ユーザ管理"} description={"userManage"}/>
+
             <title>user manage</title>
             <Navibar/>
             <h1 className="mb-4">User Management</h1>

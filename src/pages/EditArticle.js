@@ -5,6 +5,7 @@ import { useParams,useHistory } from 'react-router-dom';
 import {message} from "antd";
 import remarkGfm from "remark-gfm";
 import MarkdownRenderer from "../components/markdown/MarkdownRenderer";
+import SEO from "../components/common/SEO";
 
 const EditArticle = () => {
     const [title, setTitle] = useState('');
@@ -76,7 +77,7 @@ const EditArticle = () => {
 
     return (
         <div className="container-fluid my-5">
-            <title>edit article</title>
+            <SEO title={"文章編集"} description={"articleEdit"}/>
             <Navibar />
             <h1>{id === 'NEW' ? "Create New Article" : "Edit Article"}</h1>
             <div className="row" style={{ display: 'flex', height: '70vh' }}>

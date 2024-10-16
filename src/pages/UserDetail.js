@@ -3,6 +3,7 @@ import Navibar from "../components/Navibar";
 import {useParams,useHistory} from 'react-router-dom';
 import RequestSendUtils from "../Utils/RequestSendUtils";
 import {message} from "antd";
+import SEO from "../components/common/SEO";
 
 
 const UserDetail = () => {
@@ -83,7 +84,7 @@ const UserDetail = () => {
 
     return (
         <div className="container mt-5 pt-5">
-            <title>user manage</title>
+            <SEO title={userData.username} description={"userDetail"}/>
             <Navibar/>
             <h1 className="mb-4">User Detail</h1>
             {/*<p><strong>用户名:</strong> {userData.username}</p>*/}
