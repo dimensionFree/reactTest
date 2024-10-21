@@ -11,7 +11,6 @@ export default class Register extends Component {
         return (
             <div className="container-form">
                 <SEO title={"登録"} description={"Register"}/>
-                <Navibar/>
                 <RegisterForm/>
                 {/*<TestLoginForm></TestLoginForm>*/}
             </div>

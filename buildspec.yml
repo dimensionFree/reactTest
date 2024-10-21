@@ -5,6 +5,7 @@ env:
     DOMAIN: "lllspread.xyz"
   parameter-store:
     DEV_MAIL_USERNAME: "/myapp/email_username"
+    TURNSTILE_SITEKEY: "/myapp/turnstileSiteKey"
 
 phases:
   pre_build:
@@ -23,7 +24,8 @@ phases:
       - aws s3 cp s3://my-ssl-lllspread-bucket/ssl/cert.pem ./ssl/cert.pem
       - aws s3 cp s3://my-ssl-lllspread-bucket/ssl/cert.key ./ssl/cert.key
       - echo Build the Docker image...
-      - docker build -t $REPOSITORY_NAME .
+      # 将获取到的 sitekey 作为构建参数传递给 Docker
+      - docker build --build-arg REACT_APP_TURNSTILE_SITEKEY=$TURNSTILE_SITEKEY -t $REPOSITORY_NAME .
       - docker tag $REPOSITORY_NAME:latest $REPOSITORY_URI:latest
   post_build:
     commands:

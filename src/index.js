@@ -1,4 +1,5 @@
 // index.js文件
+import './index.css';
 
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -24,8 +25,6 @@ ReactDOM.render(
             <Route path="/article/edit/:id" component={EditArticle} />
             <Route path="/articleManage" component={ArticleManage}/>
             <Route path="/article/search/:keyword" component={ArticleSearch}/>
-
-
 
             <Route path="/" component={App}/>
 

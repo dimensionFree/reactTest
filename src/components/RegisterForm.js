@@ -174,6 +174,15 @@ const RegisterForm = () => {
 
                 <p className="mt-5 mb-3 text-muted">&copy; 2017-2021</p>
             </form>
+
+            <button
+                className="nav-button"
+                style={{ backgroundColor: "#f44336", color: "white", padding: "10px 20px", border: "none",
+                    borderRadius: "10px" // 圆角样式
+                    , cursor: "pointer", margin: "5px" }}
+                onClick={() => window.location.href = '/'}>
+                HP戻る
+            </button>
         </div>
     );
 };
