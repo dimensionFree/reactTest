@@ -105,7 +105,13 @@ const RegisterForm = () => {
     return (
         <div className="my-form">
             <form className="form-signin" onSubmit={newRegister}>
-                <h1 className="h3 mb-3 font-weight-normal">Please sign up</h1>
+                <h1 className="h3 mb-3 font-weight-normal"
+                    style={{
+                        color:'#23a882',
+                        fontStyle: 'italic'
+                    }}
+
+                >Please sign up</h1>
 
                 {/* Username */}
                 <label htmlFor="inputUserName" className="sr-only">Username</label>

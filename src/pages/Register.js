@@ -9,7 +9,14 @@ import Navibar from "../components/Navibar";
 export default class Register extends Component {
     render() {
         return (
-            <div className="container-form">
+            <div className="container-form" style={{
+                backgroundImage: `url('/static/pic/BG1.png')`,
+                backgroundSize: 'cover',
+                // backgroundPosition: 'center',
+                // height: '100vh',  // 确保 div 高度足够
+                margin: 0,  // 确保没有额外的 margin
+                padding: 0  // 确保没有额外的 padding
+            }}>
                 <SEO title={"登録"} description={"Register"}/>
                 <RegisterForm/>
                 {/*<TestLoginForm></TestLoginForm>*/}
