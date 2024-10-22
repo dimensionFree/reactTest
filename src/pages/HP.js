@@ -28,7 +28,7 @@ export default class HP extends Component{
 
     render() {
     return  (
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
             <Helmet>
                 <title>{SITE_NAME}</title>  {/* 使用常量 */}
                 <meta name="description" content={`homepage of ${SITE_NAME}`} />

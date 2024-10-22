@@ -68,13 +68,14 @@ const Navibar = () => {
     );
 
     return (
-        <div className="Navibar">
-            <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top" style={{
+        <div className="Navibar sticky-top">
+            <nav className="navbar navbar-expand-md navbar-dark bg-dark mb-1" style={{
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center'
             }}>
-                <a className="navbar-brand" href="/">Home</a>
+
+            <a className="navbar-brand" href="/">Home</a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarsExampleDefault"
                         aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
