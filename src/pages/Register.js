@@ -5,6 +5,7 @@ import RegisterForm from "../components/RegisterForm";
 import {TestLoginForm} from "../components/test";
 import SEO from "../components/common/SEO";
 import Navibar from "../components/Navibar";
+import Helmet from "react-helmet";
 
 export default class Register extends Component {
     render() {
@@ -17,6 +18,9 @@ export default class Register extends Component {
                 margin: 0,  // 确保没有额外的 margin
                 padding: 0  // 确保没有额外的 padding
             }}>
+                <Helmet>
+                    <meta name="robots" content="noindex"/>
+                </Helmet>
                 <SEO title={"登録"} description={"Register"}/>
                 <RegisterForm/>
                 {/*<TestLoginForm></TestLoginForm>*/}

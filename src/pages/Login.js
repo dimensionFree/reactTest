@@ -15,6 +15,9 @@ export default class Login extends Component {
                 margin: 0,  // 确保没有额外的 margin
                 padding: 0  // 确保没有额外的 padding
             }}>
+                <Helmet>
+                    <meta name="robots" content="noindex"/>
+                </Helmet>
                 <SEO title={"ログイン"} description={"login"}/>
 
                 <LoginForm/>
