@@ -83,49 +83,53 @@ const UserDetail = () => {
     }
 
     return (
-        <div className="container mt-5 pt-5">
+        <div>
             <SEO title={userData.username} description={"userDetail"}/>
             <Navibar/>
-            <h1 className="mb-4">User Detail</h1>
-            {/*<p><strong>用户名:</strong> {userData.username}</p>*/}
-            <div className="form-group form-inline mx-auto">
+            <div className="container mt-5 pt-5">
+                <h1 className="mb-4">User Detail</h1>
+                {/*<p><strong>用户名:</strong> {userData.username}</p>*/}
                 <div className="form-group form-inline mx-auto">
-                    <span className="mr-2">UserName</span>
-                    <input type="text" className="form-control" id="username" defaultValue={userData.username}
-                           required=""/>
-                </div>
-                {/*<div className="form-group form-inline mx-auto">*/}
-                {/*    <span className="mr-2">email</span>*/}
-                {/*    <input type="text" className="form-control" id="email" defaultValue={userData.email} required=""/>*/}
-                {/*</div>*/}
-                <div className="form-group form-inline mx-auto">
-                    <span className="mr-2">role</span>
-                    <select className="form-control" id="role" defaultValue={userData.role ? userData.role.id : ""} required>
-                        {roleList.map(role => (
-                            <option key={role.id} value={role.id}>
-                                {role.roleName}
+                    <div className="form-group form-inline mx-auto">
+                        <span className="mr-2">UserName</span>
+                        <input type="text" className="form-control" id="username" defaultValue={userData.username}
+                               required=""/>
+                    </div>
+                    {/*<div className="form-group form-inline mx-auto">*/}
+                    {/*    <span className="mr-2">email</span>*/}
+                    {/*    <input type="text" className="form-control" id="email" defaultValue={userData.email} required=""/>*/}
+                    {/*</div>*/}
+                    <div className="form-group form-inline mx-auto">
+                        <span className="mr-2">role</span>
+                        <select className="form-control" id="role" defaultValue={userData.role ? userData.role.id : ""} required>
+                            {roleList.map(role => (
+                                <option key={role.id} value={role.id}>
+                                    {role.roleName}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form-group form-inline mx-auto">
+                        <span className="mr-2">state</span>
+                        <select className="form-control" id="state" defaultValue={userData.state} required>
+                            <option key="active_Id" value="ACTIVE">
+                                アクティブ
                             </option>
-                        ))}
-                    </select>
+                            <option key="locked_Id" value="LOCKED">
+                                ロック
+                            </option>
+                        </select>
+                    </div>
+                    <div className="d-flex justify-content-start">
+                        <button className="btn btn-lg btn-primary" onClick={saveUserInfo}>Save</button>
+                    </div>
                 </div>
-                <div className="form-group form-inline mx-auto">
-                    <span className="mr-2">state</span>
-                    <select className="form-control" id="state" defaultValue={userData.state} required>
-                        <option key="active_Id" value="ACTIVE">
-                            アクティブ
-                        </option>
-                        <option key="locked_Id" value="LOCKED">
-                            ロック
-                        </option>
-                    </select>
-                </div>
-                <div className="d-flex justify-content-start">
-                    <button className="btn btn-lg btn-primary" onClick={saveUserInfo}>Save</button>
-                </div>
+
+                {/*<button className="btn btn-lg btn-primary" onClick={() => saveUserInfo()}>save</button>*/}
+                {/*<p>User ID: {id}</p>*/}
             </div>
 
-            {/*<button className="btn btn-lg btn-primary" onClick={() => saveUserInfo()}>save</button>*/}
-            {/*<p>User ID: {id}</p>*/}
+
         </div>
     );
 };

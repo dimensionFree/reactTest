@@ -10,11 +10,13 @@ const ArticleSearch = () => {
 
 
     return (
-        <div className="container mt-5 pt-5">
+        <div>
             <SEO title={"検索結果"} description={"searchResult"}/>
             <Navibar/>
-            <h1 className="mb-4">Article Management</h1>
-            <FindArticle filters={{ content: keyword}} isShowDeleteButton={false} isShowEditButton={false} />
+            <div className="container mt-5 pt-5">
+                <h1 className="mb-4">Article Management</h1>
+                <FindArticle filters={{ content: keyword}} isShowDeleteButton={false} isShowEditButton={false} />
+            </div>
 
         </div>
     );
