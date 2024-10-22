@@ -1,6 +1,8 @@
 # https://www.robotstxt.org/robotstxt.html
+# Allow: /$：明确允许抓取主页 /。这里的 $ 表示路径的结尾
 User-agent: *
 Disallow: /
-Allow: /
+Allow: /$
 Allow: /article/read/*
+
 
