@@ -56,18 +56,19 @@ const columns = [
 
 const UserManage = () => {
     return (
-        <div className="container mt-5 pt-5">
+        <div>
             <SEO title={"ユーザ管理"} description={"userManage"}/>
 
             <title>user manage</title>
             <Navibar/>
             <h1 className="mb-4">User Management</h1>
-            <PaginatedTable
-                columns={columns}
-                fetchData={fetchData}
+            <div className={"container mt-5 pt-5"}>
+                <PaginatedTable
+                    columns={columns}
+                    fetchData={fetchData}
 
-            />
-
+                />
+            </div>
         </div>
     );
 };

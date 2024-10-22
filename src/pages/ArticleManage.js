@@ -25,18 +25,20 @@ const ArticleManage = () => {
     }, []);
 
     return (
-        <div className="container mt-5 pt-5">
+        <div>
             <SEO title={"文章管理"} description={"articleManage"}/>
             {/*<Helmet>*/}
             {/*    <title>文章管理　|　{SITE_NAME}</title>  /!* 使用常量 *!/*/}
             {/*    <meta name="description" content={`articleManage of ${SITE_NAME}`} />*/}
             {/*</Helmet>*/}
             <Navibar/>
-            <h1 className="mb-4">Article Management</h1>
-            {userId !== null &&
-            <FindArticle filters={isAdmin?{}:{ created_by: userId}} isShowDeleteButton={true} isShowEditButton={true} />
-            }
+            <div className="container mt-5 pt-5">
 
+                <h1 className="mb-4">Article Management</h1>
+                {userId !== null &&
+                <FindArticle filters={isAdmin?{}:{ created_by: userId}} isShowDeleteButton={true} isShowEditButton={true} />
+                }
+            </div>
         </div>
     );
 };
