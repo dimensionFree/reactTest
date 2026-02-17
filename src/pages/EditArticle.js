@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+﻿import React, {useEffect, useState} from 'react';
 import RequestSendUtils from "../Utils/RequestSendUtils";
 import Navibar from "../components/Navibar";
 import {useParams, useHistory} from 'react-router-dom';
@@ -6,17 +6,18 @@ import {message} from "antd";
 import remarkGfm from "remark-gfm";
 import MarkdownRenderer from "../components/markdown/MarkdownRenderer";
 import SEO from "../components/common/SEO";
+import "../css/formSurface.css";
 
 const EditArticle = () => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const {id} = useParams(); // 从路由参数中获取 id
+    const {id} = useParams(); // 浠庤矾鐢卞弬鏁颁腑鑾峰彇 id
     const history = useHistory();
 
-    // 如果是编辑模式，从后端获取文章数据
+    // 濡傛灉鏄紪杈戞ā寮忥紝浠庡悗绔幏鍙栨枃绔犳暟鎹?
     useEffect(() => {
         if (id && id !== 'NEW') {
-            // 调用后端 API 获取文章数据
+            // 璋冪敤鍚庣 API 鑾峰彇鏂囩珷鏁版嵁
             const fetchArticle = async () => {
                 try {
                     let token = RequestSendUtils.getToken();
@@ -42,7 +43,7 @@ const EditArticle = () => {
         setTitle(e.target.value);
     };
 
-    // 保存或更新文章
+    // 淇濆瓨鎴栨洿鏂版枃绔?
     const handleSave = async () => {
         try {
             let token = RequestSendUtils.getToken();
@@ -53,19 +54,19 @@ const EditArticle = () => {
             };
 
             if (id === 'NEW') {
-                // 创建新文章
+                // 鍒涘缓鏂版枃绔?
                 const response = await RequestSendUtils.sendPostWithReturn("/article/create", payload, token);
                 const data = await response.dataContent;
                 if (data) {
                     message.success("Save successful! ");
-                    history.push("/article/read/" + data);  // 使用 React Router 进行路由跳转
+                    history.push("/article/read/" + data);  // 浣跨敤 React Router 杩涜璺敱璺宠浆
                 }
             } else {
-                // 更新已有文章
+                // 鏇存柊宸叉湁鏂囩珷
                 const response = await RequestSendUtils.sendPutWithReturn(`/article/update/${id}`, payload, token);
                 if (response) {
                     message.success("Update successful!");
-                    history.push("/article/read/" + id);  // 使用 React Router 进行路由跳转
+                    history.push("/article/read/" + id);  // 浣跨敤 React Router 杩涜璺敱璺宠浆
 
                 }
             }
@@ -77,12 +78,12 @@ const EditArticle = () => {
 
     return (
         <div >
-            <SEO title={"文章編集"} description={"articleEdit"}/>
+            <SEO title={"鏂囩珷绶ㄩ泦"} description={"articleEdit"}/>
             <Navibar/>
-            <div className="container-fluid my-5">
+            <div className="container-fluid my-5 form-surface">
                 <h1>{id === 'NEW' ? "Create New Article" : "Edit Article"}</h1>
                 <div className="row" style={{display: 'flex', height: '70vh'}}>
-                    {/* 左边的输入区域 */}
+                    {/* 宸﹁竟鐨勮緭鍏ュ尯鍩?*/}
                     <div className="col-md-6" style={{height: '100%'}}>
                         <div className="form-group">
                             <label htmlFor="title">Article Title</label>
@@ -107,16 +108,16 @@ const EditArticle = () => {
                             />
                         </div>
 
-                        {/* 保存按钮 */}
+                        {/* 淇濆瓨鎸夐挳 */}
                         <button onClick={handleSave} className="btn btn-primary mt-5">
                             {id === 'NEW' ? "Save Article" : "Update Article"}
                         </button>
                     </div>
 
-                    {/* 右边的预览区域 */}
+                    {/* 鍙宠竟鐨勯瑙堝尯鍩?*/}
                     <div className="col-md-6" style={{height: '100%'}}>
                         <h2>Preview</h2>
-                        <div className="border p-3" style={{textAlign: 'left', minHeight: '50vh', height: 'auto'}}>
+                        <div className="preview-panel p-3" style={{textAlign: 'left', minHeight: '50vh', height: 'auto'}}>
                             <h3 style={{textAlign: 'center'}}>{title}</h3>
                             <MarkdownRenderer content={content}></MarkdownRenderer>
                         </div>
@@ -130,3 +131,7 @@ const EditArticle = () => {
 };
 
 export default EditArticle;
+
+
+
+
