@@ -46,6 +46,36 @@ const HP = () => {
     []
   );
 
+  const nowBuilding = useMemo(
+    () => ({
+      zh: {
+        title: "正在构建",
+        items: [
+          "前端性能 / 界面优化",
+          "Markdown 写作体验优化",
+          "博客主题与阅读体验升级"
+        ]
+      },
+      ja: {
+        title: "開発中",
+        items: [
+          "フロントエンド性能 / UI最適化",
+          "Markdown執筆体験の改善",
+          "ブログテーマと読書体験の改善"
+        ]
+      },
+      en: {
+        title: "Now Building",
+        items: [
+          "Frontend performance and UI updates",
+          "Markdown writing experience improvements",
+          "Theme and reading experience upgrades"
+        ]
+      }
+    }),
+    []
+  );
+
   useEffect(() => {
     const fetchAllArticles = async () => {
       try {
@@ -77,6 +107,7 @@ const HP = () => {
   }, [allArticles, selectedArchive]);
 
   const currentIntro = intro[lang];
+  const currentNowBuilding = nowBuilding[lang];
   const archiveTitle = selectedArchive ? `Recent Posts (${selectedArchive})` : "Recent Posts";
 
   return (
@@ -134,11 +165,11 @@ const HP = () => {
             </a>
           </section>
           <section className="side-card">
-            <p className="side-card__kicker">Now Building</p>
+            <p className="side-card__kicker">{currentNowBuilding.title}</p>
             <ul className="side-card__list">
-              <li>Frontend performance and UI updates</li>
-              <li>Markdown writing experience improvements</li>
-              <li>Theme and reading experience upgrades</li>
+              <li>{currentNowBuilding.items[0]}</li>
+              <li>{currentNowBuilding.items[1]}</li>
+              <li>{currentNowBuilding.items[2]}</li>
             </ul>
           </section>
         </aside>
