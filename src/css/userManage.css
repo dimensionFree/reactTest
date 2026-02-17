@@ -1,0 +1,46 @@
+.user-manage-surface .ant-table-wrapper {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 16px 32px rgba(2, 10, 20, 0.35);
+}
+
+.user-manage-surface .ant-table {
+  background: rgba(8, 24, 39, 0.68);
+  color: #e8f4ff;
+}
+
+.user-manage-surface .ant-table-thead > tr > th {
+  background: rgba(13, 35, 56, 0.9);
+  color: #e8f4ff;
+  border-bottom: 1px solid rgba(176, 210, 245, 0.28);
+}
+
+.user-manage-surface .ant-table-tbody > tr > td {
+  background: rgba(9, 26, 43, 0.64);
+  color: #dbe9f8;
+  border-bottom: 1px solid rgba(176, 210, 245, 0.18);
+}
+
+.user-manage-surface .ant-table-tbody > tr.ant-table-row:hover > td {
+  background: rgba(20, 46, 72, 0.86);
+}
+
+.user-manage-surface .ant-pagination {
+  margin-top: 14px;
+}
+
+.user-manage-surface .ant-pagination .ant-pagination-item,
+.user-manage-surface .ant-pagination .ant-pagination-prev,
+.user-manage-surface .ant-pagination .ant-pagination-next {
+  border-color: rgba(177, 211, 241, 0.38);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.user-manage-surface .ant-pagination .ant-pagination-item a {
+  color: #dbedff;
+}
+
+.user-manage-surface .ant-pagination .ant-pagination-item-active {
+  border-color: #56d0ff;
+  background: rgba(86, 208, 255, 0.18);
+}

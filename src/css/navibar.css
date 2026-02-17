@@ -1,8 +1,13 @@
 .Navibar {
   margin-bottom: 14px;
+  position: relative;
+  z-index: 5000;
 }
 
 .Navibar .navbar {
+  position: relative;
+  z-index: 5001;
+  overflow: visible;
   background: linear-gradient(96deg, rgba(7, 20, 37, 0.78) 0%, rgba(25, 59, 95, 0.72) 52%, rgba(5, 57, 79, 0.72) 100%) !important;
   border: 1px solid rgba(182, 220, 255, 0.22);
   border-radius: 18px;
@@ -52,6 +57,7 @@
   border-radius: 12px;
   border: 1px solid rgba(166, 207, 239, 0.32);
   box-shadow: var(--shadow-soft);
+  z-index: 5100;
 }
 
 @media (max-width: 768px) {

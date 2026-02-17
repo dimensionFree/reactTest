@@ -6,6 +6,7 @@ import RequestSendUtils from "../Utils/RequestSendUtils";
 import Link from "antd/es/typography/Link";
 import {Button, Space, message } from 'antd';
 import SEO from "../components/common/SEO";
+import "../css/userManage.css";
 
 
 const fetchData = (page, pageSize) => {
@@ -62,7 +63,7 @@ const UserManage = () => {
             <title>user manage</title>
             <Navibar/>
             <h1 className="mb-4">User Management</h1>
-            <div className={"container mt-5 pt-5"}>
+            <div className={"container mt-5 pt-5 user-manage-surface"}>
                 <PaginatedTable
                     columns={columns}
                     fetchData={fetchData}

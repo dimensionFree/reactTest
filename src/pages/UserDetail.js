@@ -114,10 +114,10 @@ const UserDetail = () => {
                         <span className="mr-2">state</span>
                         <select className="form-control" id="state" defaultValue={userData.state} required>
                             <option key="active_Id" value="ACTIVE">
-                                銈偗銉嗐偅銉?
+                                Active
                             </option>
                             <option key="locked_Id" value="LOCKED">
-                                銉儍銈?
+                                Locked
                             </option>
                         </select>
                     </div>

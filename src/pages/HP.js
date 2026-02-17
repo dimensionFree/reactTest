@@ -116,7 +116,7 @@ const HP = () => {
         <title>{SITE_NAME}</title>
         <meta name="description" content={`homepage of ${SITE_NAME}`} />
       </Helmet>
-      <div className="home-block">
+      <div className="home-block home-nav-layer">
         <Navibar />
       </div>
       <div className="home-grid home-block home-block--2">

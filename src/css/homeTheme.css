@@ -9,6 +9,16 @@
   min-width: 0;
 }
 
+.home-nav-layer {
+  position: relative;
+  z-index: 4000;
+}
+
+.home-grid {
+  position: relative;
+  z-index: 1;
+}
+
 .home-side {
   position: sticky;
   top: 92px;
