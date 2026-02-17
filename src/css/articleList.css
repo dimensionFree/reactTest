@@ -1,0 +1,79 @@
+.article-list {
+  margin-top: 14px;
+}
+
+.article-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.22s ease, border-color 0.22s ease;
+}
+
+.article-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(142, 218, 255, 0.52);
+}
+
+.article-card__main {
+  text-align: left;
+  min-width: 0;
+}
+
+.article-card__title {
+  font-size: clamp(1.2rem, 2.2vw, 1.72rem);
+  font-weight: 700;
+  color: #f2f8ff;
+  word-break: break-word;
+}
+
+.article-card__preface {
+  margin: 8px 0;
+  color: var(--text-muted);
+  font-size: 0.98rem;
+}
+
+.article-card__meta {
+  margin-bottom: 0;
+  font-size: 0.84rem;
+  color: rgba(214, 234, 255, 0.76);
+}
+
+.article-card__meta-row {
+  display: flex;
+  gap: 14px;
+  margin-top: 6px;
+}
+
+.article-list .ant-pagination {
+  margin-top: 16px;
+}
+
+.article-list .ant-pagination .ant-pagination-item,
+.article-list .ant-pagination .ant-pagination-prev,
+.article-list .ant-pagination .ant-pagination-next {
+  border-color: rgba(177, 211, 241, 0.38);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.article-list .ant-pagination .ant-pagination-item a {
+  color: #dbedff;
+}
+
+.article-list .ant-pagination .ant-pagination-item-active {
+  border-color: #56d0ff;
+  background: rgba(86, 208, 255, 0.18);
+}
+
+@media (max-width: 768px) {
+  .article-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 14px;
+  }
+}

@@ -1,18 +1,80 @@
-.username{
-    color: #36aabf;
-    font-size: 20px;
-    font-family: Arial;
-    margin-left: 20px;
-    height: 20px;
-    /*margin-top: 20px;*/
+.latest-hero {
+  background: linear-gradient(150deg, rgba(11, 33, 56, 0.78), rgba(21, 60, 95, 0.78));
+  border: 1px solid rgba(166, 212, 247, 0.3);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+  color: var(--text-main) !important;
 }
 
-/* 修改下拉菜单链接的颜色 */
-.jumbotron{
-    background-color: darkgray; /* 设置颜色为黑色或您想要的颜色 */
+.latest-hero::before {
+  content: "";
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(71, 181, 255, 0.28), transparent 70%);
+  top: -130px;
+  right: -100px;
+  animation: float-glow 9s ease-in-out infinite;
 }
 
-/*!* 修改下拉菜单中的选项颜色 *!*/
-/*.dropdown-item {*/
-/*    color: #000; !* 设置颜色为黑色或您想要的颜色 *!*/
-/*}*/
+.latest-hero::after {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border: 1px solid rgba(173, 219, 255, 0.2);
+  border-radius: 50%;
+  bottom: -110px;
+  left: -110px;
+}
+
+.latest-hero h1 {
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+}
+
+.latest-hero .lead {
+  color: var(--text-muted);
+}
+
+.latest-hero__kicker {
+  display: inline-flex;
+  border: 1px solid rgba(173, 220, 255, 0.5);
+  border-radius: 999px;
+  padding: 6px 14px;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  color: #bbebff;
+  margin-bottom: 16px;
+}
+
+.latest-hero__cta {
+  display: inline-block;
+  margin-top: 10px;
+  color: #0e2336 !important;
+  font-weight: 700;
+  background: linear-gradient(135deg, #57d6ff, #3cf0cd);
+  border-radius: 999px;
+  padding: 10px 18px;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.latest-hero__cta:hover {
+  color: #0e2336 !important;
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+@keyframes float-glow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(16px);
+  }
+}

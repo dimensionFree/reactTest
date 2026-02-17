@@ -1,18 +1,71 @@
-.username{
-    color: #36aabf;
-    font-size: 20px;
-    font-family: Arial;
-    margin-left: 20px;
-    height: 20px;
-    /*margin-top: 20px;*/
+.Navibar {
+  margin-bottom: 14px;
 }
 
-/* 修改下拉菜单链接的颜色 */
-.nav-item.dropdown .nav-link{
-    color: white; /* 设置颜色为黑色或您想要的颜色 */
+.Navibar .navbar {
+  background: linear-gradient(96deg, rgba(7, 20, 37, 0.78) 0%, rgba(25, 59, 95, 0.72) 52%, rgba(5, 57, 79, 0.72) 100%) !important;
+  border: 1px solid rgba(182, 220, 255, 0.22);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px);
+  padding: 10px 16px;
 }
 
-/*!* 修改下拉菜单中的选项颜色 *!*/
-/*.dropdown-item {*/
-/*    color: #000; !* 设置颜色为黑色或您想要的颜色 *!*/
-/*}*/
+.Navibar .navbar-brand {
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.nav-item.dropdown .nav-link {
+  color: #f2f6ff;
+  font-weight: 500;
+}
+
+.Navibar .form-control {
+  border-radius: 999px;
+  border: 1px solid rgba(196, 228, 255, 0.34);
+  background: rgba(255, 255, 255, 0.1);
+  color: #eef6ff;
+}
+
+.Navibar .form-control::placeholder {
+  color: rgba(234, 245, 255, 0.68);
+}
+
+.Navibar .btn-secondary,
+.Navibar .btn-primary {
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #24bbff, #16d3ba);
+  color: #042033;
+  font-weight: 700;
+  box-shadow: 0 10px 22px rgba(14, 182, 210, 0.34);
+}
+
+.Navibar .btn-secondary:hover,
+.Navibar .btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+.Navibar .dropdown-menu {
+  border-radius: 12px;
+  border: 1px solid rgba(166, 207, 239, 0.32);
+  box-shadow: var(--shadow-soft);
+}
+
+@media (max-width: 768px) {
+  .Navibar .navbar {
+    border-radius: 12px;
+    padding: 8px 10px;
+  }
+
+  .Navibar .form-inline {
+    width: 100%;
+    margin: 12px 0;
+  }
+
+  .Navibar .form-control {
+    width: calc(100% - 98px);
+  }
+}

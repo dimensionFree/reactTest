@@ -1,104 +1,92 @@
 import React from "react";
-import RequestSendUtils from "../../Utils/RequestSendUtils"; // 假设你有用于发送删除请求的工具类
-import {Button, message, Space} from 'antd';
+import RequestSendUtils from "../../Utils/RequestSendUtils";
+import { Button, Space } from "antd";
 import PaginatedCommon from "../common/PaginatedCommon";
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "../../css/articleList.css";
 
+const fetchData = (page, pageSize, filters) => {
+  return new Promise((resolve, reject) => {
+    let queryParams = `currentPage=${page}&pageSize=${pageSize}`;
 
-const fetchData = (page, pageSize,filters) => {
-    return new Promise((resolve, reject) => {
+    if (filters) {
+      const filtersString = JSON.stringify(filters);
+      if (filtersString) {
+        const encodedFilters = encodeURIComponent(filtersString);
+        queryParams += `&filtersStr=${encodedFilters}`;
+      }
+    }
 
-
-        // 构造查询参数
-        let queryParams = `currentPage=${page}&pageSize=${pageSize}`;
-
-        // 如果有筛选条件
-        if (filters) {
-            const filtersString = JSON.stringify(filters);
-
-            console.log(filtersString); // 输出: '{"id":1}'
-            if (filtersString){
-                const encodedFilters = encodeURIComponent(filtersString);
-                queryParams += `&filtersStr=${encodedFilters}`;
-            }
-
+    RequestSendUtils.sendGet(
+      `/article/findAll/?${queryParams}`,
+      null,
+      (response) => {
+        if (response.status === 200) {
+          resolve(response.data);
+        } else {
+          reject(new Error("Failed to fetch data"));
         }
-
-        RequestSendUtils.sendGet(`/article/findAll/?${queryParams}`, null, (response) => {
-            if (response.status === 200) {
-                resolve(response.data); // 解析响应数据
-            } else {
-                reject(new Error('Failed to fetch data'));
-            }
-        }, (error) => {
-            reject(error); // 拒绝错误
-        });
-    });
+      },
+      (error) => {
+        reject(error);
+      }
+    );
+  });
 };
 
-const renderItem = (item, index, handleDelete,handleEdit, showDeleteButton,showEditButton) => (
-    <div className={"d-flex justify-content-between ml-auto"} key={item.id} style={{ border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
-        <div className="text-left">
-            <a href={`/article/read/${item.id}`} style={{ fontSize: '30px', fontWeight: 'bold' }}>
-                {item.title}
-            </a>
-            <p style={{ fontSize: '16px', fontStyle: 'italic' }}>
-                {item.preface}
-            </p>
-            <p style={{ fontSize: '14px' }}>
-                {new Date(item.createdDate).toISOString().slice(0, 16).replace('T', ' ')}
-            </p>
-            <div className={"d-flex  ml-auto"}>
-                <p style={{ fontSize: '14px', fontWeight: 'bold' }}>
-                    {item.createdUserName}
-                </p>
-                <p className={"ml-2"} style={{ fontSize: '14px' }}>
-                    <i className="fas fa-eye"></i> {item.viewCount}
-                </p>
-            </div>
-
-        </div>
-
-        <Space size="middle">
-            {showDeleteButton===true && (
-                <Button type="primary" danger onClick={() => handleDelete(item.id)}>
-                    Delete
-                </Button>
-            )}
-            {showEditButton===true && (
-                <Button type="primary" danger onClick={() => handleEdit(item.id)}>
-                    Edit
-                </Button>
-            )}
-        </Space>
+const renderItem = (
+  item,
+  index,
+  handleDelete,
+  handleEdit,
+  showDeleteButton,
+  showEditButton
+) => (
+  <article className="article-card" key={item.id}>
+    <div className="article-card__main">
+      <a href={`/article/read/${item.id}`} className="article-card__title">
+        {item.title}
+      </a>
+      <p className="article-card__preface">{item.preface}</p>
+      <p className="article-card__meta">
+        {new Date(item.createdDate).toISOString().slice(0, 16).replace("T", " ")}
+      </p>
+      <div className="article-card__meta article-card__meta-row">
+        <p>{item.createdUserName}</p>
+        <p>
+          <i className="fas fa-eye"></i> {item.viewCount}
+        </p>
+      </div>
     </div>
+
+    <Space size="middle">
+      {showDeleteButton === true && (
+        <Button type="primary" danger onClick={() => handleDelete(item.id)}>
+          Delete
+        </Button>
+      )}
+      {showEditButton === true && (
+        <Button type="primary" danger onClick={() => handleEdit(item.id)}>
+          Edit
+        </Button>
+      )}
+    </Space>
+  </article>
 );
 
-
-
-
-
-const FindArticle = ({ filters = {}, isShowDeleteButton=false, isShowEditButton=false }) => {
-    // console.log("filter");
-    // console.log(filters);
-    // console.log("isShowDeleteButton");
-    // console.log(isShowDeleteButton);
-    return (
-
-        // 在父组件中调用
-        <PaginatedCommon
-            fetchData={fetchData}
-            renderItem={renderItem}
-            showDeleteButton={isShowDeleteButton}  // 控制是否显示删除按钮
-            showEditButton={isShowEditButton}  // 控制是否显示删除按钮
-            crudApiBasePath="/article" // 控制删除 API 的基础路径
-            initFilter={filters}   //{filter} //'{"id": 1}'
-
-            // 控制删除 API 的基础路径
-        />
-    );
+const FindArticle = ({ filters = {}, isShowDeleteButton = false, isShowEditButton = false }) => {
+  return (
+    <div className="article-list">
+      <PaginatedCommon
+        fetchData={fetchData}
+        renderItem={renderItem}
+        showDeleteButton={isShowDeleteButton}
+        showEditButton={isShowEditButton}
+        crudApiBasePath="/article"
+        initFilter={filters}
+      />
+    </div>
+  );
 };
 
 export default FindArticle;
-
-

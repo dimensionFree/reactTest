@@ -30,21 +30,22 @@ const LatestArticle = () => {
     };
 
     return (
-        <div className="jumbotron p-4 p-md-5 text-dark rounded text-center">
+        <section className="latest-hero jumbotron p-4 p-md-5 rounded text-center">
             <div className="d-flex justify-content-center align-items-center">
-                <div className="col-md-6 px-0">
+                <div className="col-md-8 px-0">
+                    <p className="latest-hero__kicker">Featured Story</p>
                     <h1 className="display-4 font-italic">
-                        {title ? title : "got some article pls"}
+                        {title ? title : "写下第一篇文章，点亮这个站点"}
                     </h1>
                     <p className="lead my-3">
-                        {preface ? preface : "got some preface pls"}
+                        {preface ? preface : "记录值得反复阅读的内容，而不是一次性的信息。"}
                     </p>
                     <p className="lead mb-0">
-                        <a href={`/article/read/${id}`} className="text-dark font-weight-bold">Continue reading...</a>
+                        <a href={`/article/read/${id}`} className="latest-hero__cta">Continue reading</a>
                     </p>
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 
