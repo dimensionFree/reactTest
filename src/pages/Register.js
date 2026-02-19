@@ -14,7 +14,7 @@ export default class Register extends Component {
                 <Helmet>
                     <meta name="robots" content="noindex"/>
                 </Helmet>
-                <SEO title={"鐧婚尣"} description={"Register"}/>
+                <SEO title={"register"} description={"Register"}/>
                 <RegisterForm/>
                 {/*<TestLoginForm></TestLoginForm>*/}
             </div>

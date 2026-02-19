@@ -11,7 +11,7 @@ export default class Login extends Component {
                 <Helmet>
                     <meta name="robots" content="noindex"/>
                 </Helmet>
-                <SEO title={"銉偘銈ゃ兂"} description={"login"}/>
+                <SEO title={"login"} description={"login"}/>
 
                 <LoginForm/>
             </div>

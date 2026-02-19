@@ -178,7 +178,7 @@ const RegisterForm = () => {
                     Sign up
                 </button>
 
-                <p className="mt-5 mb-3 text-muted">&copy; 2017-2021</p>
+                <p className="mt-5 mb-3 text-muted">&copy; 2023-2026</p>
             </form>
 
             <button

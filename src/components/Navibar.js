@@ -105,6 +105,14 @@ const Navibar = () => {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarsExampleDefault">
+          <ul className="navbar-nav mr-auto">
+            <li className="nav-item">
+              <a className="nav-link" href="/about">
+                About
+              </a>
+            </li>
+          </ul>
+
           <form className="form-inline my-2 my-lg-0 mr-3 ml-auto" onSubmit={handleSearchClick}>
             <input
               className="form-control mr-sm-2"

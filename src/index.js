@@ -12,6 +12,7 @@ import ReadArticle from "./pages/ReadArticle";
 import EditArticle from "./pages/EditArticle";
 import ArticleManage from "./pages/ArticleManage";
 import ArticleSearch from "./pages/ArticleSearch";
+import About from "./pages/About";
 
 const MouseParallax = () => {
   useEffect(() => {
@@ -121,6 +122,7 @@ const AppRouter = () => (
       <Route path="/article/edit/:id" component={EditArticle} />
       <Route path="/articleManage" component={ArticleManage} />
       <Route path="/article/search/:keyword" component={ArticleSearch} />
+      <Route path="/about" component={About} />
       <Route path="/" component={App} />
     </Switch>
   </Router>

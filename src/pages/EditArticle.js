@@ -78,7 +78,7 @@ const EditArticle = () => {
 
     return (
         <div >
-            <SEO title={"鏂囩珷绶ㄩ泦"} description={"articleEdit"}/>
+            <SEO title={"文章編集"} description={"articleEdit"}/>
             <Navibar/>
             <div className="container-fluid my-5 form-surface">
                 <h1>{id === 'NEW' ? "Create New Article" : "Edit Article"}</h1>

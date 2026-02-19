@@ -76,7 +76,7 @@ const LoginForm = () => {
 
                 <div className="cf-turnstile" data-sitekey={process.env.REACT_APP_TURNSTILE_SITEKEY}></div>
                 <button className="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-                <p className="mt-5 mb-3 text-muted">&copy; 2017-2024</p>
+                <p className="mt-5 mb-3 text-muted">&copy; 2023-2026</p>
             </form>
             <button
                 className="nav-button"
