@@ -1,0 +1,64 @@
+.about-shell {
+  width: min(980px, calc(100% - 32px));
+  margin: 16px auto 56px;
+}
+
+.about-shell__nav {
+  margin-bottom: 16px;
+}
+
+.about-card {
+  border: 1px solid rgba(176, 215, 245, 0.24);
+  border-radius: 20px;
+  padding: clamp(16px, 3vw, 30px);
+  background: rgba(8, 24, 39, 0.58);
+  box-shadow: var(--shadow-soft);
+}
+
+.about-card__lang {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.about-card__lang-btn {
+  border: 1px solid rgba(163, 203, 236, 0.35);
+  background: rgba(255, 255, 255, 0.06);
+  color: #d8e9f8;
+  font-size: 0.82rem;
+  border-radius: 999px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.about-card__lang-btn.is-active {
+  border-color: rgba(133, 226, 255, 0.55);
+  background: rgba(111, 214, 255, 0.18);
+  color: #eef9ff;
+}
+
+.about-card__kicker {
+  margin: 0 0 8px;
+  color: #8fdaff;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+}
+
+.about-card h1 {
+  margin: 0 0 14px;
+  color: #f4f9ff;
+}
+
+.about-card p {
+  margin: 0 0 12px;
+  color: #d4e3f1;
+  line-height: 1.75;
+}
+
+@media (max-width: 768px) {
+  .about-shell {
+    width: calc(100% - 20px);
+    margin-top: 12px;
+  }
+}
