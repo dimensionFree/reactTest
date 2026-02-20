@@ -23,10 +23,13 @@ const LIVE2D_CDN = "https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/
 
 const AVATAR_WIDTH = 320;
 const AVATAR_HEIGHT = 420;
-const GAZE_SENSITIVITY_X = 1.4;
-const GAZE_SENSITIVITY_Y = 1.25;
-const HEAD_FOLLOW_STRENGTH = 20;
-const HEAD_FOLLOW_SMOOTH = 0.14;
+const GAZE_SENSITIVITY_X = 2.2;
+const GAZE_SENSITIVITY_Y = 1.95;
+const HEAD_FOLLOW_STRENGTH = 32;
+const HEAD_FOLLOW_SMOOTH = 0.2;
+const HEAD_ROLL_STRENGTH = 9;
+const TRACK_HORIZONTAL_DIRECTION = 1;
+const EYE_HORIZONTAL_DIRECTION = 1;
 const MODEL_SCALE_FACTOR = 1.08;
 const MODEL_BASELINE_RATIO = 1.16;
 const EYE_CENTER_BIAS_X = 0.0;
@@ -216,10 +219,11 @@ const AssistantWidget = () => {
       if (!coreModel) {
         return;
       }
+      if (typeof coreModel.addParameterValueById === "function") {
+        coreModel.addParameterValueById(id, value, 1);
+      }
       if (typeof coreModel.setParameterValueById === "function") {
         coreModel.setParameterValueById(id, value);
-      } else if (typeof coreModel.addParameterValueById === "function") {
-        coreModel.addParameterValueById(id, value, 1);
       }
     };
 
@@ -236,30 +240,29 @@ const AssistantWidget = () => {
           ? refRect.top + refRect.height * (0.5 + EYE_CENTER_BIAS_Y)
           : window.innerHeight / 2;
 
-        const halfW = refRect ? refRect.width * 0.35 : window.innerWidth / 2;
-        const halfH = refRect ? refRect.height * 0.28 : window.innerHeight / 2;
+        const halfW = refRect ? refRect.width * 0.22 : window.innerWidth / 2;
+        const halfH = refRect ? refRect.height * 0.18 : window.innerHeight / 2;
         const normX = clamp(((gazeRef.current.x - refCenterX) / halfW) * GAZE_SENSITIVITY_X, -1, 1);
         const normY = clamp(((gazeRef.current.y - refCenterY) / halfH) * GAZE_SENSITIVITY_Y, -1, 1);
-        const focusX = refCenterX + normX * halfW;
-        const focusY = refCenterY + normY * halfH;
-
-        if (typeof model.focus === "function") {
-          model.focus(focusX, focusY);
-        } else if (model.internalModel?.focusController?.focus) {
-          model.internalModel.focusController.focus(normX, -normY, false);
-        }
 
         poseRef.current.x += (normX - poseRef.current.x) * HEAD_FOLLOW_SMOOTH;
         poseRef.current.y += (normY - poseRef.current.y) * HEAD_FOLLOW_SMOOTH;
 
-        const headXDeg = -poseRef.current.x * HEAD_FOLLOW_STRENGTH;
-        const headYDeg = -poseRef.current.y * HEAD_FOLLOW_STRENGTH * 0.7;
-        const bodyXDeg = -poseRef.current.x * 4;
+        const trackedX = poseRef.current.x * TRACK_HORIZONTAL_DIRECTION;
+        const headXDeg = trackedX * HEAD_FOLLOW_STRENGTH;
+        const headYDeg = -poseRef.current.y * HEAD_FOLLOW_STRENGTH * 0.85;
+        const headZDeg = trackedX * HEAD_ROLL_STRENGTH + poseRef.current.y * 2.2;
+        const bodyXDeg = trackedX * 7;
+        const eyeX = trackedX * 1.2 * EYE_HORIZONTAL_DIRECTION;
+        const eyeY = -poseRef.current.y * 1.2;
 
         const coreModel = model.internalModel?.coreModel;
         setCoreParam(coreModel, "ParamAngleX", headXDeg);
         setCoreParam(coreModel, "ParamAngleY", headYDeg);
+        setCoreParam(coreModel, "ParamAngleZ", headZDeg);
         setCoreParam(coreModel, "ParamBodyAngleX", bodyXDeg);
+        setCoreParam(coreModel, "ParamEyeBallX", eyeX);
+        setCoreParam(coreModel, "ParamEyeBallY", eyeY);
       }
       rafId = window.requestAnimationFrame(tick);
     };
@@ -408,3 +411,4 @@ const AssistantWidget = () => {
 };
 
 export default AssistantWidget;
+
