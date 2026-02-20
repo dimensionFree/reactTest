@@ -13,6 +13,7 @@ import EditArticle from "./pages/EditArticle";
 import ArticleManage from "./pages/ArticleManage";
 import ArticleSearch from "./pages/ArticleSearch";
 import About from "./pages/About";
+import AssistantWidget from "./components/assistant/AssistantWidget";
 
 const MouseParallax = () => {
   useEffect(() => {
@@ -132,6 +133,9 @@ ReactDOM.render(
   <>
     <MouseParallax />
     <AppRouter />
+    <AssistantWidget />
   </>,
   document.getElementById("root")
 );
+
+

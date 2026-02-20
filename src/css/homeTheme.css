@@ -146,7 +146,9 @@
 
 .archive-float {
   position: fixed;
-  right: 18px;
+  left: auto;
+  right: max(16px, calc((100vw - 1180px) / 2));
+  top: auto;
   bottom: 18px;
   width: min(280px, calc(100vw - 36px));
   z-index: 90;
