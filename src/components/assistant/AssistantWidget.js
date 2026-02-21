@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+﻿import React, { useCallback, useEffect, useRef, useState } from "react";
 import "../../css/assistantWidget.css";
 
 const PUBLIC_BASE = process.env.PUBLIC_URL || "";
@@ -31,6 +31,8 @@ const FLICK_DURATION_MS = 320;
 const FLICK_DISTANCE_PX = 22;
 const TAP_DISTANCE_PX = 3;
 const IDLE_MOTION_GROUP = "IdleManual";
+const ASSISTANT_CONTEXT_CACHE_KEY = "assistant_context_v1";
+const ASSISTANT_CONTEXT_CACHE_TTL_MS = 10 * 60 * 1000;
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -214,6 +216,60 @@ const fetchWeatherContext = async (latitude, longitude) => {
   }
 };
 
+const readCachedAssistantContext = () => {
+  try {
+    const raw = sessionStorage.getItem(ASSISTANT_CONTEXT_CACHE_KEY);
+    if (!raw) {
+      return null;
+    }
+    const parsed = JSON.parse(raw);
+    if (!parsed || !Number.isFinite(parsed.expiresAt) || parsed.expiresAt <= Date.now()) {
+      sessionStorage.removeItem(ASSISTANT_CONTEXT_CACHE_KEY);
+      return null;
+    }
+    return parsed.data || null;
+  } catch (_) {
+    return null;
+  }
+};
+
+const writeCachedAssistantContext = (data) => {
+  try {
+    sessionStorage.setItem(
+      ASSISTANT_CONTEXT_CACHE_KEY,
+      JSON.stringify({
+        expiresAt: Date.now() + ASSISTANT_CONTEXT_CACHE_TTL_MS,
+        data
+      })
+    );
+  } catch (_) {
+    // noop
+  }
+};
+
+const fetchAssistantContextFromBackend = async () => {
+  try {
+    const resp = await fetch("/api/assistant/context");
+    if (!resp.ok) {
+      return null;
+    }
+    const body = await resp.json();
+    const data = body?.dataContent;
+    if (!data || typeof data !== "object") {
+      return null;
+    }
+    return {
+      city: typeof data.city === "string" ? data.city : "",
+      latitude: toNum(data.latitude),
+      longitude: toNum(data.longitude),
+      weatherCode: toNum(data.weatherCode),
+      temp: toNum(data.temperature)
+    };
+  } catch (_) {
+    return null;
+  }
+};
+
 const AssistantWidget = () => {
   const [speechText, setSpeechText] = useState("");
   const [showSpeech, setShowSpeech] = useState(false);
@@ -225,13 +281,13 @@ const AssistantWidget = () => {
   const [modelError, setModelError] = useState("");
   const [position, setPosition] = useState({ x: null, y: null });
   const [dragging, setDragging] = useState(false);
+  const [assistantHidden, setAssistantHidden] = useState(false);
 
   const live2dRef = useRef(null);
   const shellRef = useRef(null);
   const modelRef = useRef(null);
   const greetingShowTimerRef = useRef(0);
   const speechHideTimerRef = useRef(0);
-  const speechIdleTimerRef = useRef(0);
   const lastSpeechTsRef = useRef(0);
   const gazeRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   const poseRef = useRef({ x: 0, y: 0 });
@@ -260,18 +316,13 @@ const AssistantWidget = () => {
       if (speechHideTimerRef.current) {
         window.clearTimeout(speechHideTimerRef.current);
       }
-      if (speechIdleTimerRef.current) {
-        window.clearTimeout(speechIdleTimerRef.current);
-      }
       setSpeechText(text);
       setShowSpeech(true);
+      playMotion(IDLE_MOTION_GROUP);
+      lastIdleMotionTsRef.current = now;
       speechHideTimerRef.current = window.setTimeout(() => {
         setShowSpeech(false);
       }, visibleMs);
-      speechIdleTimerRef.current = window.setTimeout(() => {
-        playMotion(IDLE_MOTION_GROUP);
-        lastIdleMotionTsRef.current = Date.now();
-      }, visibleMs + 120);
     },
     [playMotion]
   );
@@ -279,9 +330,20 @@ const AssistantWidget = () => {
   useEffect(() => {
     let disposed = false;
     const loadGeoAndWeather = async () => {
-      const { city, latitude, longitude } = await fetchGeoContext();
+      let context = readCachedAssistantContext();
+      if (!context) {
+        context = await fetchAssistantContextFromBackend();
+      }
+      if (!context) {
+        const { city: fallbackCity, latitude, longitude } = await fetchGeoContext();
+        const weather = await fetchWeatherContext(latitude, longitude);
+        context = { city: fallbackCity, latitude, longitude, weatherCode: weather.weatherCode, temp: weather.temp };
+      }
+      writeCachedAssistantContext(context);
+      const city = context?.city || "";
       const greeting = city ? `${getTimeGreeting()}、${city}のあなたへ。` : `${getTimeGreeting()}。`;
-      const { weatherCode, temp } = await fetchWeatherContext(latitude, longitude);
+      const weatherCode = context?.weatherCode ?? null;
+      const temp = context?.temp ?? null;
       const icon = getWeatherIcon(weatherCode);
       const roast = getWeatherRoast(weatherCode, temp);
 
@@ -304,11 +366,22 @@ const AssistantWidget = () => {
       if (speechHideTimerRef.current) {
         window.clearTimeout(speechHideTimerRef.current);
       }
-      if (speechIdleTimerRef.current) {
-        window.clearTimeout(speechIdleTimerRef.current);
-      }
     };
   }, [triggerSpeech]);
+
+  const onHideAssistant = useCallback((event) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    setShowSpeech(false);
+    setAssistantHidden(true);
+  }, []);
+
+  const onShowAssistant = useCallback(() => {
+    setModelError("");
+    setAssistantHidden(false);
+  }, []);
 
   useEffect(() => {
     let disposed = false;
@@ -334,7 +407,7 @@ const AssistantWidget = () => {
   }, []);
 
   useEffect(() => {
-    if (!modelAvailable || !live2dRef.current) {
+    if (assistantHidden || !modelAvailable || !live2dRef.current) {
       return undefined;
     }
 
@@ -400,34 +473,7 @@ const AssistantWidget = () => {
         app.destroy(true, { children: true, texture: true, baseTexture: true });
       }
     };
-  }, [modelAvailable]);
-
-  const stopIdleMotionIfNeeded = useCallback(() => {
-    if (currentMotionGroupRef.current !== IDLE_MOTION_GROUP) {
-      return;
-    }
-    const model = modelRef.current;
-    if (!model) {
-      currentMotionGroupRef.current = "";
-      return;
-    }
-    if (typeof model.stopMotions === "function") {
-      model.stopMotions();
-    }
-    const motionManager = model.internalModel?.motionManager;
-    if (motionManager && typeof motionManager.stopAllMotions === "function") {
-      motionManager.stopAllMotions();
-    }
-    const motionManagers = model.internalModel?.motionManagers;
-    if (motionManagers && typeof motionManagers === "object") {
-      Object.values(motionManagers).forEach((manager) => {
-        if (manager && typeof manager.stopAllMotions === "function") {
-          manager.stopAllMotions();
-        }
-      });
-    }
-    currentMotionGroupRef.current = "";
-  }, []);
+  }, [assistantHidden, modelAvailable]);
 
   useEffect(() => {
     const onPointerMove = (event) => {
@@ -435,7 +481,6 @@ const AssistantWidget = () => {
       gazeRef.current.x = point.x;
       gazeRef.current.y = point.y;
       lastPointerMoveTsRef.current = Date.now();
-      stopIdleMotionIfNeeded();
     };
 
     const setCoreParam = (coreModel, id, value) => {
@@ -493,7 +538,7 @@ const AssistantWidget = () => {
       window.removeEventListener("touchmove", onPointerMove);
       window.cancelAnimationFrame(rafId);
     };
-  }, [stopIdleMotionIfNeeded]);
+  }, []);
 
   useEffect(() => {
     const timerId = window.setInterval(() => {
@@ -655,16 +700,26 @@ const AssistantWidget = () => {
           bottom: "auto"
         };
 
+  if (assistantHidden) {
+    return (
+      <button type="button" className="assistant-restore-button" aria-label="show assistant" onClick={onShowAssistant}>
+        AI
+      </button>
+    );
+  }
+
   return (
     <aside ref={shellRef} className="assistant-shell" style={shellStyle} aria-label="ブログ AI アシスタント">
       {showSpeech && speechText ? <div className="assistant-bubble">{speechText}</div> : null}
 
       {weatherReady ? (
-        <div className="assistant-weather-badge" role="note" aria-label="現在の天気コメント" onMouseEnter={onWeatherBadgeInteract} onClick={onWeatherBadgeInteract} onTouchStart={onWeatherBadgeInteract}>
+        <div className="assistant-weather-badge" role="note" aria-label="weather comment" onMouseEnter={onWeatherBadgeInteract} onClick={onWeatherBadgeInteract} onTouchStart={onWeatherBadgeInteract}>
           <span className="assistant-weather-icon" aria-hidden="true">
             {weatherBadge.icon}
           </span>
-          <div className="assistant-weather-tooltip">{weatherBadge.roast}</div>
+          <button type="button" className="assistant-hide-button" aria-label="hide assistant" onClick={onHideAssistant} onTouchStart={onHideAssistant}>
+            x
+          </button>
         </div>
       ) : null}
 
@@ -673,13 +728,14 @@ const AssistantWidget = () => {
       </button>
 
       <button type="button" className={`assistant-avatar ${dragging ? "assistant-avatar--dragging" : ""}`} onMouseDown={onAvatarGestureStart} onTouchStart={onAvatarGestureStart}>
-        {modelAvailable && !modelError ? <div ref={live2dRef} className="assistant-live2d-stage" /> : <img src={FALLBACK_IMAGE_PATH} alt="アシスタント立ち絵" />}
+        {modelAvailable && !modelError ? <div ref={live2dRef} className="assistant-live2d-stage" /> : <img src={FALLBACK_IMAGE_PATH} alt="assistant avatar" />}
       </button>
 
-      {modelError ? <p className="assistant-hint">Live2D エラー: {modelError}</p> : null}
+      {modelError ? <p className="assistant-hint">Live2D error: {modelError}</p> : null}
       {!checkingModel && modelMissing ? <p className="assistant-hint">model3.json が見つからないため、立ち絵モードに自動切替しました。</p> : null}
     </aside>
   );
 };
 
 export default AssistantWidget;
+
