@@ -14,7 +14,7 @@ const ShowArticleById = () => {
     const fetchArticle = async () => {
       setLoading(true);
       try {
-        const response = await RequestSendUtils.sendGetWithReturn("/article/find/" + id, null);
+        const response = await RequestSendUtils.sendGetWithReturn("/article/find/" + id + "?recordRead=true", null);
         const data = await response.dataContent;
         setArticle(data);
       } catch (error) {
@@ -55,3 +55,4 @@ const ShowArticleById = () => {
 };
 
 export default ShowArticleById;
+

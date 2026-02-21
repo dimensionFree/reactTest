@@ -21,7 +21,7 @@ const EditArticle = () => {
             const fetchArticle = async () => {
                 try {
                     let token = RequestSendUtils.getToken();
-                    const response = await RequestSendUtils.sendGetWithReturn(`/article/find/${id}`, token);
+                    const response = await RequestSendUtils.sendGetWithReturn(`/article/manage/find/${id}`, token);
                     // const response = await RequestSendUtils.sendGetWithReturn("/article/find/"+id, null);
                     const data = await response.dataContent;
 
@@ -131,6 +131,7 @@ const EditArticle = () => {
 };
 
 export default EditArticle;
+
 
 
 
