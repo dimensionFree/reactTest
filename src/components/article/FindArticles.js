@@ -1,11 +1,11 @@
-import React from "react";
+﻿import React from "react";
 import RequestSendUtils from "../../Utils/RequestSendUtils";
-import { Button, Space } from "antd";
+import { Button, Space, Switch, message } from "antd";
 import PaginatedCommon from "../common/PaginatedCommon";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "../../css/articleList.css";
 
-const fetchData = (page, pageSize, filters) => {
+const fetchData = (page, pageSize, filters, manageMode) => {
   return new Promise((resolve, reject) => {
     let queryParams = `currentPage=${page}&pageSize=${pageSize}`;
 
@@ -17,9 +17,11 @@ const fetchData = (page, pageSize, filters) => {
       }
     }
 
+    const listApi = manageMode ? "/article/manage/findAll/" : "/article/findAll/";
+    const token = manageMode ? RequestSendUtils.getToken() : null;
     RequestSendUtils.sendGet(
-      `/article/findAll/?${queryParams}`,
-      null,
+      `${listApi}?${queryParams}`,
+      token,
       (response) => {
         if (response.status === 200) {
           resolve(response.data);
@@ -40,7 +42,10 @@ const renderItem = (
   handleDelete,
   handleEdit,
   showDeleteButton,
-  showEditButton
+  showEditButton,
+  handleRefresh,
+  showPublicSwitch,
+  handleTogglePublic
 ) => (
   <article className="article-card" key={item.id}>
     <div className="article-card__main">
@@ -57,6 +62,17 @@ const renderItem = (
           <i className="fas fa-eye"></i> {item.viewCount}
         </p>
       </div>
+      {showPublicSwitch === true && (
+        <div className="article-card__meta article-card__meta-row">
+          <span>Public</span>
+          <Switch
+            checked={item.isPublic !== false}
+            checkedChildren="On"
+            unCheckedChildren="Off"
+            onChange={(checked) => handleTogglePublic(item.id, checked, handleRefresh)}
+          />
+        </div>
+      )}
     </div>
 
     <Space size="middle">
@@ -74,12 +90,47 @@ const renderItem = (
   </article>
 );
 
-const FindArticle = ({ filters = {}, isShowDeleteButton = false, isShowEditButton = false }) => {
+const FindArticle = ({
+  filters = {},
+  isShowDeleteButton = false,
+  isShowEditButton = false,
+  isShowPublicSwitch = false,
+  manageMode = false,
+}) => {
+  const handleTogglePublic = async (id, isPublic, handleRefresh) => {
+    try {
+      const token = RequestSendUtils.getToken();
+      await RequestSendUtils.sendPatchWithReturn(
+        `/article/manage/public/${id}?isPublic=${isPublic}`,
+        null,
+        token
+      );
+      message.success("Visibility updated");
+      handleRefresh();
+    } catch (error) {
+      message.error("Failed to update visibility");
+    }
+  };
+
   return (
     <div className="article-list">
       <PaginatedCommon
-        fetchData={fetchData}
-        renderItem={renderItem}
+        fetchData={(page, pageSize, activeFilters) =>
+          fetchData(page, pageSize, activeFilters, manageMode)
+        }
+        renderItem={(item, index, handleDelete, handleEdit, showDeleteButton, showEditButton, handleRefresh) =>
+          renderItem(
+            item,
+            index,
+            handleDelete,
+            handleEdit,
+            showDeleteButton,
+            showEditButton,
+            handleRefresh,
+            isShowPublicSwitch,
+            handleTogglePublic
+          )
+        }
         showDeleteButton={isShowDeleteButton}
         showEditButton={isShowEditButton}
         crudApiBasePath="/article"

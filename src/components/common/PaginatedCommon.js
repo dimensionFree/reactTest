@@ -17,27 +17,26 @@ const PaginatedCommon = ({ fetchData, renderItem, showDeleteButton, showEditButt
         token = userInfo.token;
     }
 
-    const fetchAndUpdateData = (page, pageSize, filter) => {
+    const fetchAndUpdateData = (pageNum, sizeNum, filter) => {
         setLoading(true);
-        fetchData(page, pageSize, filter).then((result) => {
-            let total = result.dataContent.total;
-            let list = result.dataContent.list;
+        fetchData(pageNum, sizeNum, filter).then((result) => {
+            const totalCount = result.dataContent.total;
+            const list = result.dataContent.list;
             setData(list);
-            setTotal(total);
+            setTotal(totalCount);
             setLoading(false);
         }).catch(() => {
             setLoading(false);
         });
     };
 
-    // 当 page, pageSize, 或 initFilter 变化时重新获取数据
     useEffect(() => {
         fetchAndUpdateData(page, pageSize, initFilter);
-    }, [page, pageSize, initFilter]); // 添加 initFilter 作为依赖项
+    }, [page, pageSize, initFilter]);
 
-    const handlePageChange = (page, pageSize) => {
-        setPage(page);
-        setPageSize(pageSize);
+    const handlePageChange = (nextPage, nextPageSize) => {
+        setPage(nextPage);
+        setPageSize(nextPageSize);
     };
 
     const handleDelete = async (id) => {
@@ -46,7 +45,6 @@ const PaginatedCommon = ({ fetchData, renderItem, showDeleteButton, showEditButt
             const response = await RequestSendUtils.sendDeleteWithReturn(deleteUrl, token);
             if (response.status === 200) {
                 message.success('Deleted successfully');
-                // 删除成功后重新获取数据
                 fetchAndUpdateData(page, pageSize, initFilter);
             } else {
                 message.error('Failed to delete');
@@ -61,11 +59,13 @@ const PaginatedCommon = ({ fetchData, renderItem, showDeleteButton, showEditButt
         history.push(`${crudApiBasePath}/edit/${id}`);
     };
 
+    const handleRefresh = () => {
+        fetchAndUpdateData(page, pageSize, initFilter);
+    };
+
     return (
         <div style={{ width: '100%' }}>
-            {/* 使用 renderItem 进行数据渲染 */}
-            {data.map((item, index) => renderItem(item, index, handleDelete, handleEdit, showDeleteButton, showEditButton))}
-            {/* Pagination 控件 */}
+            {data.map((item, index) => renderItem(item, index, handleDelete, handleEdit, showDeleteButton, showEditButton, handleRefresh))}
             <Pagination
                 current={page}
                 pageSize={pageSize}
