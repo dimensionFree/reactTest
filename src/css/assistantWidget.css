@@ -90,6 +90,30 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+.assistant-move-handle {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  z-index: 3;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(159, 212, 255, 0.45);
+  border-radius: 8px;
+  background: rgba(8, 24, 39, 0.86);
+  color: #eef7ff;
+  font-size: 11px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  box-shadow: var(--shadow-soft);
+}
+
+.assistant-move-handle:active {
+  cursor: grabbing;
+}
+
 .assistant-avatar--dragging {
   cursor: grabbing;
   animation: none;
@@ -147,6 +171,14 @@
   .assistant-avatar {
     width: 220px;
     height: 300px;
+  }
+
+  .assistant-move-handle {
+    width: 26px;
+    height: 26px;
+    font-size: 10px;
+    left: 6px;
+    top: 6px;
   }
 
   .assistant-weather-badge {

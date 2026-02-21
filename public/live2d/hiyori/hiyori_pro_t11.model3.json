@@ -10,7 +10,8 @@
 		"Pose": "hiyori_pro_t11.pose3.json",
 		"DisplayInfo": "hiyori_pro_t11.cdi3.json",
 		"Motions": {
-			"Idle": [
+			"Idle": [],
+			"IdleManual": [
 				{
 					"File": "motion/hiyori_m01.motion3.json"
 				},

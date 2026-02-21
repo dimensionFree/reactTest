@@ -24,6 +24,12 @@ const EYE_CENTER_BIAS_X = 0.0;
 const EYE_CENTER_BIAS_Y = 0.0;
 const GREETING_DELAY_MS = 5000;
 const GREETING_VISIBLE_MS = 6000;
+const IDLE_TRIGGER_AFTER_MS = 3000;
+const IDLE_COOLDOWN_MS = 8000;
+const FLICK_DURATION_MS = 320;
+const FLICK_DISTANCE_PX = 22;
+const TAP_DISTANCE_PX = 3;
+const IDLE_MOTION_GROUP = "IdleManual";
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -225,7 +231,11 @@ const AssistantWidget = () => {
   const greetingHideTimerRef = useRef(0);
   const gazeRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   const poseRef = useRef({ x: 0, y: 0 });
-  const dragRef = useRef({ active: false, moved: false, startX: 0, startY: 0, baseX: 0, baseY: 0 });
+  const dragRef = useRef({ active: false, moved: false, startX: 0, startY: 0, lastX: 0, lastY: 0, startTs: 0, baseX: 0, baseY: 0 });
+  const gestureRef = useRef({ active: false, startX: 0, startY: 0, startTs: 0 });
+  const lastPointerMoveTsRef = useRef(Date.now());
+  const lastIdleMotionTsRef = useRef(0);
+  const currentMotionGroupRef = useRef("");
 
   useEffect(() => {
     let disposed = false;
@@ -362,11 +372,44 @@ const AssistantWidget = () => {
     };
   }, [modelAvailable]);
 
+  const stopIdleMotionIfNeeded = useCallback(() => {
+    if (currentMotionGroupRef.current !== IDLE_MOTION_GROUP) {
+      return;
+    }
+    const model = modelRef.current;
+    if (!model) {
+      currentMotionGroupRef.current = "";
+      return;
+    }
+
+    if (typeof model.stopMotions === "function") {
+      model.stopMotions();
+    }
+
+    const motionManager = model.internalModel?.motionManager;
+    if (motionManager && typeof motionManager.stopAllMotions === "function") {
+      motionManager.stopAllMotions();
+    }
+
+    const motionManagers = model.internalModel?.motionManagers;
+    if (motionManagers && typeof motionManagers === "object") {
+      Object.values(motionManagers).forEach((manager) => {
+        if (manager && typeof manager.stopAllMotions === "function") {
+          manager.stopAllMotions();
+        }
+      });
+    }
+
+    currentMotionGroupRef.current = "";
+  }, []);
+
   useEffect(() => {
     const onPointerMove = (event) => {
       const point = getPointerPoint(event);
       gazeRef.current.x = point.x;
       gazeRef.current.y = point.y;
+      lastPointerMoveTsRef.current = Date.now();
+      stopIdleMotionIfNeeded();
     };
 
     const setCoreParam = (coreModel, id, value) => {
@@ -430,7 +473,36 @@ const AssistantWidget = () => {
       window.removeEventListener("touchmove", onPointerMove);
       window.cancelAnimationFrame(rafId);
     };
+  }, [stopIdleMotionIfNeeded]);
+
+  const playMotion = useCallback((group) => {
+    const model = modelRef.current;
+    if (!model || typeof model.motion !== "function") {
+      return;
+    }
+    model.motion(group);
+    currentMotionGroupRef.current = group;
   }, []);
+
+  useEffect(() => {
+    const timerId = window.setInterval(() => {
+      const model = modelRef.current;
+      if (!model || dragRef.current.active) {
+        return;
+      }
+      const now = Date.now();
+      const idleForMs = now - lastPointerMoveTsRef.current;
+      const sinceLastIdleMs = now - lastIdleMotionTsRef.current;
+      if (idleForMs >= IDLE_TRIGGER_AFTER_MS && sinceLastIdleMs >= IDLE_COOLDOWN_MS) {
+        playMotion(IDLE_MOTION_GROUP);
+        lastIdleMotionTsRef.current = now;
+      }
+    }, 500);
+
+    return () => {
+      window.clearInterval(timerId);
+    };
+  }, [playMotion]);
 
   const onDragMove = useCallback((event) => {
     if (!dragRef.current.active || !shellRef.current) {
@@ -450,6 +522,19 @@ const AssistantWidget = () => {
     setPosition({ x: clamp(dragRef.current.baseX + moveX, 0, maxX), y: clamp(dragRef.current.baseY + moveY, 0, maxY) });
     event.preventDefault();
   }, []);
+
+  const playTapMotion = useCallback(() => {
+    const group = Math.random() < 0.8 ? "Tap" : "Tap@Body";
+    playMotion(group);
+  }, [playMotion]);
+
+  const playFlickMotion = useCallback((dx, dy) => {
+    if (Math.abs(dy) > Math.abs(dx)) {
+      playMotion(dy < 0 ? "FlickUp" : "FlickDown");
+      return;
+    }
+    playMotion("Flick");
+  }, [playMotion]);
 
   const onDragEnd = useCallback(() => {
     if (!dragRef.current.active) {
@@ -481,11 +566,49 @@ const AssistantWidget = () => {
     event.preventDefault();
   }, []);
 
+  const onAvatarGestureStart = useCallback((event) => {
+    const point = getPointerPoint(event);
+    gestureRef.current = {
+      active: true,
+      startX: point.x,
+      startY: point.y,
+      startTs: Date.now()
+    };
+    event.preventDefault();
+  }, []);
+
+  const onAvatarGestureEnd = useCallback((event) => {
+    if (!gestureRef.current.active || dragRef.current.active) {
+      return;
+    }
+    const point = getPointerPoint(event);
+    const dx = point.x - gestureRef.current.startX;
+    const dy = point.y - gestureRef.current.startY;
+    const distance = Math.hypot(dx, dy);
+    const duration = Date.now() - gestureRef.current.startTs;
+    gestureRef.current.active = false;
+
+    if (distance <= TAP_DISTANCE_PX) {
+      playTapMotion();
+      return;
+    }
+    const fastFlick = duration <= FLICK_DURATION_MS && distance >= FLICK_DISTANCE_PX;
+    if (fastFlick) {
+      playFlickMotion(dx, dy);
+    }
+  }, [playFlickMotion, playTapMotion]);
+
   useEffect(() => {
     const handleMouseMove = (event) => onDragMove(event);
-    const handleMouseUp = () => onDragEnd();
+    const handleMouseUp = (event) => {
+      onDragEnd();
+      onAvatarGestureEnd(event);
+    };
     const handleTouchMove = (event) => onDragMove(event);
-    const handleTouchEnd = () => onDragEnd();
+    const handleTouchEnd = (event) => {
+      onDragEnd();
+      onAvatarGestureEnd(event);
+    };
 
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
@@ -500,7 +623,7 @@ const AssistantWidget = () => {
       window.removeEventListener("touchend", handleTouchEnd);
       window.removeEventListener("touchcancel", handleTouchEnd);
     };
-  }, [onDragMove, onDragEnd]);
+  }, [onAvatarGestureEnd, onDragMove, onDragEnd]);
 
   const shellStyle =
     position.x === null
@@ -523,7 +646,11 @@ const AssistantWidget = () => {
         <div className="assistant-weather-tooltip">{weatherBadge.roast}</div>
       </div>
 
-      <button type="button" className={`assistant-avatar ${dragging ? "assistant-avatar--dragging" : ""}`} onMouseDown={onDragStart} onTouchStart={onDragStart}>
+      <button type="button" className="assistant-move-handle" aria-label="move assistant" onMouseDown={onDragStart} onTouchStart={onDragStart}>
+        <span aria-hidden="true">↕↔</span>
+      </button>
+
+      <button type="button" className={`assistant-avatar ${dragging ? "assistant-avatar--dragging" : ""}`} onMouseDown={onAvatarGestureStart} onTouchStart={onAvatarGestureStart}>
         {modelAvailable && !modelError ? <div ref={live2dRef} className="assistant-live2d-stage" /> : <img src={FALLBACK_IMAGE_PATH} alt="アシスタント立ち絵" />}
       </button>
 
