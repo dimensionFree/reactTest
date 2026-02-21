@@ -24,6 +24,55 @@
   pointer-events: none;
 }
 
+.assistant-weather-badge {
+  position: absolute;
+  right: 10px;
+  bottom: calc(100% + 8px);
+  z-index: 2;
+}
+
+.assistant-weather-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid rgba(159, 212, 255, 0.4);
+  background: rgba(8, 24, 39, 0.88);
+  color: #eef7ff;
+  font-size: 15px;
+  line-height: 1;
+  cursor: default;
+  box-shadow: var(--shadow-soft);
+}
+
+.assistant-weather-tooltip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  min-width: 180px;
+  max-width: 260px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(159, 212, 255, 0.3);
+  background: rgba(8, 24, 39, 0.92);
+  color: #eef7ff;
+  font-size: 12px;
+  line-height: 1.45;
+  box-shadow: var(--shadow-soft);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.assistant-weather-badge:hover .assistant-weather-tooltip,
+.assistant-weather-badge:focus-within .assistant-weather-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .assistant-avatar {
   position: absolute;
   right: 0;
@@ -66,63 +115,6 @@
   display: block;
 }
 
-.assistant-mini {
-  position: absolute;
-  right: 6px;
-  bottom: calc(100% + 10px);
-  width: min(320px, calc(100vw - 20px));
-  border-radius: 12px;
-  border: 1px solid rgba(159, 212, 255, 0.28);
-  background: rgba(6, 18, 30, 0.9);
-  box-shadow: var(--shadow-soft);
-  padding: 10px;
-  color: #e9f5ff;
-}
-
-.assistant-mini__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.assistant-mini__header strong {
-  font-size: 13px;
-}
-
-.assistant-mini__header button {
-  border: 1px solid rgba(145, 229, 255, 0.45);
-  border-radius: 999px;
-  background: rgba(78, 193, 255, 0.18);
-  color: #ebf8ff;
-  font-size: 11px;
-  padding: 2px 8px;
-  cursor: pointer;
-}
-
-.assistant-mini__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.assistant-mini__actions button {
-  border: 1px solid rgba(150, 211, 255, 0.35);
-  background: rgba(255, 255, 255, 0.08);
-  color: #e7f4ff;
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.assistant-mini__reply {
-  margin: 8px 0 0;
-  font-size: 12px;
-  line-height: 1.45;
-  color: #d8edff;
-}
-
 .assistant-hint {
   position: absolute;
   right: 0;
@@ -157,7 +149,13 @@
     height: 300px;
   }
 
-  .assistant-mini {
-    width: min(250px, calc(100vw - 16px));
+  .assistant-weather-badge {
+    right: 6px;
+  }
+
+  .assistant-weather-tooltip {
+    min-width: 150px;
+    max-width: 210px;
+    font-size: 11px;
   }
 }
