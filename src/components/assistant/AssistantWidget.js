@@ -18,10 +18,11 @@ const HEAD_FOLLOW_SMOOTH = 0.3;
 const HEAD_ROLL_STRENGTH = 13.5;
 const TRACK_HORIZONTAL_DIRECTION = 1;
 const EYE_HORIZONTAL_DIRECTION = 1;
-const MODEL_SCALE_FACTOR = 0.94;
-const MODEL_BASELINE_RATIO = 1.0;
+const MODEL_SCALE_FACTOR = 1.0;
+const MODEL_BASELINE_RATIO = 1.02;
 const EYE_CENTER_BIAS_X = 0.0;
 const EYE_CENTER_BIAS_Y = 0.0;
+
 const GREETING_DELAY_MS = 5000;
 const GREETING_VISIBLE_MS = 6000;
 const IDLE_TRIGGER_AFTER_MS = 3000;
@@ -53,7 +54,7 @@ const ensureScript = (src, checkFn) => {
       if (checkFn()) {
         resolve();
       } else {
-        reject(new Error(`スクリプトは読み込み済みですが、実行時に未初期化です: ${src}`));
+        reject(new Error(`Script loaded but runtime not ready: ${src}`));
       }
     };
 
@@ -64,7 +65,7 @@ const ensureScript = (src, checkFn) => {
         return;
       }
       existed.addEventListener("load", verifyReady, { once: true });
-      existed.addEventListener("error", () => reject(new Error(`読み込み失敗: ${src}`)), { once: true });
+      existed.addEventListener("error", () => reject(new Error(`Load failed: ${src}`)), { once: true });
       return;
     }
 
@@ -76,7 +77,7 @@ const ensureScript = (src, checkFn) => {
       script.dataset.loaded = "true";
       verifyReady();
     };
-    script.onerror = () => reject(new Error(`読み込み失敗: ${src}`));
+    script.onerror = () => reject(new Error(`Load failed: ${src}`));
     document.body.appendChild(script);
   });
 };
@@ -99,24 +100,24 @@ const getTimeGreeting = () => {
 
 const getWeatherIcon = (weatherCode) => {
   if (weatherCode === 0) {
-    return "☀";
+    return "☀️";
   }
   if (weatherCode === 1 || weatherCode === 2) {
     return "⛅";
   }
   if (weatherCode === 3 || weatherCode === 45 || weatherCode === 48) {
-    return "☁";
+    return "☁️";
   }
   if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(weatherCode)) {
-    return "🌧";
+    return "🌧️";
   }
   if ([71, 73, 75, 77, 85, 86].includes(weatherCode)) {
-    return "❄";
+    return "❄️";
   }
   if ([95, 96, 99].includes(weatherCode)) {
-    return "⛈";
+    return "⛈️";
   }
-  return "🌤";
+  return "🌤️";
 };
 
 const getTemperatureComment = (temp) => {
@@ -197,7 +198,6 @@ const fetchWeatherContext = async (latitude, longitude) => {
   if (latitude === null || longitude === null) {
     return { weatherCode: null, temp: null };
   }
-
   try {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto`;
     const resp = await fetch(url);
@@ -205,18 +205,20 @@ const fetchWeatherContext = async (latitude, longitude) => {
       return { weatherCode: null, temp: null };
     }
     const data = await resp.json();
-    const weatherCode = toNum(data?.current?.weather_code);
-    const temp = toNum(data?.current?.temperature_2m);
-    return { weatherCode, temp };
+    return {
+      weatherCode: toNum(data?.current?.weather_code),
+      temp: toNum(data?.current?.temperature_2m)
+    };
   } catch (_) {
     return { weatherCode: null, temp: null };
   }
 };
 
 const AssistantWidget = () => {
-  const [greetingText, setGreetingText] = useState("");
-  const [showGreeting, setShowGreeting] = useState(false);
-  const [weatherBadge, setWeatherBadge] = useState({ icon: "🌤", roast: "天気データを取得中..." });
+  const [speechText, setSpeechText] = useState("");
+  const [showSpeech, setShowSpeech] = useState(false);
+  const [weatherBadge, setWeatherBadge] = useState({ icon: "🌤️", roast: "天気データを取得中..." });
+  const [weatherReady, setWeatherReady] = useState(false);
   const [checkingModel, setCheckingModel] = useState(true);
   const [modelMissing, setModelMissing] = useState(false);
   const [modelAvailable, setModelAvailable] = useState(false);
@@ -228,18 +230,54 @@ const AssistantWidget = () => {
   const shellRef = useRef(null);
   const modelRef = useRef(null);
   const greetingShowTimerRef = useRef(0);
-  const greetingHideTimerRef = useRef(0);
+  const speechHideTimerRef = useRef(0);
+  const speechIdleTimerRef = useRef(0);
+  const lastSpeechTsRef = useRef(0);
   const gazeRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
   const poseRef = useRef({ x: 0, y: 0 });
-  const dragRef = useRef({ active: false, moved: false, startX: 0, startY: 0, lastX: 0, lastY: 0, startTs: 0, baseX: 0, baseY: 0 });
+  const dragRef = useRef({ active: false, moved: false, startX: 0, startY: 0, baseX: 0, baseY: 0 });
   const gestureRef = useRef({ active: false, startX: 0, startY: 0, startTs: 0 });
   const lastPointerMoveTsRef = useRef(Date.now());
   const lastIdleMotionTsRef = useRef(0);
   const currentMotionGroupRef = useRef("");
 
+  const playMotion = useCallback((group) => {
+    const model = modelRef.current;
+    if (!model || typeof model.motion !== "function") {
+      return;
+    }
+    model.motion(group);
+    currentMotionGroupRef.current = group;
+  }, []);
+
+  const triggerSpeech = useCallback(
+    (text, visibleMs = 2600, force = false) => {
+      const now = Date.now();
+      if (!force && now - lastSpeechTsRef.current < 1200) {
+        return;
+      }
+      lastSpeechTsRef.current = now;
+      if (speechHideTimerRef.current) {
+        window.clearTimeout(speechHideTimerRef.current);
+      }
+      if (speechIdleTimerRef.current) {
+        window.clearTimeout(speechIdleTimerRef.current);
+      }
+      setSpeechText(text);
+      setShowSpeech(true);
+      speechHideTimerRef.current = window.setTimeout(() => {
+        setShowSpeech(false);
+      }, visibleMs);
+      speechIdleTimerRef.current = window.setTimeout(() => {
+        playMotion(IDLE_MOTION_GROUP);
+        lastIdleMotionTsRef.current = Date.now();
+      }, visibleMs + 120);
+    },
+    [playMotion]
+  );
+
   useEffect(() => {
     let disposed = false;
-
     const loadGeoAndWeather = async () => {
       const { city, latitude, longitude } = await fetchGeoContext();
       const greeting = city ? `${getTimeGreeting()}、${city}のあなたへ。` : `${getTimeGreeting()}。`;
@@ -250,35 +288,31 @@ const AssistantWidget = () => {
       if (disposed) {
         return;
       }
-
-      setGreetingText(greeting);
       setWeatherBadge({ icon, roast });
-
+      setWeatherReady(true);
       greetingShowTimerRef.current = window.setTimeout(() => {
-        setShowGreeting(true);
-        greetingHideTimerRef.current = window.setTimeout(() => {
-          setShowGreeting(false);
-        }, GREETING_VISIBLE_MS);
+        triggerSpeech(greeting, GREETING_VISIBLE_MS, true);
       }, GREETING_DELAY_MS);
     };
 
     loadGeoAndWeather();
-
     return () => {
       disposed = true;
       if (greetingShowTimerRef.current) {
         window.clearTimeout(greetingShowTimerRef.current);
       }
-      if (greetingHideTimerRef.current) {
-        window.clearTimeout(greetingHideTimerRef.current);
+      if (speechHideTimerRef.current) {
+        window.clearTimeout(speechHideTimerRef.current);
+      }
+      if (speechIdleTimerRef.current) {
+        window.clearTimeout(speechIdleTimerRef.current);
       }
     };
-  }, []);
+  }, [triggerSpeech]);
 
   useEffect(() => {
     let disposed = false;
     setCheckingModel(true);
-
     fetch(LIVE2D_MODEL_PATH, { method: "GET" })
       .then((resp) => {
         if (!disposed) {
@@ -294,7 +328,6 @@ const AssistantWidget = () => {
           setCheckingModel(false);
         }
       });
-
     return () => {
       disposed = true;
     };
@@ -313,7 +346,6 @@ const AssistantWidget = () => {
         await ensureScript(PIXI_CDN, () => Boolean(window.PIXI));
         await ensureScript(CUBISM_CORE_PATH, () => Boolean(window.Live2DCubismCore));
         await ensureScript(LIVE2D_CDN, () => Boolean(window.PIXI && window.PIXI.live2d && window.PIXI.live2d.Live2DModel));
-
         if (disposed || !live2dRef.current || !window.PIXI) {
           return;
         }
@@ -325,13 +357,12 @@ const AssistantWidget = () => {
           antialias: true,
           autoStart: true
         });
-
         live2dRef.current.innerHTML = "";
         live2dRef.current.appendChild(app.view);
 
         const Live2DModel = window.PIXI?.live2d?.Live2DModel;
         if (!Live2DModel || typeof Live2DModel.from !== "function") {
-          throw new Error("Live2D ランタイムの初期化に失敗しました（Live2DModel.from が利用できません）");
+          throw new Error("Live2D runtime is not initialized");
         }
 
         const model = await Live2DModel.from(LIVE2D_MODEL_PATH, { autoInteract: false });
@@ -357,12 +388,11 @@ const AssistantWidget = () => {
         setModelError("");
       } catch (err) {
         modelRef.current = null;
-        setModelError(err instanceof Error ? err.message : "Live2D の読み込みに失敗しました");
+        setModelError(err instanceof Error ? err.message : "Live2D load failed");
       }
     };
 
     setupLive2D();
-
     return () => {
       disposed = true;
       modelRef.current = null;
@@ -381,16 +411,13 @@ const AssistantWidget = () => {
       currentMotionGroupRef.current = "";
       return;
     }
-
     if (typeof model.stopMotions === "function") {
       model.stopMotions();
     }
-
     const motionManager = model.internalModel?.motionManager;
     if (motionManager && typeof motionManager.stopAllMotions === "function") {
       motionManager.stopAllMotions();
     }
-
     const motionManagers = model.internalModel?.motionManagers;
     if (motionManagers && typeof motionManagers === "object") {
       Object.values(motionManagers).forEach((manager) => {
@@ -399,7 +426,6 @@ const AssistantWidget = () => {
         }
       });
     }
-
     currentMotionGroupRef.current = "";
   }, []);
 
@@ -430,13 +456,8 @@ const AssistantWidget = () => {
       if (model) {
         const avatarRect = live2dRef.current?.getBoundingClientRect();
         const refRect = avatarRect || shellRef.current?.getBoundingClientRect();
-        const refCenterX = refRect
-          ? refRect.left + refRect.width * (0.5 + EYE_CENTER_BIAS_X)
-          : window.innerWidth / 2;
-        const refCenterY = refRect
-          ? refRect.top + refRect.height * (0.5 + EYE_CENTER_BIAS_Y)
-          : window.innerHeight / 2;
-
+        const refCenterX = refRect ? refRect.left + refRect.width * (0.5 + EYE_CENTER_BIAS_X) : window.innerWidth / 2;
+        const refCenterY = refRect ? refRect.top + refRect.height * (0.5 + EYE_CENTER_BIAS_Y) : window.innerHeight / 2;
         const halfW = refRect ? refRect.width * 0.22 : window.innerWidth / 2;
         const halfH = refRect ? refRect.height * 0.18 : window.innerHeight / 2;
         const normX = clamp(((gazeRef.current.x - refCenterX) / halfW) * GAZE_SENSITIVITY_X, -1, 1);
@@ -467,22 +488,12 @@ const AssistantWidget = () => {
     window.addEventListener("mousemove", onPointerMove);
     window.addEventListener("touchmove", onPointerMove, { passive: true });
     rafId = window.requestAnimationFrame(tick);
-
     return () => {
       window.removeEventListener("mousemove", onPointerMove);
       window.removeEventListener("touchmove", onPointerMove);
       window.cancelAnimationFrame(rafId);
     };
   }, [stopIdleMotionIfNeeded]);
-
-  const playMotion = useCallback((group) => {
-    const model = modelRef.current;
-    if (!model || typeof model.motion !== "function") {
-      return;
-    }
-    model.motion(group);
-    currentMotionGroupRef.current = group;
-  }, []);
 
   useEffect(() => {
     const timerId = window.setInterval(() => {
@@ -498,7 +509,6 @@ const AssistantWidget = () => {
         lastIdleMotionTsRef.current = now;
       }
     }, 500);
-
     return () => {
       window.clearInterval(timerId);
     };
@@ -508,33 +518,18 @@ const AssistantWidget = () => {
     if (!dragRef.current.active || !shellRef.current) {
       return;
     }
-
     const point = getPointerPoint(event);
     const moveX = point.x - dragRef.current.startX;
     const moveY = point.y - dragRef.current.startY;
     if (Math.abs(moveX) > 3 || Math.abs(moveY) > 3) {
       dragRef.current.moved = true;
     }
-
     const rect = shellRef.current.getBoundingClientRect();
     const maxX = Math.max(window.innerWidth - rect.width, 0);
     const maxY = Math.max(window.innerHeight - rect.height, 0);
     setPosition({ x: clamp(dragRef.current.baseX + moveX, 0, maxX), y: clamp(dragRef.current.baseY + moveY, 0, maxY) });
     event.preventDefault();
   }, []);
-
-  const playTapMotion = useCallback(() => {
-    const group = Math.random() < 0.8 ? "Tap" : "Tap@Body";
-    playMotion(group);
-  }, [playMotion]);
-
-  const playFlickMotion = useCallback((dx, dy) => {
-    if (Math.abs(dy) > Math.abs(dx)) {
-      playMotion(dy < 0 ? "FlickUp" : "FlickDown");
-      return;
-    }
-    playMotion("Flick");
-  }, [playMotion]);
 
   const onDragEnd = useCallback(() => {
     if (!dragRef.current.active) {
@@ -549,7 +544,6 @@ const AssistantWidget = () => {
     if (!shell) {
       return;
     }
-
     const point = getPointerPoint(event);
     const rect = shell.getBoundingClientRect();
     dragRef.current = {
@@ -560,11 +554,25 @@ const AssistantWidget = () => {
       baseX: rect.left,
       baseY: rect.top
     };
-
     setDragging(true);
     setPosition((prev) => (prev.x === null ? { x: rect.left, y: rect.top } : prev));
     event.preventDefault();
   }, []);
+
+  const playTapMotion = useCallback(() => {
+    playMotion(Math.random() < 0.8 ? "Tap" : "Tap@Body");
+  }, [playMotion]);
+
+  const playFlickMotion = useCallback(
+    (dx, dy) => {
+      if (Math.abs(dy) > Math.abs(dx)) {
+        playMotion(dy < 0 ? "FlickUp" : "FlickDown");
+        return;
+      }
+      playMotion("Flick");
+    },
+    [playMotion]
+  );
 
   const onAvatarGestureStart = useCallback((event) => {
     const point = getPointerPoint(event);
@@ -577,26 +585,39 @@ const AssistantWidget = () => {
     event.preventDefault();
   }, []);
 
-  const onAvatarGestureEnd = useCallback((event) => {
-    if (!gestureRef.current.active || dragRef.current.active) {
-      return;
-    }
-    const point = getPointerPoint(event);
-    const dx = point.x - gestureRef.current.startX;
-    const dy = point.y - gestureRef.current.startY;
-    const distance = Math.hypot(dx, dy);
-    const duration = Date.now() - gestureRef.current.startTs;
-    gestureRef.current.active = false;
+  const onAvatarGestureEnd = useCallback(
+    (event) => {
+      if (!gestureRef.current.active || dragRef.current.active) {
+        return;
+      }
+      const point = getPointerPoint(event);
+      const dx = point.x - gestureRef.current.startX;
+      const dy = point.y - gestureRef.current.startY;
+      const distance = Math.hypot(dx, dy);
+      const duration = Date.now() - gestureRef.current.startTs;
+      gestureRef.current.active = false;
 
-    if (distance <= TAP_DISTANCE_PX) {
-      playTapMotion();
+      if (distance <= TAP_DISTANCE_PX) {
+        playTapMotion();
+        return;
+      }
+      if (duration <= FLICK_DURATION_MS && distance >= FLICK_DISTANCE_PX) {
+        playFlickMotion(dx, dy);
+      }
+    },
+    [playFlickMotion, playTapMotion]
+  );
+
+  const onWeatherBadgeInteract = useCallback(() => {
+    if (!weatherReady) {
       return;
     }
-    const fastFlick = duration <= FLICK_DURATION_MS && distance >= FLICK_DISTANCE_PX;
-    if (fastFlick) {
-      playFlickMotion(dx, dy);
-    }
-  }, [playFlickMotion, playTapMotion]);
+    triggerSpeech(weatherBadge.roast, 2600);
+  }, [triggerSpeech, weatherBadge.roast, weatherReady]);
+
+  const onMoveHandleInteract = useCallback(() => {
+    triggerSpeech("このボタンで私を移動できるよ。", 2200);
+  }, [triggerSpeech]);
 
   useEffect(() => {
     const handleMouseMove = (event) => onDragMove(event);
@@ -615,7 +636,6 @@ const AssistantWidget = () => {
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("touchend", handleTouchEnd);
     window.addEventListener("touchcancel", handleTouchEnd);
-
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
@@ -637,16 +657,18 @@ const AssistantWidget = () => {
 
   return (
     <aside ref={shellRef} className="assistant-shell" style={shellStyle} aria-label="ブログ AI アシスタント">
-      {showGreeting && greetingText ? <div className="assistant-bubble">{greetingText}</div> : null}
+      {showSpeech && speechText ? <div className="assistant-bubble">{speechText}</div> : null}
 
-      <div className="assistant-weather-badge" role="note" aria-label="現在の天気コメント">
-        <span className="assistant-weather-icon" aria-hidden="true">
-          {weatherBadge.icon}
-        </span>
-        <div className="assistant-weather-tooltip">{weatherBadge.roast}</div>
-      </div>
+      {weatherReady ? (
+        <div className="assistant-weather-badge" role="note" aria-label="現在の天気コメント" onMouseEnter={onWeatherBadgeInteract} onClick={onWeatherBadgeInteract} onTouchStart={onWeatherBadgeInteract}>
+          <span className="assistant-weather-icon" aria-hidden="true">
+            {weatherBadge.icon}
+          </span>
+          <div className="assistant-weather-tooltip">{weatherBadge.roast}</div>
+        </div>
+      ) : null}
 
-      <button type="button" className="assistant-move-handle" aria-label="move assistant" onMouseDown={onDragStart} onTouchStart={onDragStart}>
+      <button type="button" className="assistant-move-handle" aria-label="move assistant" onMouseDown={onDragStart} onTouchStart={onDragStart} onMouseEnter={onMoveHandleInteract} onFocus={onMoveHandleInteract}>
         <span aria-hidden="true">↕↔</span>
       </button>
 

@@ -11,7 +11,7 @@
 .assistant-bubble {
   position: absolute;
   right: 8px;
-  bottom: calc(100% + 10px);
+  bottom: calc(96% + 8px);
   max-width: 300px;
   padding: 8px 12px;
   border-radius: 14px;
@@ -27,7 +27,7 @@
 .assistant-weather-badge {
   position: absolute;
   right: 10px;
-  bottom: calc(100% + 8px);
+  bottom: calc(86% + 6px);
   z-index: 2;
 }
 
@@ -92,8 +92,8 @@
 
 .assistant-move-handle {
   position: absolute;
-  left: 8px;
-  top: 8px;
+  right: 10px;
+  bottom: calc(76% + 6px);
   z-index: 3;
   width: 30px;
   height: 30px;
@@ -177,8 +177,17 @@
     width: 26px;
     height: 26px;
     font-size: 10px;
-    left: 6px;
-    top: 6px;
+    right: 6px;
+    bottom: calc(74% + 6px);
+  }
+
+  .assistant-bubble {
+    bottom: calc(94% + 6px);
+    max-width: 210px;
+  }
+
+  .assistant-weather-badge {
+    bottom: calc(84% + 6px);
   }
 
   .assistant-weather-badge {
