@@ -28,6 +28,7 @@ const ArticleManage = () => {
                         isShowDeleteButton={true}
                         isShowEditButton={true}
                         isShowPublicSwitch={true}
+                        isShowReadHistoryButton={isAdmin}
                         manageMode={true}
                     />
                 )}

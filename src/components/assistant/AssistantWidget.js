@@ -33,6 +33,7 @@ const TAP_DISTANCE_PX = 3;
 const IDLE_MOTION_GROUP = "IdleManual";
 const ASSISTANT_CONTEXT_CACHE_KEY = "assistant_context_v1";
 const ASSISTANT_CONTEXT_CACHE_TTL_MS = 10 * 60 * 1000;
+const ASSISTANT_INTERACTION_ENDPOINT = "/api/assistant/interaction";
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -268,6 +269,27 @@ const fetchAssistantContextFromBackend = async () => {
   } catch (_) {
     return null;
   }
+};
+
+const sendAssistantInteraction = (interactionAction, interactionPayload = {}) => {
+  const safeAction = typeof interactionAction === "string" ? interactionAction.trim() : "";
+  if (!safeAction) {
+    return;
+  }
+  const payload =
+    interactionPayload && typeof interactionPayload === "object" ? interactionPayload : {};
+
+  fetch(ASSISTANT_INTERACTION_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      interactionType: "AVATAR",
+      interactionAction: safeAction,
+      interactionPayload: payload
+    })
+  }).catch(() => {
+    // noop
+  });
 };
 
 const AssistantWidget = () => {
@@ -644,10 +666,18 @@ const AssistantWidget = () => {
 
       if (distance <= TAP_DISTANCE_PX) {
         playTapMotion();
+        sendAssistantInteraction("tap", { distance, duration });
         return;
       }
       if (duration <= FLICK_DURATION_MS && distance >= FLICK_DISTANCE_PX) {
         playFlickMotion(dx, dy);
+        sendAssistantInteraction("flick", {
+          dx: Number(dx.toFixed(2)),
+          dy: Number(dy.toFixed(2)),
+          distance: Number(distance.toFixed(2)),
+          duration,
+          direction: Math.abs(dy) > Math.abs(dx) ? (dy < 0 ? "up" : "down") : dx < 0 ? "left" : "right"
+        });
       }
     },
     [playFlickMotion, playTapMotion]

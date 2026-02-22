@@ -45,7 +45,9 @@ const renderItem = (
   showEditButton,
   handleRefresh,
   showPublicSwitch,
-  handleTogglePublic
+  handleTogglePublic,
+  manageMode,
+  showReadHistoryButton
 ) => (
   <article className="article-card" key={item.id}>
     <div className="article-card__main">
@@ -76,6 +78,11 @@ const renderItem = (
     </div>
 
     <Space size="middle">
+      {manageMode === true && showReadHistoryButton === true && (
+        <Button onClick={() => (window.location.href = `/article/readHistory/${item.id}`)}>
+          Read History
+        </Button>
+      )}
       {showDeleteButton === true && (
         <Button type="primary" danger onClick={() => handleDelete(item.id)}>
           Delete
@@ -95,6 +102,7 @@ const FindArticle = ({
   isShowDeleteButton = false,
   isShowEditButton = false,
   isShowPublicSwitch = false,
+  isShowReadHistoryButton = false,
   manageMode = false,
 }) => {
   const handleTogglePublic = async (id, isPublic, handleRefresh) => {
@@ -128,7 +136,9 @@ const FindArticle = ({
             showEditButton,
             handleRefresh,
             isShowPublicSwitch,
-            handleTogglePublic
+            handleTogglePublic,
+            manageMode,
+            isShowReadHistoryButton
           )
         }
         showDeleteButton={isShowDeleteButton}
