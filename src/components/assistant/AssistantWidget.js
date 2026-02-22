@@ -2,7 +2,10 @@
 import "../../css/assistantWidget.css";
 
 const PUBLIC_BASE = process.env.PUBLIC_URL || "";
+const API_HOST = (process.env.REACT_APP_API_HOST || "").replace(/\/$/, "");
+const API_BASE = `${API_HOST}/api`;
 const toPublicPath = (path) => `${PUBLIC_BASE}${path}`;
+const toApiPath = (path) => `${API_BASE}${path}`;
 const LIVE2D_MODEL_PATH = toPublicPath("/live2d/hiyori/hiyori_pro_t11.model3.json");
 const FALLBACK_IMAGE_PATH = toPublicPath("/static/assistant/hiyori-placeholder.jpg");
 const PIXI_CDN = "https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js";
@@ -33,7 +36,7 @@ const TAP_DISTANCE_PX = 3;
 const IDLE_MOTION_GROUP = "IdleManual";
 const ASSISTANT_CONTEXT_CACHE_KEY = "assistant_context_v1";
 const ASSISTANT_CONTEXT_CACHE_TTL_MS = 10 * 60 * 1000;
-const ASSISTANT_INTERACTION_ENDPOINT = "/api/assistant/interaction";
+const ASSISTANT_INTERACTION_ENDPOINT = toApiPath("/assistant/interaction");
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
@@ -250,7 +253,7 @@ const writeCachedAssistantContext = (data) => {
 
 const fetchAssistantContextFromBackend = async () => {
   try {
-    const resp = await fetch("/api/assistant/context");
+    const resp = await fetch(toApiPath("/assistant/context"));
     if (!resp.ok) {
       return null;
     }
