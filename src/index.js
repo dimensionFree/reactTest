@@ -13,6 +13,7 @@ import EditArticle from "./pages/EditArticle";
 import ArticleManage from "./pages/ArticleManage";
 import ArticleSearch from "./pages/ArticleSearch";
 import ArticleReadHistory from "./pages/ArticleReadHistory";
+import BrowseRecordManage from "./pages/BrowseRecordManage";
 import About from "./pages/About";
 import AssistantWidget from "./components/assistant/AssistantWidget";
 
@@ -122,6 +123,7 @@ const AppRouter = () => (
       <Route path="/userDetail/:id" component={UserDetail} />
       <Route path="/article/read/:id" component={ReadArticle} />
       <Route path="/article/readHistory/:id" component={ArticleReadHistory} />
+      <Route path="/recordManage" component={BrowseRecordManage} />
       <Route path="/article/edit/:id" component={EditArticle} />
       <Route path="/articleManage" component={ArticleManage} />
       <Route path="/article/search/:keyword" component={ArticleSearch} />

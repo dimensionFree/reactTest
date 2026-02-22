@@ -1,138 +1,230 @@
-﻿import React, {useEffect, useState} from 'react';
+﻿import React, { useEffect, useMemo, useRef, useState } from "react";
 import RequestSendUtils from "../Utils/RequestSendUtils";
 import Navibar from "../components/Navibar";
-import {useParams, useHistory} from 'react-router-dom';
-import {message} from "antd";
-import remarkGfm from "remark-gfm";
+import { useParams, useHistory } from "react-router-dom";
+import { message } from "antd";
 import MarkdownRenderer from "../components/markdown/MarkdownRenderer";
 import SEO from "../components/common/SEO";
 import "../css/formSurface.css";
 
+const DRAFT_SAVE_DELAY_MS = 1200;
+const HEARTBEAT_INTERVAL_MS = 4 * 60 * 1000;
+
 const EditArticle = () => {
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-    const {id} = useParams(); // 浠庤矾鐢卞弬鏁颁腑鑾峰彇 id
-    const history = useHistory();
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [isPublic, setIsPublic] = useState(true);
+  const [initialized, setInitialized] = useState(false);
+  const [draftUpdatedAt, setDraftUpdatedAt] = useState("");
+  const { id } = useParams();
+  const history = useHistory();
+  const restoredRef = useRef(false);
 
-    // 濡傛灉鏄紪杈戞ā寮忥紝浠庡悗绔幏鍙栨枃绔犳暟鎹?
-    useEffect(() => {
-        if (id && id !== 'NEW') {
-            // 璋冪敤鍚庣 API 鑾峰彇鏂囩珷鏁版嵁
-            const fetchArticle = async () => {
-                try {
-                    let token = RequestSendUtils.getToken();
-                    const response = await RequestSendUtils.sendGetWithReturn(`/article/manage/find/${id}`, token);
-                    // const response = await RequestSendUtils.sendGetWithReturn("/article/find/"+id, null);
-                    const data = await response.dataContent;
+  const draftKey = useMemo(() => {
+    const userInfo = RequestSendUtils.getUserInfo();
+    const userId = userInfo?.user4Display?.id || "anonymous";
+    return `article_draft_${userId}_${id}`;
+  }, [id]);
 
-                    setTitle(data.title);
-                    setContent(data.content);
-                } catch (error) {
-                    message.error("Error fetching article: " + error)
-                }
-            };
-            fetchArticle();
+  const readDraft = () => {
+    try {
+      const raw = localStorage.getItem(draftKey);
+      if (!raw) {
+        return null;
+      }
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const clearDraft = () => {
+    localStorage.removeItem(draftKey);
+    setDraftUpdatedAt("");
+  };
+
+  useEffect(() => {
+    const draft = readDraft();
+    if (id === "NEW") {
+      if (draft) {
+        setTitle(draft.title || "");
+        setContent(draft.content || "");
+        setIsPublic(draft.isPublic !== false);
+        setDraftUpdatedAt(draft.updatedAt || "");
+        if (!restoredRef.current) {
+          message.info("已恢复本地草稿");
+          restoredRef.current = true;
         }
-    }, [id]);
+      }
+      setInitialized(true);
+      return;
+    }
 
-    const handleContentChange = (e) => {
-        setContent(e.target.value);
-    };
-
-    const handleTitleChange = (e) => {
-        setTitle(e.target.value);
-    };
-
-    // 淇濆瓨鎴栨洿鏂版枃绔?
-    const handleSave = async () => {
-        try {
-            let token = RequestSendUtils.getToken();
-
-            let payload = {
-                title: title,
-                content: content
-            };
-
-            if (id === 'NEW') {
-                // 鍒涘缓鏂版枃绔?
-                const response = await RequestSendUtils.sendPostWithReturn("/article/create", payload, token);
-                const data = await response.dataContent;
-                if (data) {
-                    message.success("Save successful! ");
-                    history.push("/article/read/" + data);  // 浣跨敤 React Router 杩涜璺敱璺宠浆
-                }
-            } else {
-                // 鏇存柊宸叉湁鏂囩珷
-                const response = await RequestSendUtils.sendPutWithReturn(`/article/update/${id}`, payload, token);
-                if (response) {
-                    message.success("Update successful!");
-                    history.push("/article/read/" + id);  // 浣跨敤 React Router 杩涜璺敱璺宠浆
-
-                }
-            }
-        } catch (error) {
-            message.error(error.response.data.body.message);
-
+    let cancelled = false;
+    const fetchArticle = async () => {
+      try {
+        const token = RequestSendUtils.getToken();
+        const response = await RequestSendUtils.sendGetWithReturn(`/article/manage/find/${id}`, token);
+        const data = response?.dataContent || {};
+        if (cancelled) {
+          return;
         }
+
+        if (draft && (draft.title || draft.content)) {
+          setTitle(draft.title || data.title || "");
+          setContent(draft.content || data.content || "");
+          setIsPublic(draft.isPublic !== false);
+          setDraftUpdatedAt(draft.updatedAt || "");
+          if (!restoredRef.current) {
+            message.info("检测到本地草稿，已自动恢复");
+            restoredRef.current = true;
+          }
+        } else {
+          setTitle(data.title || "");
+          setContent(data.content || "");
+          setIsPublic(data.isPublic !== false);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          message.error("Error fetching article");
+        }
+      } finally {
+        if (!cancelled) {
+          setInitialized(true);
+        }
+      }
     };
 
-    return (
-        <div >
-            <SEO title={"文章編集"} description={"articleEdit"}/>
-            <Navibar/>
-            <div className="container-fluid my-5 form-surface">
-                <h1>{id === 'NEW' ? "Create New Article" : "Edit Article"}</h1>
-                <div className="row" style={{display: 'flex', height: '70vh'}}>
-                    {/* 宸﹁竟鐨勮緭鍏ュ尯鍩?*/}
-                    <div className="col-md-6" style={{height: '100%'}}>
-                        <div className="form-group">
-                            <label htmlFor="title">Article Title</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="title"
-                                value={title}
-                                onChange={handleTitleChange}
-                                placeholder="Enter title"
-                            />
-                        </div>
-                        <div className="form-group" style={{height: 'calc(100% - 60px)'}}>
-                            <label htmlFor="content">Article Content (Markdown format)</label>
-                            <textarea
-                                className="form-control"
-                                id="content"
-                                value={content}
-                                onChange={handleContentChange}
-                                placeholder="Enter content in Markdown format"
-                                style={{height: '100%', resize: 'none'}}
-                            />
-                        </div>
+    fetchArticle();
+    return () => {
+      cancelled = true;
+    };
+  }, [id, draftKey]);
 
-                        {/* 淇濆瓨鎸夐挳 */}
-                        <button onClick={handleSave} className="btn btn-primary mt-5">
-                            {id === 'NEW' ? "Save Article" : "Update Article"}
-                        </button>
-                    </div>
+  useEffect(() => {
+    if (!initialized) {
+      return undefined;
+    }
+    const timer = setTimeout(() => {
+      const hasValue = (title || "").trim() !== "" || (content || "").trim() !== "";
+      if (!hasValue) {
+        return;
+      }
+      const updatedAt = new Date().toISOString();
+      localStorage.setItem(
+        draftKey,
+        JSON.stringify({
+          title,
+          content,
+          isPublic,
+          updatedAt,
+          articleId: id,
+        })
+      );
+      setDraftUpdatedAt(updatedAt);
+    }, DRAFT_SAVE_DELAY_MS);
 
-                    {/* 鍙宠竟鐨勯瑙堝尯鍩?*/}
-                    <div className="col-md-6" style={{height: '100%'}}>
-                        <h2>Preview</h2>
-                        <div className="preview-panel p-3" style={{textAlign: 'left', minHeight: '50vh', height: 'auto'}}>
-                            <h3 style={{textAlign: 'center'}}>{title}</h3>
-                            <MarkdownRenderer content={content}></MarkdownRenderer>
-                        </div>
+    return () => clearTimeout(timer);
+  }, [title, content, isPublic, draftKey, id, initialized]);
 
-                    </div>
-                </div>
+  useEffect(() => {
+    const timer = setInterval(() => {
+      RequestSendUtils.keepAlive().catch(() => {
+        // keepAlive 失败时请求层会尝试刷新，刷新失败才退出
+      });
+    }, HEARTBEAT_INTERVAL_MS);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      const token = RequestSendUtils.getToken();
+      const payload = { title, content, isPublic };
+
+      if (id === "NEW") {
+        const response = await RequestSendUtils.sendPostWithReturn("/article/create", payload, token);
+        const newId = response?.dataContent;
+        if (newId) {
+          clearDraft();
+          message.success("Save successful!");
+          history.push("/article/read/" + newId);
+        }
+      } else {
+        const response = await RequestSendUtils.sendPutWithReturn(`/article/update/${id}`, payload, token);
+        if (response) {
+          clearDraft();
+          message.success("Update successful!");
+          history.push("/article/read/" + id);
+        }
+      }
+    } catch (error) {
+      message.error(error?.response?.data?.message || "Save failed");
+    }
+  };
+
+  return (
+    <div>
+      <SEO title={"文章編集"} description={"articleEdit"} />
+      <Navibar />
+      <div className="container-fluid my-5 form-surface">
+        <h1>{id === "NEW" ? "Create New Article" : "Edit Article"}</h1>
+        {draftUpdatedAt && (
+          <p className="text-muted" style={{ marginBottom: 8 }}>
+            Draft autosaved: {draftUpdatedAt.replace("T", " ").slice(0, 19)}
+          </p>
+        )}
+        <div className="row" style={{ display: "flex", height: "70vh" }}>
+          <div className="col-md-6" style={{ height: "100%" }}>
+            <div className="form-group">
+              <label htmlFor="title">Article Title</label>
+              <input
+                type="text"
+                className="form-control"
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Enter title"
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="isPublic" style={{ marginRight: 8 }}>
+                Public
+              </label>
+              <input
+                id="isPublic"
+                type="checkbox"
+                checked={isPublic}
+                onChange={(e) => setIsPublic(e.target.checked)}
+              />
+            </div>
+            <div className="form-group" style={{ height: "calc(100% - 60px)" }}>
+              <label htmlFor="content">Article Content (Markdown format)</label>
+              <textarea
+                className="form-control"
+                id="content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Enter content in Markdown format"
+                style={{ height: "100%", resize: "none" }}
+              />
             </div>
 
+            <button onClick={handleSave} className="btn btn-primary mt-5">
+              {id === "NEW" ? "Save Article" : "Update Article"}
+            </button>
+          </div>
+
+          <div className="col-md-6" style={{ height: "100%" }}>
+            <h2>Preview</h2>
+            <div className="preview-panel p-3" style={{ textAlign: "left", minHeight: "50vh", height: "auto" }}>
+              <h3 style={{ textAlign: "center" }}>{title}</h3>
+              <MarkdownRenderer content={content} />
+            </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default EditArticle;
-
-
-
-
-

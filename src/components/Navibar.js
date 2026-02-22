@@ -75,6 +75,11 @@ const Navibar = () => {
               user management
             </a>
           )}
+          {isAdmin && (
+            <a className="dropdown-item" href="/recordManage">
+              browse record management
+            </a>
+          )}
           <a className="dropdown-item" href={`/articleManage/${userId}`}>
             article management
           </a>

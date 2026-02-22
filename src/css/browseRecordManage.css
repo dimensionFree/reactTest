@@ -1,0 +1,37 @@
+.browse-record-manage-page .record-filter-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.browse-record-manage-page .record-filter-row .ant-input-affix-wrapper {
+  max-width: 360px;
+}
+
+.browse-record-manage-page .record-filter-row-wide .ant-input-affix-wrapper {
+  max-width: 280px;
+}
+
+.browse-record-manage-page .record-date-row label {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.browse-record-manage-page .record-date-row .form-control {
+  width: 180px;
+}
+
+@media (max-width: 768px) {
+  .browse-record-manage-page .record-filter-row {
+    flex-direction: column;
+  }
+
+  .browse-record-manage-page .record-filter-row .ant-input-affix-wrapper,
+  .browse-record-manage-page .record-filter-row-wide .ant-input-affix-wrapper {
+    max-width: none;
+    width: 100%;
+  }
+}

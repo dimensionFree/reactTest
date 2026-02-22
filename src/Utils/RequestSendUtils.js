@@ -1,200 +1,193 @@
-import axios from "axios";
-import {message} from "antd";
-
+﻿import axios from "axios";
+import { message } from "antd";
 
 const host = process.env.REACT_APP_API_HOST || "";
-const hostAndPort=host+"/api"
+const hostAndPort = host + "/api";
+const USER_INFO_KEY = "userInfo";
+const REFRESH_AHEAD_SECONDS = 120;
 
 export default class RequestSendUtils {
+  static refreshPromise = null;
 
-    static sendPostWithReturn(url, payload, token) {
-        let headers = {
-            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
-            // 还可以添加其他自定义请求头
-            // 'Authorization': 'Bearer YourAccessToken' // 例如添加身份验证令牌
+  static getUserInfo() {
+    try {
+      return JSON.parse(localStorage.getItem(USER_INFO_KEY));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static setUserInfo(userInfo) {
+    localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
+  }
+
+  static decodeJwtPayload(token) {
+    try {
+      const base64Payload = token.split(".")[1];
+      if (!base64Payload) {
+        return null;
+      }
+      const normalized = base64Payload.replace(/-/g, "+").replace(/_/g, "/");
+      const decoded = atob(normalized);
+      return JSON.parse(decoded);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  static getTokenExpireAtMillis(token) {
+    const payload = this.decodeJwtPayload(token);
+    if (!payload || !payload.exp) {
+      return 0;
+    }
+    return payload.exp * 1000;
+  }
+
+  static isTokenExpiringSoon(token, aheadSeconds = REFRESH_AHEAD_SECONDS) {
+    if (!token) {
+      return false;
+    }
+    const expireAt = this.getTokenExpireAtMillis(token);
+    if (!expireAt) {
+      return false;
+    }
+    return expireAt - Date.now() <= aheadSeconds * 1000;
+  }
+
+  static isAuthError(error) {
+    const status = error?.response?.status;
+    const messageText = (error?.response?.data?.message || "").toLowerCase();
+    const errorCode = error?.response?.data?.body?.code;
+    return (
+      errorCode === "3000" ||
+      status === 401 ||
+      (status === 400 && messageText.includes("token")) ||
+      messageText.includes("重新登录") ||
+      messageText.includes("失效")
+    );
+  }
+
+  static async refreshAccessToken() {
+    const userInfo = this.getUserInfo();
+    const refreshToken = userInfo?.refreshToken;
+    if (!refreshToken) {
+      throw new Error("No refresh token");
+    }
+    const response = await axios.post(
+      hostAndPort + "/user/refresh",
+      { refreshToken },
+      { headers: { "Content-Type": "application/json" } }
+    );
+    const nextInfo = response?.data?.dataContent;
+    if (!nextInfo || !nextInfo.token) {
+      throw new Error("Refresh failed");
+    }
+    this.setUserInfo(nextInfo);
+    return nextInfo.token;
+  }
+
+  static async ensureValidToken(forceRefresh = false) {
+    const currentToken = this.getToken();
+    if (!currentToken) {
+      return "";
+    }
+    if (!forceRefresh && !this.isTokenExpiringSoon(currentToken)) {
+      return currentToken;
+    }
+    if (!this.refreshPromise) {
+      this.refreshPromise = this.refreshAccessToken().finally(() => {
+        this.refreshPromise = null;
+      });
+    }
+    return this.refreshPromise;
+  }
+
+  static async sendRequestRaw(method, url, payload, token, retried = false) {
+    const useAuth = !!token;
+    const headers = { "Content-Type": "application/json" };
+    if (useAuth) {
+      await this.ensureValidToken(false);
+      headers.Authorization = "Bearer " + this.getToken();
+    }
+    try {
+      return await axios({
+        method,
+        url: hostAndPort + url,
+        data: payload,
+        headers,
+      });
+    } catch (error) {
+      if (useAuth && !retried && this.isAuthError(error)) {
+        try {
+          await this.ensureValidToken(true);
+          return await this.sendRequestRaw(method, url, payload, this.getToken(), true);
+        } catch (refreshError) {
+          this.quitUser();
+          throw refreshError;
         }
-        this.setToken(token, headers);
-        return  axios.post(hostAndPort + url,
-            payload
-            , {
-                headers
-            }).then((response) => {
-            // 返回成功的结果
-            return response.data;
-        }).catch((error) => {
-                RequestSendUtils.checkQuit(error);
-                throw error;
-            });
+      }
+      if (useAuth && this.isAuthError(error)) {
+        this.quitUser();
+      }
+      throw error;
     }
+  }
 
+  static async sendPostWithReturn(url, payload, token) {
+    const response = await this.sendRequestRaw("post", url, payload, token);
+    return response.data;
+  }
 
-    static checkQuit(error) {
-        // 安全访问 error.response.data.body.code，防止未定义属性导致错误
-        console.log("checking quit")
-        const errorCode = error.response?.data?.body?.code;
-        console.log(errorCode)
+  static async sendGetWithReturn(url, token) {
+    const response = await this.sendRequestRaw("get", url, null, token);
+    return response.data;
+  }
 
-        if (errorCode === "3000") {
-            // 如果是 token 失效的错误码，调用退出登录逻辑
-            RequestSendUtils.quitUser();
-        }
+  static async sendPutWithReturn(url, payload, token) {
+    const response = await this.sendRequestRaw("put", url, payload, token);
+    return response.data;
+  }
+
+  static async sendPatchWithReturn(url, payload, token) {
+    const response = await this.sendRequestRaw("patch", url, payload, token);
+    return response.data;
+  }
+
+  static async sendDeleteWithReturn(url, token) {
+    return this.sendRequestRaw("delete", url, null, token);
+  }
+
+  static sendGet(url, token, callBackFunc, errbackFunc) {
+    this.sendRequestRaw("get", url, null, token)
+      .then((response) => callBackFunc(response))
+      .catch((error) => {
+        message.error(error?.response?.data?.message || "Error occurs");
+        errbackFunc(error);
+      });
+  }
+
+  static sendDelete(url, token, callBackFunc, errbackFunc) {
+    this.sendRequestRaw("delete", url, null, token)
+      .then((response) => callBackFunc(response))
+      .catch((error) => errbackFunc(error));
+  }
+
+  static getToken() {
+    const userInfo = this.getUserInfo();
+    return userInfo?.token || "";
+  }
+
+  static async keepAlive() {
+    const token = this.getToken();
+    if (!token) {
+      return false;
     }
+    await this.sendGetWithReturn("/user/session/ping", token);
+    return true;
+  }
 
-    static setToken(token, headers) {
-
-        if (token) {
-            headers.Authorization = "Bearer " + token;
-        }
-    }
-
-    static sendGet(url, token, callBackFunc, errbackFunc) {
-        let headers = {
-            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
-            // 还可以添加其他自定义请求头
-        }
-
-        this.setToken(token, headers);
-        axios.get(hostAndPort + url,{
-            headers
-        }).then(function (response) {
-            console.log("response")
-            callBackFunc(response);
-        }).catch(function (error) {
-            console.log("error")
-            console.log(error.response)
-            message.error(error.response?.data?.message || "Error occurs");
-            RequestSendUtils.checkQuit(error);
-            errbackFunc(error);
-        });
-    }
-
-
-    static sendGetWithReturn(url, token) {
-        let headers = {
-            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
-            // 还可以添加其他自定义请求头
-        }
-
-        this.setToken(token, headers);
-
-        // 返回一个 Promise
-        return axios.get(hostAndPort + url, {
-            headers,
-        })
-            .then((response) => {
-                // 返回成功的结果
-                return response.data;
-            })
-            .catch((error) => {
-                RequestSendUtils.checkQuit(error);
-
-                // 抛出错误以便在调用时进行处理
-                throw error;
-            });
-
-    }
-
-
-    static sendPutWithReturn(url,payload, token) {
-        let headers = {
-            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
-            // 还可以添加其他自定义请求头
-        }
-
-        this.setToken(token, headers);
-
-        // 返回一个 Promise
-        return axios.put(hostAndPort + url,payload, {
-            headers,
-        })
-            .then((response) => {
-                // 返回成功的结果
-                return response.data;
-            })
-            .catch((error) => {
-                RequestSendUtils.checkQuit(error);
-
-                // 抛出错误以便在调用时进行处理
-                throw error;
-            });
-
-    }
-    static sendPatchWithReturn(url,payload, token) {
-        let headers = {
-            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
-            // 还可以添加其他自定义请求头
-        }
-
-        this.setToken(token, headers);
-
-        // 返回一个 Promise
-        return axios.patch(hostAndPort + url,payload, {
-            headers,
-        })
-            .then((response) => {
-                // 返回成功的结果
-                return response.data;
-            })
-            .catch((error) => {
-                RequestSendUtils.checkQuit(error);
-
-                // 抛出错误以便在调用时进行处理
-                throw error;
-            });
-
-    }
-
-
-    static sendDelete(url, token, callBackFunc, errbackFunc) {
-        let headers = {
-            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
-            // 还可以添加其他自定义请求头
-        }
-
-        this.setToken(token, headers);
-        axios.delete(hostAndPort + url,{
-            headers
-        }).then(function (response) {
-            callBackFunc(response);
-        }).catch(function (error) {
-            RequestSendUtils.checkQuit(error);
-
-            errbackFunc(error);
-        });
-    }
-    static sendDeleteWithReturn(url, token) {
-        let headers = {
-            'Content-Type': 'application/json', // 设置请求内容类型为 JSON
-            // 还可以添加其他自定义请求头
-        }
-
-        this.setToken(token, headers);
-        return  axios.delete(hostAndPort + url,{
-            headers
-        }).then(function (response) {
-            return response;
-        }).catch(function (error) {
-            RequestSendUtils.checkQuit(error);
-
-            throw error;
-        });
-    }
-
-
-
-    static getToken(){
-        // 从 localStorage 中获取用户信息
-        var token="";
-        const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-        if (userInfo) {
-            token = userInfo.token;
-        }
-        return token;
-    }
-
-    static quitUser() {
-        localStorage.removeItem("userInfo")
-        window.location.href = "/"
-    }
-
+  static quitUser() {
+    localStorage.removeItem(USER_INFO_KEY);
+    window.location.href = "/";
+  }
 }
