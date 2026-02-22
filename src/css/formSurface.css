@@ -85,3 +85,133 @@
   border-radius: 10px;
 }
 
+.edit-article-page {
+  padding: 22px;
+}
+
+.edit-article-page .edit-article-topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.edit-article-page .edit-article-title {
+  margin: 0;
+}
+
+.edit-article-page .edit-article-subtitle {
+  margin: 6px 0 0;
+  color: #b7d8f2;
+  font-size: 0.95rem;
+}
+
+.edit-article-page .edit-article-save-btn {
+  min-width: 168px;
+  font-weight: 600;
+}
+
+.edit-article-page .edit-article-status-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.edit-article-page .edit-article-status-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 12px;
+  background: rgba(88, 189, 255, 0.22);
+  color: #d7f0ff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.edit-article-page .edit-article-status-text {
+  color: #c8deef;
+  font-size: 0.9rem;
+}
+
+.edit-article-page .edit-article-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  height: 82vh;
+}
+
+.edit-article-page .edit-article-pane {
+  min-width: 0;
+  height: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(166, 204, 235, 0.34);
+  background: rgba(15, 36, 57, 0.55);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.edit-article-page .edit-article-pane-header {
+  border-bottom: 1px solid rgba(166, 204, 235, 0.28);
+  padding: 10px 14px;
+  color: #d6eaf9;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.edit-article-page .edit-article-pane-body {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+}
+
+.edit-article-page .edit-article-public-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.edit-article-page .edit-article-textarea-wrap {
+  flex: 1;
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-article-page .edit-article-textarea {
+  height: 100%;
+  resize: none;
+}
+
+.edit-article-page .edit-article-preview-panel {
+  margin: 14px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  height: calc(100% - 26px);
+  overflow-y: auto;
+}
+
+@media (max-width: 991px) {
+  .edit-article-page .edit-article-topbar {
+    flex-direction: column;
+  }
+
+  .edit-article-page .edit-article-save-btn {
+    width: 100%;
+  }
+
+  .edit-article-page .edit-article-layout {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .edit-article-page .edit-article-pane {
+    min-height: 56vh;
+  }
+}
+

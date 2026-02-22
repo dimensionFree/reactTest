@@ -138,6 +138,14 @@ const EditArticle = () => {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      syncPreviewScroll();
+    }, 0);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content]);
+
   const handleSave = async () => {
     try {
       const token = RequestSendUtils.getToken();
@@ -184,67 +192,77 @@ const EditArticle = () => {
     <div>
       <SEO title={"文章編集"} description={"articleEdit"} />
       <Navibar />
-      <div className="container-fluid my-5 form-surface">
-        <h1>{id === "NEW" ? "Create New Article" : "Edit Article"}</h1>
-        {draftUpdatedAt && (
-          <p className="text-muted" style={{ marginBottom: 8 }}>
-            Draft autosaved: {draftUpdatedAt.replace("T", " ").slice(0, 19)}
-          </p>
-        )}
-        <div className="row" style={{ display: "flex", height: "80vh" }}>
-          <div className="col-md-6" style={{ height: "100%" }}>
-            <div className="form-group">
-              <label htmlFor="title">Article Title</label>
-              <input
-                type="text"
-                className="form-control"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter title"
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="isPublic" style={{ marginRight: 8 }}>
-                Public
-              </label>
-              <input
-                id="isPublic"
-                type="checkbox"
-                checked={isPublic}
-                onChange={(e) => setIsPublic(e.target.checked)}
-              />
-            </div>
-            <div className="form-group" style={{ height: "calc(100% - 60px)" }}>
-              <label htmlFor="content">Article Content (Markdown format)</label>
-              <textarea
-                className="form-control"
-                id="content"
-                ref={editorRef}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                onScroll={syncPreviewScroll}
-                placeholder="Enter content in Markdown format"
-                style={{ height: "100%", resize: "none" }}
-              />
-            </div>
-
-            <button onClick={handleSave} className="btn btn-primary mt-5">
-              {id === "NEW" ? "Save Article" : "Update Article"}
-            </button>
+      <div className="container-fluid my-5 form-surface edit-article-page">
+        <div className="edit-article-topbar">
+          <div>
+            <h1 className="edit-article-title">{id === "NEW" ? "Create New Article" : "Edit Article"}</h1>
+            <p className="edit-article-subtitle">Markdown writing workspace with live synchronized preview</p>
           </div>
+          <button onClick={handleSave} className="btn btn-primary edit-article-save-btn">
+            {id === "NEW" ? "Save Article" : "Update Article"}
+          </button>
+        </div>
 
-          <div className="col-md-6" style={{ height: "100%" }}>
-            <h2>Preview</h2>
+        <div className="edit-article-status-row">
+          <span className="edit-article-status-chip">{isPublic ? "Public" : "Private"}</span>
+          {draftUpdatedAt && (
+            <span className="edit-article-status-text">
+              Draft autosaved: {draftUpdatedAt.replace("T", " ").slice(0, 19)}
+            </span>
+          )}
+        </div>
+
+        <div className="edit-article-layout">
+          <section className="edit-article-pane edit-article-editor-pane">
+            <header className="edit-article-pane-header">Editor</header>
+            <div className="edit-article-pane-body">
+              <div className="form-group">
+                <label htmlFor="title">Article Title</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Enter title"
+                />
+              </div>
+              <div className="form-group edit-article-public-row">
+                <label htmlFor="isPublic" style={{ marginRight: 8 }}>
+                  Public
+                </label>
+                <input
+                  id="isPublic"
+                  type="checkbox"
+                  checked={isPublic}
+                  onChange={(e) => setIsPublic(e.target.checked)}
+                />
+              </div>
+              <div className="form-group edit-article-textarea-wrap">
+                <label htmlFor="content">Article Content (Markdown format)</label>
+                <textarea
+                  className="form-control edit-article-textarea"
+                  id="content"
+                  ref={editorRef}
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  onScroll={syncPreviewScroll}
+                  placeholder="Enter content in Markdown format"
+                />
+              </div>
+            </div>
+          </section>
+
+          <section className="edit-article-pane edit-article-preview-pane">
+            <header className="edit-article-pane-header">Preview</header>
             <div
-              className="preview-panel p-3"
+              className="preview-panel p-3 edit-article-preview-panel"
               ref={previewRef}
-              style={{ textAlign: "left", minHeight: "62vh", height: "calc(100% - 42px)", overflowY: "auto" }}
             >
               <h3 style={{ textAlign: "center" }}>{title}</h3>
               <MarkdownRenderer content={content} className="markdown-body--preview" />
             </div>
-          </div>
+          </section>
         </div>
       </div>
     </div>
