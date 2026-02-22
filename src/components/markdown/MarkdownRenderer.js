@@ -4,9 +4,9 @@ import React from "react";
 import remarkGfm from "remark-gfm";
 import "../../css/markdown.css";
 
-const MarkdownRenderer = ({ content = "" }) => (
+const MarkdownRenderer = ({ content = "", className = "" }) => (
   <ReactMarkdown
-    className="markdown-body"
+    className={`markdown-body ${className}`.trim()}
     remarkPlugins={[remarkGfm]}
     components={{
       code({ className, children }) {

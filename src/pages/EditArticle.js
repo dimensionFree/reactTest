@@ -19,6 +19,8 @@ const EditArticle = () => {
   const { id } = useParams();
   const history = useHistory();
   const restoredRef = useRef(false);
+  const editorRef = useRef(null);
+  const previewRef = useRef(null);
 
   const draftKey = useMemo(() => {
     const userInfo = RequestSendUtils.getUserInfo();
@@ -162,6 +164,22 @@ const EditArticle = () => {
     }
   };
 
+  const syncPreviewScroll = () => {
+    const editor = editorRef.current;
+    const preview = previewRef.current;
+    if (!editor || !preview) {
+      return;
+    }
+    const editorScrollable = editor.scrollHeight - editor.clientHeight;
+    const previewScrollable = preview.scrollHeight - preview.clientHeight;
+    if (editorScrollable <= 0 || previewScrollable <= 0) {
+      preview.scrollTop = 0;
+      return;
+    }
+    const progress = editor.scrollTop / editorScrollable;
+    preview.scrollTop = progress * previewScrollable;
+  };
+
   return (
     <div>
       <SEO title={"文章編集"} description={"articleEdit"} />
@@ -173,7 +191,7 @@ const EditArticle = () => {
             Draft autosaved: {draftUpdatedAt.replace("T", " ").slice(0, 19)}
           </p>
         )}
-        <div className="row" style={{ display: "flex", height: "70vh" }}>
+        <div className="row" style={{ display: "flex", height: "80vh" }}>
           <div className="col-md-6" style={{ height: "100%" }}>
             <div className="form-group">
               <label htmlFor="title">Article Title</label>
@@ -202,8 +220,10 @@ const EditArticle = () => {
               <textarea
                 className="form-control"
                 id="content"
+                ref={editorRef}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
+                onScroll={syncPreviewScroll}
                 placeholder="Enter content in Markdown format"
                 style={{ height: "100%", resize: "none" }}
               />
@@ -216,9 +236,13 @@ const EditArticle = () => {
 
           <div className="col-md-6" style={{ height: "100%" }}>
             <h2>Preview</h2>
-            <div className="preview-panel p-3" style={{ textAlign: "left", minHeight: "50vh", height: "auto" }}>
+            <div
+              className="preview-panel p-3"
+              ref={previewRef}
+              style={{ textAlign: "left", minHeight: "62vh", height: "calc(100% - 42px)", overflowY: "auto" }}
+            >
               <h3 style={{ textAlign: "center" }}>{title}</h3>
-              <MarkdownRenderer content={content} />
+              <MarkdownRenderer content={content} className="markdown-body--preview" />
             </div>
           </div>
         </div>
