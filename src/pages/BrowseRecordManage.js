@@ -159,7 +159,7 @@ const BrowseRecordManage = () => {
     try {
       setArticleLoading(true);
       setError("");
-      let query = `currentPage=${page}&pageSize=${size}`;
+      let query = `currentPage=${page}&pageSize=${size}&autoFlush=true`;
       if (articleId) {
         query += `&articleId=${encodeURIComponent(articleId)}`;
       }
@@ -193,7 +193,7 @@ const BrowseRecordManage = () => {
     try {
       setAssistantLoading(true);
       setError("");
-      let query = `currentPage=${page}&pageSize=${size}`;
+      let query = `currentPage=${page}&pageSize=${size}&autoFlush=true`;
       if (interactionType) {
         query += `&interactionType=${encodeURIComponent(interactionType)}`;
       }
