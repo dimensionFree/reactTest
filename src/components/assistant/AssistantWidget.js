@@ -251,6 +251,14 @@ const writeCachedAssistantContext = (data) => {
   }
 };
 
+const hasUsableGeoContext = (context) => {
+  if (!context || typeof context !== "object") {
+    return false;
+  }
+  const hasCity = typeof context.city === "string" && context.city.trim().length > 0;
+  const hasCoordinates = Number.isFinite(context.latitude) && Number.isFinite(context.longitude);
+  return hasCity || hasCoordinates;
+};
 const fetchAssistantContextFromBackend = async () => {
   try {
     const resp = await fetch(toApiPath("/assistant/context"));
@@ -359,7 +367,7 @@ const AssistantWidget = () => {
       if (!context) {
         context = await fetchAssistantContextFromBackend();
       }
-      if (!context) {
+      if (!hasUsableGeoContext(context)) {
         const { city: fallbackCity, latitude, longitude } = await fetchGeoContext();
         const weather = await fetchWeatherContext(latitude, longitude);
         context = { city: fallbackCity, latitude, longitude, weatherCode: weather.weatherCode, temp: weather.temp };
@@ -771,4 +779,3 @@ const AssistantWidget = () => {
 };
 
 export default AssistantWidget;
-
