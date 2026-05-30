@@ -34,7 +34,7 @@ const FLICK_DURATION_MS = 320;
 const FLICK_DISTANCE_PX = 22;
 const TAP_DISTANCE_PX = 3;
 const IDLE_MOTION_GROUP = "IdleManual";
-const ASSISTANT_CONTEXT_CACHE_KEY = "assistant_context_v1";
+const ASSISTANT_CONTEXT_CACHE_KEY = "assistant_context_v3";
 const ASSISTANT_CONTEXT_CACHE_TTL_MS = 10 * 60 * 1000;
 const ASSISTANT_INTERACTION_ENDPOINT = toApiPath("/assistant/interaction");
 
@@ -169,11 +169,10 @@ const fetchGeoContext = async () => {
     const resp = await fetch("https://ipapi.co/json/");
     if (resp.ok) {
       const data = await resp.json();
-      const city = typeof data.city === "string" ? data.city : "";
       const latitude = toNum(data.latitude);
       const longitude = toNum(data.longitude);
-      if (city || (latitude !== null && longitude !== null)) {
-        return { city, latitude, longitude };
+      if (latitude !== null && longitude !== null) {
+        return { displayLocation: "", latitude, longitude };
       }
     }
   } catch (_) {
@@ -185,11 +184,10 @@ const fetchGeoContext = async () => {
     if (resp.ok) {
       const data = await resp.json();
       if (data.success !== false) {
-        const city = typeof data.city === "string" ? data.city : "";
         const latitude = toNum(data.latitude);
         const longitude = toNum(data.longitude);
-        if (city || (latitude !== null && longitude !== null)) {
-          return { city, latitude, longitude };
+        if (latitude !== null && longitude !== null) {
+          return { displayLocation: "", latitude, longitude };
         }
       }
     }
@@ -197,7 +195,7 @@ const fetchGeoContext = async () => {
     // noop
   }
 
-  return { city: "", latitude: null, longitude: null };
+  return { displayLocation: "", latitude: null, longitude: null };
 };
 
 const fetchWeatherContext = async (latitude, longitude) => {
@@ -231,6 +229,10 @@ const readCachedAssistantContext = () => {
       sessionStorage.removeItem(ASSISTANT_CONTEXT_CACHE_KEY);
       return null;
     }
+    if (!parsed.data?.displayLocation) {
+      sessionStorage.removeItem(ASSISTANT_CONTEXT_CACHE_KEY);
+      return null;
+    }
     return parsed.data || null;
   } catch (_) {
     return null;
@@ -255,9 +257,10 @@ const hasUsableGeoContext = (context) => {
   if (!context || typeof context !== "object") {
     return false;
   }
+  const hasDisplayLocation = typeof context.displayLocation === "string" && context.displayLocation.trim().length > 0;
   const hasCity = typeof context.city === "string" && context.city.trim().length > 0;
   const hasCoordinates = Number.isFinite(context.latitude) && Number.isFinite(context.longitude);
-  return hasCity || hasCoordinates;
+  return hasDisplayLocation || hasCity || hasCoordinates;
 };
 const fetchAssistantContextFromBackend = async () => {
   try {
@@ -271,7 +274,10 @@ const fetchAssistantContextFromBackend = async () => {
       return null;
     }
     return {
+      country: typeof data.country === "string" ? data.country : "",
+      province: typeof data.province === "string" ? data.province : "",
       city: typeof data.city === "string" ? data.city : "",
+      displayLocation: typeof data.displayLocation === "string" ? data.displayLocation : "",
       latitude: toNum(data.latitude),
       longitude: toNum(data.longitude),
       weatherCode: toNum(data.weatherCode),
@@ -368,13 +374,13 @@ const AssistantWidget = () => {
         context = await fetchAssistantContextFromBackend();
       }
       if (!hasUsableGeoContext(context)) {
-        const { city: fallbackCity, latitude, longitude } = await fetchGeoContext();
+        const { displayLocation, latitude, longitude } = await fetchGeoContext();
         const weather = await fetchWeatherContext(latitude, longitude);
-        context = { city: fallbackCity, latitude, longitude, weatherCode: weather.weatherCode, temp: weather.temp };
+        context = { displayLocation, latitude, longitude, weatherCode: weather.weatherCode, temp: weather.temp };
       }
       writeCachedAssistantContext(context);
-      const city = context?.city || "";
-      const greeting = city ? `${getTimeGreeting()}、${city}のあなたへ。` : `${getTimeGreeting()}。`;
+      const displayLocation = context?.displayLocation || "";
+      const greeting = displayLocation ? `${getTimeGreeting()}、${displayLocation}のあなたへ。` : `${getTimeGreeting()}。`;
       const weatherCode = context?.weatherCode ?? null;
       const temp = context?.temp ?? null;
       const icon = getWeatherIcon(weatherCode);
