@@ -34,7 +34,7 @@ const FLICK_DURATION_MS = 320;
 const FLICK_DISTANCE_PX = 22;
 const TAP_DISTANCE_PX = 3;
 const IDLE_MOTION_GROUP = "IdleManual";
-const ASSISTANT_CONTEXT_CACHE_KEY = "assistant_context_v3";
+const ASSISTANT_CONTEXT_CACHE_KEY = "assistant_context_v4";
 const ASSISTANT_CONTEXT_CACHE_TTL_MS = 10 * 60 * 1000;
 const ASSISTANT_INTERACTION_ENDPOINT = toApiPath("/assistant/interaction");
 
