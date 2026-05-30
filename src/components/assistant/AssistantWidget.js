@@ -132,45 +132,168 @@ const getWeatherIcon = (weatherCode) => {
   return "🌤️";
 };
 
-const getTemperatureComment = (temp) => {
-  if (!Number.isFinite(temp)) {
-    return "空気の感じを見て、無理しないでね。";
+const getClimateContext = (latitude, date = new Date()) => {
+  if (!Number.isFinite(latitude)) {
+    return { zone: "unknown", season: "" };
   }
-  if (temp <= 2) {
-    return "かなり冷えるね。手先を温めていこう。";
+  const absLatitude = Math.abs(latitude);
+  if (absLatitude < 23.5) {
+    return { zone: "tropical", season: "" };
   }
-  if (temp <= 10) {
-    return "体感が下がる温度だね。今日は暖かくしてね。";
-  }
-  if (temp <= 18) {
-    return "少しひんやり。羽織りがあると安心だよ。";
-  }
-  if (temp <= 27) {
-    return "過ごしやすいけど、水分はこまめにね。";
-  }
-  return "暑いね。無理せず涼しい場所で休もう。";
+
+  const month = date.getMonth() + 1;
+  const northernSeasonByMonth = {
+    12: "winter",
+    1: "winter",
+    2: "winter",
+    3: "spring",
+    4: "spring",
+    5: "spring",
+    6: "summer",
+    7: "summer",
+    8: "summer",
+    9: "autumn",
+    10: "autumn",
+    11: "autumn"
+  };
+  const southernSeasonByMonth = {
+    12: "summer",
+    1: "summer",
+    2: "summer",
+    3: "autumn",
+    4: "autumn",
+    5: "autumn",
+    6: "winter",
+    7: "winter",
+    8: "winter",
+    9: "spring",
+    10: "spring",
+    11: "spring"
+  };
+  return {
+    zone: absLatitude >= 66.5 ? "polar" : "temperate",
+    season: latitude >= 0 ? northernSeasonByMonth[month] : southernSeasonByMonth[month]
+  };
 };
 
-const getWeatherRoast = (weatherCode, temp) => {
+const getTemperatureComment = (temp, climateContext) => {
+  if (!Number.isFinite(temp)) {
+    return "";
+  }
+  const zone = climateContext?.zone || "unknown";
+  const season = climateContext?.season || "";
+
+  if (zone === "tropical") {
+    if (temp <= 24) {
+      return "熱帯にしては少しおとなしい気温。";
+    }
+    if (temp <= 30) {
+      return "熱帯らしい、湿度込みの暑さ。";
+    }
+    return "熱帯が本気を出してる。";
+  }
+
+  if (season === "winter") {
+    if (temp >= 24) {
+      return "冬なのにこの暖かさ、季節が迷子。";
+    }
+    if (temp >= 14) {
+      return "冬にしてはかなり甘い気温。";
+    }
+    if (temp <= 2) {
+      return "冬らしさが遠慮してない。";
+    }
+    return "冬の空気、ちゃんと仕事してる。";
+  }
+
+  if (season === "summer") {
+    if (temp <= 20) {
+      return "夏にしては妙に涼しい。";
+    }
+    if (temp <= 28) {
+      return "夏ならこのくらいは通常運転。";
+    }
+    if (temp <= 33) {
+      return "夏がじわじわ圧をかけてくる。";
+    }
+    return "夏が完全に本気。";
+  }
+
+  if (season === "spring" || season === "autumn") {
+    if (temp <= 10) {
+      return "季節の変わり目、まだ冷えるね。";
+    }
+    if (temp >= 26) {
+      return "季節の変わり目にしては攻めた暑さ。";
+    }
+    return "気温だけならかなり優等生。";
+  }
+
+  if (temp <= 2) {
+    return "空気が冷蔵庫みたい。";
+  }
+  if (temp <= 10) {
+    return "春の顔して冬が残ってる。";
+  }
+  if (temp <= 18) {
+    return "油断すると少しひんやり。";
+  }
+  if (temp <= 27) {
+    return "気温だけなら優等生。";
+  }
+  if (temp <= 32) {
+    return "じわっと暑さが来るね。";
+  }
+  return "外気がもう本気を出してる。";
+};
+
+const getClimateFallbackComment = (climateContext) => {
+  if (climateContext?.zone === "tropical") {
+    return "湿度が主役を取りに来る地域だね。";
+  }
+  if (climateContext?.zone === "polar") {
+    return "高緯度の空気、存在感が強い。";
+  }
+  if (climateContext?.season === "spring") {
+    return "春って、天気だけは気まぐれ。";
+  }
+  if (climateContext?.season === "summer") {
+    return "夏の空、だいたい遠慮がない。";
+  }
+  if (climateContext?.season === "autumn") {
+    return "秋の空は顔色が変わりやすい。";
+  }
+  if (climateContext?.season === "winter") {
+    return "冬の空気、存在感が強い。";
+  }
+  return "";
+};
+
+const joinWeatherComments = (...comments) => comments.filter(Boolean).slice(0, 2).join("");
+
+const getWeatherRoast = (weatherCode, temp, latitude) => {
+  const climateContext = getClimateContext(latitude);
+  const temperatureComment = getTemperatureComment(temp, climateContext);
+  const seasonContext = getClimateFallbackComment(climateContext);
   if (!Number.isFinite(weatherCode)) {
-    return "天気データを取得できなかったよ。少し時間をおいてもう一度見てね。";
+    return "天気データを取得できなかったよ。";
   }
   if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(weatherCode)) {
-    return `雨って、寒いね。${getTemperatureComment(temp)}`;
+    return joinWeatherComments("雨みたい。空の機嫌が悪いね。", temperatureComment || seasonContext);
   }
   if ([95, 96, 99].includes(weatherCode)) {
-    return "雷雨の可能性があるよ。今日は慎重にいこう。";
+    return joinWeatherComments("雷雨かも。空がかなり荒ぶってる。", temperatureComment || seasonContext);
   }
   if ([71, 73, 75, 77, 85, 86].includes(weatherCode)) {
-    return `雪の気配だね。${getTemperatureComment(temp)}`;
+    return joinWeatherComments("雪の気配だね。景色だけ急に本気。", temperatureComment || seasonContext);
   }
   if (weatherCode === 0) {
-    return `晴れてるね。${getTemperatureComment(temp)}`;
+    return joinWeatherComments("晴れているね。空は今日は機嫌がいい。", temperatureComment || seasonContext);
   }
   if (weatherCode === 1 || weatherCode === 2 || weatherCode === 3 || weatherCode === 45 || weatherCode === 48) {
-    return `空が落ち着いた色だね。${getTemperatureComment(temp)}`;
+    return joinWeatherComments("空は落ち着いた顔をしてる。", temperatureComment || seasonContext);
   }
-  return `天気が変わりやすそう。${getTemperatureComment(temp)}`;
+  return joinWeatherComments("天気が変わりやすそう。空が迷ってる。", temperatureComment || seasonContext);
 };
 
 const fetchGeoContext = async () => {
@@ -407,7 +530,7 @@ const AssistantWidget = () => {
       const weatherCode = context?.weatherCode ?? null;
       const temp = context?.temp ?? null;
       const icon = getWeatherIcon(weatherCode);
-      const roast = getWeatherRoast(weatherCode, temp);
+      const roast = getWeatherRoast(weatherCode, temp, context?.latitude);
 
       if (disposed) {
         return;
