@@ -89,6 +89,9 @@ const ensureScript = (src, checkFn) => {
 };
 
 const toNum = (value) => {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
   const num = Number(value);
   return Number.isFinite(num) ? num : null;
 };
@@ -105,6 +108,9 @@ const getTimeGreeting = () => {
 };
 
 const getWeatherIcon = (weatherCode) => {
+  if (!Number.isFinite(weatherCode)) {
+    return "…";
+  }
   if (weatherCode === 0) {
     return "☀️";
   }
@@ -146,6 +152,9 @@ const getTemperatureComment = (temp) => {
 };
 
 const getWeatherRoast = (weatherCode, temp) => {
+  if (!Number.isFinite(weatherCode)) {
+    return "天気データを取得できなかったよ。少し時間をおいてもう一度見てね。";
+  }
   if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(weatherCode)) {
     return `雨って、寒いね。${getTemperatureComment(temp)}`;
   }
@@ -233,6 +242,10 @@ const readCachedAssistantContext = () => {
       sessionStorage.removeItem(ASSISTANT_CONTEXT_CACHE_KEY);
       return null;
     }
+    if (parsed.data.weatherCode === null || parsed.data.weatherCode === undefined) {
+      sessionStorage.removeItem(ASSISTANT_CONTEXT_CACHE_KEY);
+      return null;
+    }
     return parsed.data || null;
   } catch (_) {
     return null;
@@ -240,6 +253,9 @@ const readCachedAssistantContext = () => {
 };
 
 const writeCachedAssistantContext = (data) => {
+  if (!data || data.weatherCode === null || data.weatherCode === undefined) {
+    return;
+  }
   try {
     sessionStorage.setItem(
       ASSISTANT_CONTEXT_CACHE_KEY,
@@ -377,6 +393,13 @@ const AssistantWidget = () => {
         const { displayLocation, latitude, longitude } = await fetchGeoContext();
         const weather = await fetchWeatherContext(latitude, longitude);
         context = { displayLocation, latitude, longitude, weatherCode: weather.weatherCode, temp: weather.temp };
+      } else if (
+        (context.weatherCode === null || context.weatherCode === undefined) &&
+        Number.isFinite(context.latitude) &&
+        Number.isFinite(context.longitude)
+      ) {
+        const weather = await fetchWeatherContext(context.latitude, context.longitude);
+        context = { ...context, weatherCode: weather.weatherCode, temp: weather.temp };
       }
       writeCachedAssistantContext(context);
       const displayLocation = context?.displayLocation || "";
