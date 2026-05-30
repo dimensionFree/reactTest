@@ -1,0 +1,376 @@
+.tokyo-hex-page {
+  min-height: 100vh;
+  padding: 34px 44px 72px;
+  color: #f4ead0;
+  background:
+    radial-gradient(circle at 22% 18%, rgba(91, 125, 98, 0.22), transparent 30%),
+    linear-gradient(135deg, #161f23 0%, #28322d 52%, #1b2226 100%);
+}
+
+.tokyo-hex-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1180px;
+  margin: 0 auto 22px;
+}
+
+.tokyo-hex-kicker {
+  margin: 0 0 6px;
+  color: #d7c487;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.tokyo-hex-hero h1 {
+  margin: 0;
+  color: #fff4bf;
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.tokyo-hex-lead {
+  max-width: 760px;
+  margin: 10px 0 0;
+  color: #d8cfb4;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.tokyo-hex-status {
+  min-width: 138px;
+  padding: 14px 16px;
+  border: 1px solid rgba(242, 213, 141, 0.34);
+  background: rgba(17, 24, 27, 0.66);
+  text-align: right;
+}
+
+.tokyo-hex-status span {
+  display: block;
+  color: #fff4bf;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.tokyo-hex-status small {
+  color: #b7a987;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+}
+
+.tokyo-hex-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 18px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.tokyo-hex-map-shell {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(242, 213, 141, 0.34);
+  background: #12191d;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+}
+
+.tokyo-hex-map {
+  display: block;
+  width: 100%;
+  min-height: 520px;
+  cursor: grab;
+  user-select: none;
+}
+
+.tokyo-hex-map.is-dragging {
+  cursor: grabbing;
+}
+
+.tokyo-hex-map-tools {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: flex;
+  gap: 6px;
+}
+
+.tokyo-hex-map-tools button {
+  min-width: 34px;
+  height: 32px;
+  border: 1px solid rgba(242, 213, 141, 0.38);
+  color: #fff4bf;
+  background: rgba(17, 24, 27, 0.82);
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tokyo-hex-map-tools button:hover {
+  border-color: rgba(255, 244, 191, 0.78);
+  background: rgba(38, 48, 43, 0.92);
+}
+
+.tokyo-hex-coast {
+  fill: rgba(60, 107, 115, 0.22);
+  stroke: rgba(145, 216, 231, 0.26);
+  stroke-width: 3;
+}
+
+.tokyo-hex-river {
+  fill: none;
+  stroke: rgba(115, 203, 224, 0.62);
+  stroke-linecap: round;
+  stroke-width: 12;
+}
+
+.tokyo-hex-river--thin {
+  opacity: 0.55;
+  stroke-width: 7;
+}
+
+.tokyo-hex-cell polygon {
+  cursor: pointer;
+  transition: opacity 140ms ease, transform 140ms ease;
+}
+
+.tokyo-hex-cell:hover polygon:first-child,
+.tokyo-hex-cell--selected polygon:first-child {
+  opacity: 1;
+}
+
+.tokyo-hex-symbol {
+  fill: rgba(255, 249, 221, 0.88);
+  font-size: 24px;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+.tokyo-hex-svg-icon {
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35));
+}
+
+.tokyo-hex-icon,
+.tokyo-hex-text-icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 7px;
+  vertical-align: middle;
+}
+
+.tokyo-hex-icon {
+  object-fit: contain;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+
+.tokyo-hex-text-icon {
+  border: 1px solid rgba(255, 244, 191, 0.28);
+  color: #fff4bf;
+  background: rgba(17, 24, 27, 0.42);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.tokyo-hex-panel {
+  display: flex;
+  min-height: 520px;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tokyo-hex-filter {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.tokyo-hex-filter--stacked {
+  display: flex;
+  max-height: 248px;
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.tokyo-hex-filter-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.tokyo-hex-filter-group p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #b7a987;
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tokyo-hex-filter button {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  border: 1px solid rgba(242, 213, 141, 0.28);
+  color: #f5e9c6;
+  background: rgba(17, 24, 27, 0.7);
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tokyo-hex-filter button.is-active {
+  border-color: var(--tile-accent);
+  background: var(--tile-color);
+  box-shadow: inset 0 0 0 999px rgba(17, 24, 27, 0.22);
+}
+
+.tokyo-hex-filter button > span:not(.tokyo-hex-text-icon) {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 7px;
+  background: var(--tile-accent);
+}
+
+.tokyo-hex-detail {
+  flex: 1;
+  padding: 20px;
+  border: 1px solid rgba(242, 213, 141, 0.34);
+  background: rgba(17, 24, 27, 0.74);
+}
+
+.tokyo-hex-detail-type {
+  margin: 0 0 8px;
+  color: #d7c487;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tokyo-hex-detail h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  color: #fff4bf;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+.tokyo-hex-detail h2 .tokyo-hex-icon,
+.tokyo-hex-detail h2 .tokyo-hex-text-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 0;
+}
+
+.tokyo-hex-detail p {
+  color: #d8cfb4;
+  line-height: 1.75;
+}
+
+.tokyo-hex-yields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 16px 0 4px;
+}
+
+.tokyo-hex-yields span {
+  padding: 5px 8px;
+  border: 1px solid rgba(242, 213, 141, 0.24);
+  color: #fff4bf;
+  background: rgba(215, 196, 135, 0.1);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.tokyo-hex-detail dl {
+  margin: 20px 0 0;
+}
+
+.tokyo-hex-detail div {
+  padding: 12px 0;
+  border-top: 1px solid rgba(242, 213, 141, 0.16);
+}
+
+.tokyo-hex-detail dt {
+  color: #b7a987;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tokyo-hex-detail dd {
+  margin: 4px 0 0;
+  color: #f5e9c6;
+}
+
+.tokyo-hex-notes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  max-width: 1180px;
+  margin: 20px auto 0;
+}
+
+.tokyo-hex-notes > div {
+  padding: 18px 20px;
+  border-left: 3px solid #d7c487;
+  background: rgba(17, 24, 27, 0.56);
+}
+
+.tokyo-hex-notes h2 {
+  margin: 0 0 8px;
+  color: #fff4bf;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.tokyo-hex-notes p {
+  margin: 0;
+  color: #d8cfb4;
+  line-height: 1.7;
+}
+
+@media (max-width: 960px) {
+  .tokyo-hex-page {
+    padding: 24px 16px 56px;
+  }
+
+  .tokyo-hex-hero,
+  .tokyo-hex-workspace,
+  .tokyo-hex-notes {
+    grid-template-columns: 1fr;
+  }
+
+  .tokyo-hex-hero {
+    display: block;
+  }
+
+  .tokyo-hex-hero h1 {
+    font-size: 2.4rem;
+  }
+
+  .tokyo-hex-status {
+    margin-top: 16px;
+    text-align: left;
+  }
+
+  .tokyo-hex-map {
+    min-height: 380px;
+  }
+
+  .tokyo-hex-panel {
+    min-height: auto;
+  }
+}

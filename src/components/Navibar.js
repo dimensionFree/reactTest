@@ -116,6 +116,11 @@ const Navibar = () => {
                 About
               </a>
             </li>
+            <li className="nav-item">
+              <a className="nav-link" href="/geo-lab/tokyo-hex">
+                Geo Lab
+              </a>
+            </li>
           </ul>
 
           <form className="form-inline my-2 my-lg-0 mr-3 ml-auto" onSubmit={handleSearchClick}>

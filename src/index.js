@@ -15,6 +15,7 @@ import ArticleSearch from "./pages/ArticleSearch";
 import ArticleReadHistory from "./pages/ArticleReadHistory";
 import BrowseRecordManage from "./pages/BrowseRecordManage";
 import About from "./pages/About";
+import TokyoHexMap from "./pages/TokyoHexMap";
 import AssistantWidget from "./components/assistant/AssistantWidget";
 
 const MouseParallax = () => {
@@ -128,6 +129,7 @@ const AppRouter = () => (
       <Route path="/articleManage" component={ArticleManage} />
       <Route path="/article/search/:keyword" component={ArticleSearch} />
       <Route path="/about" component={About} />
+      <Route path="/geo-lab/tokyo-hex" component={TokyoHexMap} />
       <Route path="/" component={App} />
     </Switch>
   </Router>

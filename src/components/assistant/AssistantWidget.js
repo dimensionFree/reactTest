@@ -853,6 +853,22 @@ const AssistantWidget = () => {
     triggerSpeech(weatherBadge.roast, 2600);
   }, [triggerSpeech, weatherBadge.roast, weatherReady]);
 
+  useEffect(() => {
+    const onAssistantSpeech = (event) => {
+      const text = event?.detail?.text;
+      if (typeof text !== "string" || !text.trim()) {
+        return;
+      }
+      const visibleMs = Number.isFinite(event.detail.visibleMs) ? event.detail.visibleMs : 2600;
+      triggerSpeech(text, visibleMs, true);
+    };
+
+    window.addEventListener("assistant:say", onAssistantSpeech);
+    return () => {
+      window.removeEventListener("assistant:say", onAssistantSpeech);
+    };
+  }, [triggerSpeech]);
+
   const onMoveHandleInteract = useCallback(() => {
     triggerSpeech("このボタンで私を移動できるよ。", 2200);
   }, [triggerSpeech]);
