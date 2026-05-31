@@ -48,6 +48,30 @@
   text-align: right;
 }
 
+.tokyo-hex-lang {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.tokyo-hex-lang button {
+  min-width: 54px;
+  height: 28px;
+  border: 1px solid rgba(242, 213, 141, 0.28);
+  color: #d8cfb4;
+  background: rgba(17, 24, 27, 0.72);
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.tokyo-hex-lang button.is-active {
+  border-color: rgba(255, 244, 191, 0.78);
+  color: #172126;
+  background: #d7c487;
+}
+
 .tokyo-hex-status span {
   display: block;
   color: #fff4bf;
@@ -143,14 +167,68 @@
 }
 
 .tokyo-hex-symbol {
-  fill: rgba(255, 249, 221, 0.88);
-  font-size: 24px;
+  fill: rgba(255, 249, 221, 0.66);
+  font-size: 16px;
   font-weight: 800;
   pointer-events: none;
+  paint-order: stroke;
+  stroke: rgba(20, 26, 28, 0.5);
+  stroke-width: 2px;
 }
 
 .tokyo-hex-svg-icon {
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.35));
+}
+
+.tokyo-ward-boundary-halo {
+  fill: none;
+  stroke: rgba(12, 16, 18, 0.82);
+  stroke-width: 6.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition: stroke 120ms ease, stroke-width 120ms ease;
+}
+
+.tokyo-ward-boundary-halo.is-active {
+  stroke: rgba(24, 12, 40, 0.92);
+  stroke-width: 8.5;
+}
+
+.tokyo-ward-boundary {
+  fill: none;
+  stroke: rgba(255, 236, 144, 0.95);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 3px rgba(255, 236, 144, 0.42));
+  transition: stroke 120ms ease, stroke-width 120ms ease, filter 120ms ease;
+}
+
+.tokyo-ward-boundary.is-active {
+  stroke: rgba(210, 142, 255, 0.98);
+  stroke-width: 3.4;
+  filter: drop-shadow(0 0 5px rgba(210, 142, 255, 0.62));
+}
+
+.tokyo-ward-label {
+  fill: rgba(255, 250, 221, 0.9);
+  paint-order: stroke;
+  stroke: rgba(20, 26, 28, 0.88);
+  stroke-width: 3.2px;
+  font-size: 12px;
+  font-weight: 800;
+  text-anchor: middle;
+  dominant-baseline: central;
+  vector-effect: non-scaling-stroke;
+  letter-spacing: 0;
+  transition: fill 120ms ease, stroke 120ms ease;
+}
+
+.tokyo-ward-label.is-active {
+  fill: #f0d5ff;
+  stroke: rgba(24, 12, 40, 0.92);
 }
 
 .tokyo-hex-icon,
@@ -364,6 +442,10 @@
   .tokyo-hex-status {
     margin-top: 16px;
     text-align: left;
+  }
+
+  .tokyo-hex-lang {
+    justify-content: flex-start;
   }
 
   .tokyo-hex-map {
