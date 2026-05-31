@@ -89,7 +89,7 @@ const PAGE_TEXT = {
     thinkingBody: "当前真实接入的是东京都土地利用、行政边界、学校、铁路/车站、水系、绿地/公园等公开 GIS 数据。土地利用代码用 LU_1/LU_2 细分，能稳定支持社区、商业中心、工业区、农场、公园、河川等；航空港、港口、水渠、堤坝等类型暂时用高辨识度地标规则补充，后续可替换为更细的国土数值信息或设施数据。",
     privacyTitle: "隐私边界",
     privacyBody: "这个页面不使用访客当前位置，不读取 IP 位置，也不请求浏览器 geolocation。它只展示公开地理数据经过 QGIS 处理后的策略游戏风格抽象结果。",
-    assistantToggle: (label) => `切换到 ${label}。现在是在把东京当成文明地图来读，不是在背行政区。`
+    assistantToggle: (label, enabled) => `${label}, ${enabled ? "ON" : "OFF"}!`
   },
   ja: {
     languageLabel: "言語",
@@ -103,7 +103,7 @@ const PAGE_TEXT = {
     thinkingBody: "現在は東京都の土地利用、行政界、学校、鉄道・駅、水系、緑地・公園などの公開 GIS データを使っています。土地利用コードは LU_1/LU_2 で細分化し、住宅、商業ハブ、工業地帯、農場、都市公園、河川などを安定して分類します。飛行場、港、用水路、ダムは現時点では認知度の高いランドマークルールで補い、後続で国土数値情報や施設データに置き換えられる設計にしています。",
     privacyTitle: "プライバシー境界",
     privacyBody: "このページは訪問者の現在地を使わず、IP 位置情報も読まず、ブラウザの geolocation も要求しません。公開地理データを QGIS で処理した、戦略ゲーム風の抽象結果だけを表示します。",
-    assistantToggle: (label) => `${label} に切り替えた。東京を Civilization の地図として読んでいるだけで、行政区を暗記しているわけではない。`
+    assistantToggle: (label, enabled) => `${label}, ${enabled ? "ON" : "OFF"}!`
   }
 };
 
@@ -319,13 +319,18 @@ const TokyoHexMap = () => {
 
   const toggleType = (type) => {
     const meta = getHexTypeMeta(type, lang);
+    const currentlyEnabled = activeTypes.includes(type);
+    const nextEnabled = !(currentlyEnabled && activeTypes.length > 1);
     setActiveTypes((current) => {
       if (current.includes(type)) {
-        return current.length === 1 ? current : current.filter((item) => item !== type);
+        if (current.length === 1) {
+          return current;
+        }
+        return current.filter((item) => item !== type);
       }
       return [...current, type];
     });
-    sendAssistantSpeech(text.assistantToggle(meta.label));
+    sendAssistantSpeech(text.assistantToggle(meta.label, nextEnabled));
   };
 
   const selectCell = (cell) => {
@@ -506,15 +511,6 @@ const TokyoHexMap = () => {
                           />
                         </g>
                       ))}
-                      {Array.isArray(ward.label) && (
-                        <text
-                          x={ward.label[0]}
-                          y={ward.label[1]}
-                          className={`tokyo-ward-label ${hoveredWardCode === ward.code ? "is-active" : ""}`}
-                        >
-                          {ward.name}
-                        </text>
-                      )}
                     </g>
                   ))}
                   {activeWard && (
@@ -565,6 +561,34 @@ const TokyoHexMap = () => {
                     </g>
                   );
                   })}
+                </g>
+
+                {selectedCell && (
+                  <g className="tokyo-hex-selected-outline-layer" pointerEvents="none">
+                    <polygon
+                      points={buildHexPoints(
+                        getCellCenter(selectedCell.q, selectedCell.r).x,
+                        getCellCenter(selectedCell.q, selectedCell.r).y,
+                        HEX_RADIUS
+                      )}
+                      className="tokyo-hex-selected-outline"
+                    />
+                  </g>
+                )}
+
+                <g className="tokyo-ward-label-layer" pointerEvents="none">
+                  {wardOverlay.map((ward) => (
+                    Array.isArray(ward.label) && (
+                      <text
+                        key={ward.code}
+                        x={ward.label[0]}
+                        y={ward.label[1]}
+                        className={`tokyo-ward-label ${hoveredWardCode === ward.code ? "is-active" : ""}`}
+                      >
+                        {ward.name}
+                      </text>
+                    )
+                  ))}
                 </g>
               </g>
             </svg>
