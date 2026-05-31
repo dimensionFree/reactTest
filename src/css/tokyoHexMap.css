@@ -113,6 +113,22 @@
   cursor: grabbing;
 }
 
+.tokyo-hex-map.is-dragging .tokyo-hex-cell polygon:first-child {
+  filter: none;
+}
+
+.tokyo-hex-map.is-dragging .tokyo-hex-svg-icon,
+.tokyo-hex-map.is-dragging .tokyo-hex-icon,
+.tokyo-hex-map.is-dragging .tokyo-ward-boundary,
+.tokyo-hex-map.is-dragging .tokyo-ward-boundary.is-active {
+  filter: none;
+}
+
+.tokyo-hex-map.is-dragging .tokyo-ward-boundary-halo,
+.tokyo-hex-map.is-dragging .tokyo-ward-boundary {
+  transition: none;
+}
+
 .tokyo-hex-map-tools {
   position: absolute;
   top: 12px;

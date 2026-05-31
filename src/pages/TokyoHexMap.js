@@ -245,8 +245,27 @@ const TokyoHexMap = () => {
   const [activeTypes, setActiveTypes] = useState(DEFAULT_ACTIVE_TYPES);
   const [selectedCellId, setSelectedCellId] = useState(fallbackCells[0].id);
   const [hoveredWardCode, setHoveredWardCode] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
   const [mapView, setMapView] = useState({ x: -60, y: -18, zoom: 0.82 });
-  const dragRef = useRef({ active: false, moved: false, startX: 0, startY: 0, baseX: 0, baseY: 0 });
+  const dragRef = useRef({
+    active: false,
+    moved: false,
+    frame: 0,
+    pendingX: 0,
+    pendingY: 0,
+    startX: 0,
+    startY: 0,
+    baseX: 0,
+    baseY: 0
+  });
+
+  useEffect(() => {
+    return () => {
+      if (dragRef.current.frame) {
+        window.cancelAnimationFrame(dragRef.current.frame);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     let disposed = false;
@@ -319,14 +338,21 @@ const TokyoHexMap = () => {
   };
 
   const onMapPointerDown = (event) => {
+    if (dragRef.current.frame) {
+      window.cancelAnimationFrame(dragRef.current.frame);
+    }
     dragRef.current = {
       active: true,
       moved: false,
+      frame: 0,
+      pendingX: mapView.x,
+      pendingY: mapView.y,
       startX: event.clientX,
       startY: event.clientY,
       baseX: mapView.x,
       baseY: mapView.y
     };
+    setIsDragging(true);
   };
 
   const onMapPointerMove = (event) => {
@@ -338,19 +364,31 @@ const TokyoHexMap = () => {
     if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
       dragRef.current.moved = true;
     }
-    setMapView((current) => ({
-      ...current,
-      x: dragRef.current.baseX + dx,
-      y: dragRef.current.baseY + dy
-    }));
+    dragRef.current.pendingX = dragRef.current.baseX + dx;
+    dragRef.current.pendingY = dragRef.current.baseY + dy;
+
+    if (dragRef.current.frame) {
+      return;
+    }
+
+    dragRef.current.frame = window.requestAnimationFrame(() => {
+      dragRef.current.frame = 0;
+      setMapView((current) => ({
+        ...current,
+        x: dragRef.current.pendingX,
+        y: dragRef.current.pendingY
+      }));
+    });
   };
 
   const onMapPointerUp = () => {
     dragRef.current.active = false;
+    setIsDragging(false);
   };
 
   const onMapPointerLeave = () => {
     dragRef.current.active = false;
+    setIsDragging(false);
     setHoveredWardCode("");
   };
 
@@ -396,7 +434,7 @@ const TokyoHexMap = () => {
               <button type="button" onClick={resetMap}>Reset</button>
             </div>
             <svg
-              className={`tokyo-hex-map ${dragRef.current.active ? "is-dragging" : ""}`}
+              className={`tokyo-hex-map ${isDragging ? "is-dragging" : ""}`}
               viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
               role="img"
               aria-label="Civilization inspired Tokyo hex map"
@@ -434,6 +472,9 @@ const TokyoHexMap = () => {
                           strokeWidth={selected ? 4 : 2}
                           filter="url(#hexShadow)"
                           onMouseEnter={() => {
+                            if (dragRef.current.active || isDragging) {
+                              return;
+                            }
                             setHoveredWardCode(cell.wardCode);
                           }}
                           onClick={() => selectCell(cell)}
