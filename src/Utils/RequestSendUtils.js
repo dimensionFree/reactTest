@@ -157,6 +157,25 @@ export default class RequestSendUtils {
     return this.sendRequestRaw("delete", url, null, token);
   }
 
+  static async uploadArticleImage(file, onUploadProgress, retried = false) {
+    await this.ensureValidToken(false);
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const response = await axios.post(hostAndPort + "/article/image/upload", formData, {
+        headers: { Authorization: "Bearer " + this.getToken() },
+        onUploadProgress,
+      });
+      return response.data;
+    } catch (error) {
+      if (!retried && this.isAuthError(error)) {
+        await this.ensureValidToken(true);
+        return this.uploadArticleImage(file, onUploadProgress, true);
+      }
+      throw error;
+    }
+  }
+
   static sendGet(url, token, callBackFunc, errbackFunc) {
     this.sendRequestRaw("get", url, null, token)
       .then((response) => callBackFunc(response))

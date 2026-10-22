@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('首页仅显示登录入口，不显示注册入口', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /^sign in$/i })).toBeInTheDocument();
+  expect(screen.queryByText(/sign up/i)).not.toBeInTheDocument();
 });

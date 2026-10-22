@@ -52,7 +52,7 @@ const Navibar = () => {
 
   const userAvaterContent = !username ? (
     <a className="nav-link ml-auto" style={{ color: "white" }} href="/login">
-      sign in/sign up
+      sign in
     </a>
   ) : (
     <div className="d-flex justify-content-between ml-auto">

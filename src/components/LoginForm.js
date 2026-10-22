@@ -80,15 +80,6 @@ const LoginForm = () => {
             </form>
             <button
                 className="nav-button"
-                style={{ backgroundColor: "#4CAF50", color: "white", padding: "10px 20px",
-                    borderRadius: "10px" // 圆角样式
-                    ,border: "none", cursor: "pointer", margin: "5px" }}
-                onClick={() => window.location.href = '/register'}>
-                No account yet? Sign up
-            </button>
-
-            <button
-                className="nav-button"
                 style={{ backgroundColor: "#f44336", color: "white", padding: "10px 20px",
                     borderRadius: "10px" // 圆角样式
                     , border: "none", cursor: "pointer", margin: "5px" }}

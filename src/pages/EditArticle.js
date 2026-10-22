@@ -9,6 +9,7 @@ import "../css/formSurface.css";
 
 const DRAFT_SAVE_DELAY_MS = 1200;
 const HEARTBEAT_INTERVAL_MS = 4 * 60 * 1000;
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
 
 const EditArticle = () => {
   const [title, setTitle] = useState("");
@@ -16,11 +17,14 @@ const EditArticle = () => {
   const [isPublic, setIsPublic] = useState(true);
   const [initialized, setInitialized] = useState(false);
   const [draftUpdatedAt, setDraftUpdatedAt] = useState("");
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [imageUploadProgress, setImageUploadProgress] = useState(0);
   const { id } = useParams();
   const history = useHistory();
   const restoredRef = useRef(false);
   const editorRef = useRef(null);
   const previewRef = useRef(null);
+  const imageInputRef = useRef(null);
 
   const draftKey = useMemo(() => {
     const userInfo = RequestSendUtils.getUserInfo();
@@ -172,6 +176,81 @@ const EditArticle = () => {
     }
   };
 
+  const insertImageMarkdown = (url, fileName, selectionStart, selectionEnd) => {
+    const altText = (fileName || "图片")
+      .replace(/\.[^.]+$/, "")
+      .replace(new RegExp("[\\[\\]\\r\\n]", "g"), " ")
+      .trim() || "图片";
+    let nextCursorPosition = 0;
+    setContent((previousContent) => {
+      const safeStart = Math.min(selectionStart, previousContent.length);
+      const safeEnd = Math.min(Math.max(selectionEnd, safeStart), previousContent.length);
+      const prefix = safeStart > 0 && previousContent[safeStart - 1] !== "\n" ? "\n\n" : "";
+      const suffix = safeEnd < previousContent.length && previousContent[safeEnd] !== "\n" ? "\n\n" : "\n";
+      const markdown = `${prefix}![${altText}](${url})${suffix}`;
+      nextCursorPosition = safeStart + markdown.length;
+      return previousContent.slice(0, safeStart) + markdown + previousContent.slice(safeEnd);
+    });
+    setTimeout(() => {
+      editorRef.current?.focus();
+      editorRef.current?.setSelectionRange(nextCursorPosition, nextCursorPosition);
+    }, 0);
+  };
+
+  const uploadImage = async (file, selectionStart, selectionEnd) => {
+    if (!file || isUploadingImage) {
+      return;
+    }
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+      message.error("图片大小不能超过 5 MB");
+      return;
+    }
+
+    setIsUploadingImage(true);
+    setImageUploadProgress(0);
+    try {
+      const response = await RequestSendUtils.uploadArticleImage(file, (event) => {
+        if (event.total) {
+          setImageUploadProgress(Math.round((event.loaded * 100) / event.total));
+        }
+      });
+      const url = response?.dataContent?.url;
+      if (!url) {
+        throw new Error("上传响应缺少图片地址");
+      }
+      insertImageMarkdown(url, file.name, selectionStart, selectionEnd);
+      message.success("图片上传成功");
+    } catch (error) {
+      message.error(error?.response?.data?.message || error.message || "图片上传失败");
+    } finally {
+      setIsUploadingImage(false);
+      setImageUploadProgress(0);
+    }
+  };
+
+  const handleImageInputChange = (event) => {
+    const file = event.target.files?.[0];
+    const editor = editorRef.current;
+    const selectionStart = editor?.selectionStart ?? content.length;
+    const selectionEnd = editor?.selectionEnd ?? selectionStart;
+    uploadImage(file, selectionStart, selectionEnd);
+    event.target.value = "";
+  };
+
+  const handleEditorPaste = (event) => {
+    const fileItem = Array.from(event.clipboardData?.items || [])
+      .find((item) => item.kind === "file" && item.type?.startsWith("image/"));
+    if (!fileItem) {
+      return;
+    }
+    event.preventDefault();
+    uploadImage(
+      fileItem.getAsFile(),
+      event.currentTarget.selectionStart,
+      event.currentTarget.selectionEnd
+    );
+  };
+
   const syncPreviewScroll = () => {
     const editor = editorRef.current;
     const preview = previewRef.current;
@@ -198,7 +277,11 @@ const EditArticle = () => {
             <h1 className="edit-article-title">{id === "NEW" ? "Create New Article" : "Edit Article"}</h1>
             <p className="edit-article-subtitle">Markdown writing workspace with live synchronized preview</p>
           </div>
-          <button onClick={handleSave} className="btn btn-primary edit-article-save-btn">
+          <button
+            onClick={handleSave}
+            className="btn btn-primary edit-article-save-btn"
+            disabled={isUploadingImage}
+          >
             {id === "NEW" ? "Save Article" : "Update Article"}
           </button>
         </div>
@@ -239,15 +322,34 @@ const EditArticle = () => {
                 />
               </div>
               <div className="form-group edit-article-textarea-wrap">
-                <label htmlFor="content">Article Content (Markdown format)</label>
+                <div className="edit-article-content-toolbar">
+                  <label htmlFor="content">Article Content (Markdown format)</label>
+                  <button
+                    type="button"
+                    className="btn btn-outline-info btn-sm"
+                    disabled={isUploadingImage}
+                    onClick={() => imageInputRef.current?.click()}
+                  >
+                    {isUploadingImage ? `上传中 ${imageUploadProgress}%` : "上传图片"}
+                  </button>
+                  <input
+                    ref={imageInputRef}
+                    className="edit-article-image-input"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleImageInputChange}
+                  />
+                </div>
                 <textarea
                   className="form-control edit-article-textarea"
                   id="content"
                   ref={editorRef}
                   value={content}
+                  readOnly={isUploadingImage}
                   onChange={(e) => setContent(e.target.value)}
+                  onPaste={handleEditorPaste}
                   onScroll={syncPreviewScroll}
-                  placeholder="Enter content in Markdown format"
+                  placeholder="Enter content in Markdown format. You can also paste an image here."
                 />
               </div>
             </div>
