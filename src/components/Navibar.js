@@ -117,13 +117,8 @@ const Navibar = () => {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/geo-lab/tokyo-hex">
+              <a className="nav-link" href="/article/read/c16bd235375769906386ff107b0b7dc7">
                 Geo Lab
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/changelog">
-                更新日志
               </a>
             </li>
           </ul>
