@@ -155,6 +155,24 @@
   backdrop-filter: blur(8px);
 }
 
+.home-footer {
+  max-width: 1180px;
+  margin: 48px auto 24px;
+  padding: 18px 16px;
+  border-top: 1px solid rgba(176, 215, 245, 0.18);
+  text-align: center;
+  font-size: 0.82rem;
+}
+
+.home-footer a {
+  color: #a9bfd1;
+}
+
+.home-footer a:hover,
+.home-footer a:focus-visible {
+  color: #d7edff;
+}
+
 .archive-tree {
   list-style: none;
   margin: 0;

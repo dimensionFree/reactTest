@@ -184,6 +184,9 @@ const HP = () => {
         selected={selectedArchive}
         onSelect={setSelectedArchive}
       />
+      <footer className="home-footer">
+        <a href="/changelog">サイトの更新履歴</a>
+      </footer>
     </div>
   );
 };

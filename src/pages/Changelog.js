@@ -6,13 +6,13 @@ import "../css/changelog.css";
 
 const Changelog = () => (
   <div className="changelog-shell">
-    <SEO title="更新日志" description="网站功能与体验的开发记录" />
+    <SEO title="サイトの更新履歴" description="このブログの主な機能と表示の変更履歴" />
     <Navibar />
     <main className="changelog-card">
-      <p className="changelog-card__kicker">Site Changelog</p>
-      <h1>更新日志</h1>
+      <p className="changelog-card__kicker">Site History</p>
+      <h1>サイトの更新履歴</h1>
       <p className="changelog-card__intro">
-        这里记录网站功能与体验的主要变化。日期为代码提交日期，可能与网站实际更新时间不同。
+        このブログの主な変更を記録しています。日付は代表的なコードのコミット日で、公開日とは異なる場合があります。
       </p>
       <ol className="changelog-list">
         {siteChangelog.map(({ date, title, changes, href, linkLabel }) => (
