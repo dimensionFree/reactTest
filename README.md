@@ -19,6 +19,8 @@
 
 ## セットアップ手順
 
+> 本地开发环境说明更新于：2026-09-07
+
 ローカルでこのプロジェクトを実行するための手順は以下の通りです：
 
 1. **リポジトリをクローンする:**
@@ -41,6 +43,11 @@
    ```bash
    npm start
    ```
+
+本地联调时，将 `.env.local.example` 复制为 `.env.local`；当前默认值已指向
+`http://localhost:8080`。Live2D 的模型、纹理、动作文件和 Cubism Core 均位于
+`public/live2d/`。PixiJS 与 `pixi-live2d-display` 运行时目前由 jsDelivr 加载，
+因此首次显示 Live2D 角色时需要可访问互联网；加载失败时会自动显示本地占位图。
 ## フォルダ構成
 
 ```plaintext

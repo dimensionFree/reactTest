@@ -1,0 +1,79 @@
+.changelog-shell {
+  width: min(980px, calc(100% - 32px));
+  margin: 16px auto 56px;
+}
+
+.changelog-card {
+  border: 1px solid rgba(176, 215, 245, 0.24);
+  border-radius: 20px;
+  padding: clamp(16px, 3vw, 30px);
+  background: rgba(8, 24, 39, 0.58);
+  box-shadow: var(--shadow-soft);
+  color: #d4e3f1;
+}
+
+.changelog-card__kicker {
+  margin: 0 0 8px;
+  color: #8fdaff;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+}
+
+.changelog-card h1,
+.changelog-entry h2 {
+  color: #f4f9ff;
+}
+
+.changelog-card h1 {
+  margin-bottom: 12px;
+}
+
+.changelog-card__intro {
+  line-height: 1.75;
+  margin-bottom: 26px;
+}
+
+.changelog-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.changelog-entry {
+  border-left: 2px solid rgba(111, 214, 255, 0.45);
+  padding: 0 0 26px 22px;
+  margin-left: 6px;
+}
+
+.changelog-entry:last-child {
+  padding-bottom: 0;
+}
+
+.changelog-entry time {
+  display: block;
+  color: #8fdaff;
+  font-size: 0.88rem;
+  margin-bottom: 6px;
+}
+
+.changelog-entry h2 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+.changelog-entry ul {
+  padding-left: 20px;
+  line-height: 1.75;
+}
+
+.changelog-entry a {
+  color: #8fdaff;
+}
+
+@media (max-width: 768px) {
+  .changelog-shell {
+    width: calc(100% - 20px);
+    margin-top: 12px;
+  }
+}
