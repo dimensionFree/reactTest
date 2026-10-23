@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
+Allow: /api/article/find/
+Allow: /api/article/findAll/
+Allow: /api/article/read/latest
 
 Disallow: /login
 Disallow: /register

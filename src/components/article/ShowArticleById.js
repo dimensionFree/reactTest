@@ -37,7 +37,7 @@ const ShowArticleById = () => {
 
   return (
     <article className="read-article">
-      <SEO title={article.title} description={article.title} />
+      <SEO title={article.title} description={article.preface || article.title} />
       <header className="read-article__head">
         <p className="read-article__kicker">Article</p>
         <h1>{article.title}</h1>

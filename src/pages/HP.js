@@ -115,6 +115,10 @@ const HP = () => {
       <Helmet>
         <title>{SITE_NAME}</title>
         <meta name="description" content={`homepage of ${SITE_NAME}`} />
+        <link rel="canonical" href="https://lllspread.com/" />
+        <meta property="og:title" content={SITE_NAME} />
+        <meta property="og:description" content={`homepage of ${SITE_NAME}`} />
+        <meta property="og:url" content="https://lllspread.com/" />
       </Helmet>
       <div className="home-block home-nav-layer">
         <Navibar />
