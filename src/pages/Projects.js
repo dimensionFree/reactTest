@@ -96,7 +96,6 @@ const Projects = () => {
           <p>{text.fileZiperDescription}</p>
           <ul className="projects-feature__stack" aria-label="Technologies">
             <li>Java</li>
-            <li>Maven</li>
             <li>FFmpeg</li>
           </ul>
           <a href={FILE_ZIPER_REPOSITORY} target="_blank" rel="noopener noreferrer">
