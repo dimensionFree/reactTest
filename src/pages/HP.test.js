@@ -24,19 +24,22 @@ const articles = [
   },
 ];
 
-test("精选文章不在近期列表重复，但仍可通过归档找到", async () => {
+test("最新文章显示在顶部且不在近期列表重复，归档仍显示旧文章", async () => {
   fetchAllArticles.mockResolvedValue(articles);
   render(<HP />);
 
-  const title = "QGISで東京23区をHex Map化してみた";
-  await waitFor(() => expect(screen.getByRole("heading", { name: title })).toBeInTheDocument());
-  expect(screen.getAllByText(title)).toHaveLength(1);
+  const latestTitle = "最近の記事";
+  const qgisTitle = "QGISで東京23区をHex Map化してみた";
+  await waitFor(() => expect(screen.getByRole("heading", { name: latestTitle })).toBeInTheDocument());
+  expect(screen.getByText("最新記事")).toBeInTheDocument();
+  expect(screen.getAllByText(latestTitle)).toHaveLength(1);
+  expect(screen.getByText(qgisTitle)).toBeInTheDocument();
   expect(screen.getByRole("link", { name: "記事を読む" })).toHaveAttribute(
     "href",
-    "/article/read/c16bd235375769906386ff107b0b7dc7"
+    "/article/read/latest"
   );
-  expect(screen.getByText("最近の記事")).toBeInTheDocument();
 
   fireEvent.click(screen.getByRole("button", { name: "2026-05" }));
-  expect(screen.getAllByText(title)).toHaveLength(2);
+  expect(screen.getAllByText(latestTitle)).toHaveLength(1);
+  expect(screen.getByText(qgisTitle)).toBeInTheDocument();
 });

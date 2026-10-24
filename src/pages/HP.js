@@ -6,11 +6,7 @@ import HomeArticleList from "../components/article/HomeArticleList";
 import { SITE_NAME } from "../components/common/constants";
 import Helmet from "react-helmet";
 import { fetchAllArticles } from "../Utils/articleApi";
-import {
-  HOME_FEATURED_ARTICLE_ID,
-  HOME_FEATURED_DESCRIPTION,
-  selectHomeFeaturedArticle
-} from "../data/homeFeaturedArticle";
+import { selectHomeLatestArticle } from "../data/homeLatestArticle";
 import "../css/homeTheme.css";
 
 const HP = () => {
@@ -106,13 +102,13 @@ const HP = () => {
     });
   }, [allArticles, selectedArchive]);
 
-  const featuredArticle = useMemo(() => selectHomeFeaturedArticle(allArticles), [allArticles]);
+  const latestArticle = useMemo(() => selectHomeLatestArticle(allArticles), [allArticles]);
   const recentArticles = useMemo(() => {
-    if (selectedArchive || !featuredArticle) {
+    if (selectedArchive || !latestArticle) {
       return filteredArticles;
     }
-    return filteredArticles.filter((article) => article.id !== featuredArticle.id);
-  }, [featuredArticle, filteredArticles, selectedArchive]);
+    return filteredArticles.filter((article) => article.id !== latestArticle.id);
+  }, [latestArticle, filteredArticles, selectedArchive]);
 
   const currentIntro = intro[lang];
   const currentNowBuilding = nowBuilding[lang];
@@ -133,14 +129,7 @@ const HP = () => {
       </div>
       <div className="home-grid home-block home-block--2">
         <main className="home-main">
-          {featuredArticle && (
-            <LatestArticle
-              article={featuredArticle}
-              description={featuredArticle.id === HOME_FEATURED_ARTICLE_ID
-                ? HOME_FEATURED_DESCRIPTION
-                : featuredArticle.preface}
-            />
-          )}
+          {latestArticle && <LatestArticle article={latestArticle} />}
           <section className="home-section">
             <div className="home-section__header">
               <p className="home-section__tag">Archive</p>
