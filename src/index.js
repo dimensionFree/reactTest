@@ -3,7 +3,7 @@ import "./index.css";
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import Login from "./pages/Login";
 import UserManage from "./pages/UserManage";
 import UserDetail from "./pages/UserDetail";
@@ -129,7 +129,8 @@ const AppRouter = () => (
       <Route path="/articleManage" component={ArticleManage} />
       <Route path="/article/search/:keyword" component={ArticleSearch} />
       <Route path="/about" component={About} />
-      <Route path="/projects" component={Projects} />
+      <Route path="/experiments" component={Projects} />
+      <Redirect from="/projects" to="/experiments" />
       <Route path="/geo-lab/tokyo-hex" component={TokyoHexMap} />
       <Route path="/changelog" component={Changelog} />
       <Route path="/" component={App} />

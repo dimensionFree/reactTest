@@ -8,8 +8,8 @@ const FILE_ZIPER_REPOSITORY = "https://github.com/dimensionFree/FileZiper";
 
 const copy = {
   ja: {
-    title: "制作したもの",
-    description: "小さな実験を、動く形で残しておく場所です。",
+    title: "作ってみたもの",
+    description: "作ってみたものを、ここに少しずつ残しています。",
     projectType: "地図・データ可視化",
     projectDescription: "東京23区の公開GISデータをQGISで前処理し、Civilization風の六角形マップとして表示しました。地図を動かしながら、各タイルの分類を見ることができます。",
     openProject: "マップを試す",
@@ -20,8 +20,8 @@ const copy = {
     backToAbout: "自己紹介に戻る",
   },
   en: {
-    title: "Projects",
-    description: "A place for the small experiments I have built and put online.",
+    title: "Things I've made",
+    description: "A few small things I've made and tried.",
     projectType: "Map · Data visualization",
     projectDescription: "I processed public GIS data for Tokyo's 23 wards in QGIS and displayed it as a Civilization-inspired hex map. Explore the map and inspect how each tile is classified.",
     openProject: "Explore the map",
@@ -32,8 +32,8 @@ const copy = {
     backToAbout: "Back to About",
   },
   zh: {
-    title: "做过的项目",
-    description: "把一些小实验整理成可以实际体验的作品。",
+    title: "做过的小东西",
+    description: "把自己做过的一些小实验放在这里。",
     projectType: "地图 · 数据可视化",
     projectDescription: "使用 QGIS 预处理东京 23 区的公开地理数据，再以《文明》风格的六边形地图展示。可以拖动地图，查看每个格子的分类。",
     openProject: "体验地图",
@@ -63,7 +63,6 @@ const Projects = () => {
           </div>
         </div>
         <header className="projects-page__header">
-          <p className="projects-page__kicker">PROJECTS</p>
           <h1>{text.title}</h1>
           <p>{text.description}</p>
         </header>

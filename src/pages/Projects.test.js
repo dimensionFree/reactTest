@@ -16,13 +16,14 @@ test("作品页展示东京地图、FileZiper 源码入口，并支持语言切�
   );
 
   userEvent.click(screen.getByRole("button", { name: "中文" }));
-  expect(screen.getByRole("heading", { name: "做过的项目" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "做过的小东西" })).toBeInTheDocument();
   expect(screen.getByRole("link", { name: /体验地图/ })).toHaveAttribute("href", "/geo-lab/tokyo-hex");
   expect(screen.getByRole("link", { name: /在 GitHub 查看源码/ })).toHaveAttribute(
     "href", "https://github.com/dimensionFree/FileZiper"
   );
 
   userEvent.click(screen.getByRole("button", { name: "English" }));
+  expect(screen.getByRole("heading", { name: "Things I've made" })).toBeInTheDocument();
   expect(screen.getByRole("link", { name: /View source on GitHub/ })).toHaveAttribute(
     "href", "https://github.com/dimensionFree/FileZiper"
   );
