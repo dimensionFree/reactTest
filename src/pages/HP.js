@@ -23,6 +23,7 @@ const HP = () => {
           "业余时间喜欢策略游戏、历史和投资。",
           "这里主要记录技术与一些零散思考。"
         ],
+        languageLabel: "侧栏显示语言",
         more: "更多关于我"
       },
       ja: {
@@ -32,6 +33,7 @@ const HP = () => {
           "趣味は戦略ゲーム、歴史、投資。",
           "このブログでは技術メモと日々の思考を記録しています。"
         ],
+        languageLabel: "サイドバーの表示言語",
         more: "もっと見る"
       },
       en: {
@@ -41,37 +43,8 @@ const HP = () => {
           "I also enjoy strategy games, history, and investing.",
           "This blog records technical notes and practical thoughts."
         ],
+        languageLabel: "Sidebar language",
         more: "Read More"
-      }
-    }),
-    []
-  );
-
-  const nowBuilding = useMemo(
-    () => ({
-      zh: {
-        title: "正在构建",
-        items: [
-          "前端性能 / 界面优化",
-          "Markdown 写作体验优化",
-          "博客主题与阅读体验升级"
-        ]
-      },
-      ja: {
-        title: "開発中",
-        items: [
-          "フロントエンド性能 / UI最適化",
-          "Markdown執筆体験の改善",
-          "ブログテーマと読書体験の改善"
-        ]
-      },
-      en: {
-        title: "Now Building",
-        items: [
-          "Frontend performance and UI updates",
-          "Markdown writing experience improvements",
-          "Theme and reading experience upgrades"
-        ]
       }
     }),
     []
@@ -111,7 +84,6 @@ const HP = () => {
   }, [latestArticle, filteredArticles, selectedArchive]);
 
   const currentIntro = intro[lang];
-  const currentNowBuilding = nowBuilding[lang];
   const archiveTitle = selectedArchive ? `Recent Posts (${selectedArchive})` : "Recent Posts";
 
   return (
@@ -140,30 +112,7 @@ const HP = () => {
         </main>
         <aside className="home-side">
           <section className="side-card">
-            <p className="side-card__kicker">Personal Blog</p>
-            <div className="side-card__lang">
-              <button
-                type="button"
-                className={`side-card__lang-btn ${lang === "ja" ? "is-active" : ""}`}
-                onClick={() => setLang("ja")}
-              >
-                日本語
-              </button>
-              <button
-                type="button"
-                className={`side-card__lang-btn ${lang === "en" ? "is-active" : ""}`}
-                onClick={() => setLang("en")}
-              >
-                EN
-              </button>
-              <button
-                type="button"
-                className={`side-card__lang-btn ${lang === "zh" ? "is-active" : ""}`}
-                onClick={() => setLang("zh")}
-              >
-                中文
-              </button>
-            </div>
+            <p className="side-card__kicker">About</p>
             <h3>{currentIntro.title}</h3>
             <p>{currentIntro.lines[0]}</p>
             <p>{currentIntro.lines[1]}</p>
@@ -171,14 +120,35 @@ const HP = () => {
             <a className="side-card__link" href="/about">
               {currentIntro.more}
             </a>
-          </section>
-          <section className="side-card">
-            <p className="side-card__kicker">{currentNowBuilding.title}</p>
-            <ul className="side-card__list">
-              <li>{currentNowBuilding.items[0]}</li>
-              <li>{currentNowBuilding.items[1]}</li>
-              <li>{currentNowBuilding.items[2]}</li>
-            </ul>
+            <div className="side-card__language-controls">
+              <p className="side-card__lang-label">{currentIntro.languageLabel}</p>
+              <div className="side-card__lang" role="group" aria-label={currentIntro.languageLabel}>
+                <button
+                  type="button"
+                  className={`side-card__lang-btn ${lang === "ja" ? "is-active" : ""}`}
+                  aria-pressed={lang === "ja"}
+                  onClick={() => setLang("ja")}
+                >
+                  日本語
+                </button>
+                <button
+                  type="button"
+                  className={`side-card__lang-btn ${lang === "en" ? "is-active" : ""}`}
+                  aria-pressed={lang === "en"}
+                  onClick={() => setLang("en")}
+                >
+                  EN
+                </button>
+                <button
+                  type="button"
+                  className={`side-card__lang-btn ${lang === "zh" ? "is-active" : ""}`}
+                  aria-pressed={lang === "zh"}
+                  onClick={() => setLang("zh")}
+                >
+                  中文
+                </button>
+              </div>
+            </div>
           </section>
         </aside>
       </div>

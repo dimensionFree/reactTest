@@ -80,20 +80,21 @@
   margin-bottom: 6px !important;
 }
 
-.side-card__list {
-  margin: 0;
-  padding-left: 16px;
-  color: #dbe9f8;
-}
-
-.side-card__list li {
-  margin-bottom: 6px;
+.side-card__language-controls {
+  border-top: 1px solid rgba(176, 215, 245, 0.18);
+  margin-top: 14px;
+  padding-top: 10px;
 }
 
 .side-card__lang {
   display: flex;
   gap: 8px;
-  margin-bottom: 10px;
+}
+
+.side-card .side-card__lang-label {
+  margin-bottom: 5px;
+  color: #9fbad0;
+  font-size: 0.72rem;
 }
 
 .side-card__lang-btn {
