@@ -6,6 +6,11 @@ import HomeArticleList from "../components/article/HomeArticleList";
 import { SITE_NAME } from "../components/common/constants";
 import Helmet from "react-helmet";
 import { fetchAllArticles } from "../Utils/articleApi";
+import {
+  HOME_FEATURED_ARTICLE_ID,
+  HOME_FEATURED_DESCRIPTION,
+  selectHomeFeaturedArticle
+} from "../data/homeFeaturedArticle";
 import "../css/homeTheme.css";
 
 const HP = () => {
@@ -101,6 +106,14 @@ const HP = () => {
     });
   }, [allArticles, selectedArchive]);
 
+  const featuredArticle = useMemo(() => selectHomeFeaturedArticle(allArticles), [allArticles]);
+  const recentArticles = useMemo(() => {
+    if (selectedArchive || !featuredArticle) {
+      return filteredArticles;
+    }
+    return filteredArticles.filter((article) => article.id !== featuredArticle.id);
+  }, [featuredArticle, filteredArticles, selectedArchive]);
+
   const currentIntro = intro[lang];
   const currentNowBuilding = nowBuilding[lang];
   const archiveTitle = selectedArchive ? `Recent Posts (${selectedArchive})` : "Recent Posts";
@@ -120,13 +133,20 @@ const HP = () => {
       </div>
       <div className="home-grid home-block home-block--2">
         <main className="home-main">
-          <LatestArticle />
+          {featuredArticle && (
+            <LatestArticle
+              article={featuredArticle}
+              description={featuredArticle.id === HOME_FEATURED_ARTICLE_ID
+                ? HOME_FEATURED_DESCRIPTION
+                : featuredArticle.preface}
+            />
+          )}
           <section className="home-section">
             <div className="home-section__header">
               <p className="home-section__tag">Archive</p>
               <h2>{archiveTitle}</h2>
             </div>
-            <HomeArticleList articles={filteredArticles} />
+            <HomeArticleList articles={recentArticles} />
           </section>
         </main>
         <aside className="home-side">
