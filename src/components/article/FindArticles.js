@@ -36,6 +36,28 @@ const fetchData = (page, pageSize, filters, manageMode) => {
   });
 };
 
+const highlightKeyword = (value, keyword) => {
+  const text = value || "";
+  if (!keyword) return text;
+  const matchAt = text.toLowerCase().indexOf(keyword.toLowerCase());
+  if (matchAt < 0) return text;
+  return <>
+    {text.slice(0, matchAt)}
+    <mark>{text.slice(matchAt, matchAt + keyword.length)}</mark>
+    {text.slice(matchAt + keyword.length)}
+  </>;
+};
+
+const getMatchLabel = (item, keyword) => {
+  if (!keyword) return null;
+  const includesKeyword = (value) => (value || "").toLowerCase().includes(keyword.toLowerCase());
+  if (includesKeyword(item.title)) return "タイトルに一致";
+  if (includesKeyword(item.searchSnippet)) return "本文に一致";
+  if (includesKeyword(item.preface)) return "概要に一致";
+  if (includesKeyword(item.content)) return "本文に一致";
+  return null;
+};
+
 const renderItem = (
   item,
   index,
@@ -47,14 +69,24 @@ const renderItem = (
   showPublicSwitch,
   handleTogglePublic,
   manageMode,
-  showReadHistoryButton
+  showReadHistoryButton,
+  searchKeyword
 ) => (
   <article className="article-card" key={item.id}>
     <div className="article-card__main">
+      {getMatchLabel(item, searchKeyword) && (
+        <span className="article-card__match">
+          {getMatchLabel(item, searchKeyword)}
+        </span>
+      )}
       <a href={`/article/read/${item.id}`} className="article-card__title">
-        {item.title}
+        {highlightKeyword(item.title, searchKeyword)}
       </a>
-      <p className="article-card__preface">{item.preface}</p>
+      <p className="article-card__preface">
+        {searchKeyword && item.searchSnippet
+          ? <>…{highlightKeyword(item.searchSnippet, searchKeyword)}…</>
+          : highlightKeyword(item.preface, searchKeyword)}
+      </p>
       <p className="article-card__meta">
         {new Date(item.createdDate).toISOString().slice(0, 16).replace("T", " ")}
       </p>
@@ -104,6 +136,8 @@ const FindArticle = ({
   isShowPublicSwitch = false,
   isShowReadHistoryButton = false,
   manageMode = false,
+  searchKeyword = "",
+  onSearchStatusChange,
 }) => {
   const handleTogglePublic = async (id, isPublic, handleRefresh) => {
     try {
@@ -138,13 +172,29 @@ const FindArticle = ({
             isShowPublicSwitch,
             handleTogglePublic,
             manageMode,
-            isShowReadHistoryButton
+            isShowReadHistoryButton,
+            searchKeyword
           )
         }
         showDeleteButton={isShowDeleteButton}
         showEditButton={isShowEditButton}
         crudApiBasePath="/article"
         initFilter={filters}
+        onResultChange={onSearchStatusChange}
+        loadingState={searchKeyword && <div className="article-search-page__feedback">記事を検索しています…</div>}
+        emptyState={searchKeyword && (
+          <div className="article-search-page__feedback">
+            <h2>一致する記事はありません</h2>
+            <p>別のキーワードを試してください。</p>
+          </div>
+        )}
+        errorState={searchKeyword && (
+          <div className="article-search-page__feedback">
+            <h2>検索結果を表示できませんでした</h2>
+            <p>時間をおいて、もう一度検索してください。</p>
+          </div>
+        )}
+        hidePaginationWhenSinglePage={Boolean(searchKeyword)}
       />
     </div>
   );

@@ -1,0 +1,107 @@
+.article-search-page {
+  width: min(1100px, calc(100% - 32px));
+  margin: clamp(32px, 5vw, 68px) auto 64px;
+}
+
+.article-search-page__header {
+  margin-bottom: 26px;
+  padding: clamp(22px, 4vw, 36px);
+  border: 1px solid rgba(176, 210, 245, 0.24);
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(16, 43, 69, 0.9), rgba(9, 26, 43, 0.82));
+  box-shadow: var(--shadow-soft);
+}
+
+.article-search-page__eyebrow {
+  margin: 0 0 10px;
+  color: #91e1ff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+}
+
+.article-search-page__header h1 {
+  margin: 0 0 18px;
+  color: var(--text-main);
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.2;
+}
+
+.article-search-page__query {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 14px;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.article-search-page__query strong {
+  color: #fff;
+  font-size: clamp(1.05rem, 2.5vw, 1.45rem);
+  overflow-wrap: anywhere;
+}
+
+.article-search-page__status {
+  margin: 14px 0 0;
+  color: #9fdcff;
+  font-size: 0.93rem;
+}
+
+.article-search-page .article-list {
+  margin-top: 0;
+}
+
+.article-search-page .article-card {
+  padding: clamp(20px, 3vw, 28px);
+}
+
+.article-search-page .article-card__preface {
+  line-height: 1.65;
+}
+
+.article-search-page .article-card__match {
+  display: block;
+  width: fit-content;
+  margin-bottom: 12px;
+  padding: 3px 9px;
+  border: 1px solid rgba(100, 211, 255, 0.38);
+  border-radius: 999px;
+  color: #bcecff;
+  background: rgba(61, 173, 218, 0.12);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.article-search-page mark {
+  padding: 0 2px;
+  border-radius: 3px;
+  color: #071d30;
+  background: #a8ebff;
+}
+
+.article-search-page__feedback {
+  padding: 38px 24px;
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  color: var(--text-muted);
+  background: var(--panel);
+  text-align: center;
+}
+
+.article-search-page__feedback h2 {
+  margin: 0 0 8px;
+  color: var(--text-main);
+  font-size: 1.3rem;
+}
+
+.article-search-page__feedback p {
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .article-search-page {
+    width: min(100% - 24px, 1100px);
+    margin-top: 24px;
+  }
+}

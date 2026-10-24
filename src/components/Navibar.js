@@ -3,16 +3,20 @@ import "../css/navibar.css";
 import RequestSendUtils from "../Utils/RequestSendUtils";
 import { useHistory } from "react-router-dom";
 
-const Navibar = () => {
+const Navibar = ({ initialSearchKeyword = "" }) => {
   const [username, setUsername] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [searchKeyword, setSearchKeyword] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState(initialSearchKeyword);
   const history = useHistory();
 
   const quit = () => {
     RequestSendUtils.quitUser();
   };
+
+  useEffect(() => {
+    setSearchKeyword(initialSearchKeyword);
+  }, [initialSearchKeyword]);
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
@@ -45,8 +49,9 @@ const Navibar = () => {
 
   const handleSearchClick = (e) => {
     e.preventDefault();
-    if (searchKeyword.trim() !== "") {
-      history.push("/article/search/" + searchKeyword);
+    const nextKeyword = searchKeyword.trim();
+    if (nextKeyword !== "") {
+      history.push("/article/search/" + encodeURIComponent(nextKeyword));
     }
   };
 
@@ -114,11 +119,6 @@ const Navibar = () => {
             <li className="nav-item">
               <a className="nav-link" href="/about">
                 About
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/article/read/c16bd235375769906386ff107b0b7dc7">
-                Geo Lab
               </a>
             </li>
           </ul>

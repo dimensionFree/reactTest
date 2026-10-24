@@ -3,11 +3,14 @@ import { message, Pagination } from 'antd';
 import RequestSendUtils from "../../Utils/RequestSendUtils";
 import { useHistory } from 'react-router-dom';
 
-const PaginatedCommon = ({ fetchData, renderItem, showDeleteButton, showEditButton, crudApiBasePath = '', initFilter = '' }) => {
+const PaginatedCommon = ({ fetchData, renderItem, showDeleteButton, showEditButton,
+    crudApiBasePath = '', initFilter = '', onResultChange, loadingState, emptyState,
+    errorState, hidePaginationWhenSinglePage = false }) => {
     const [data, setData] = useState([]);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(Boolean(onResultChange));
+    const [loadError, setLoadError] = useState(false);
     const [total, setTotal] = useState(0);
     const history = useHistory();
 
@@ -19,14 +22,19 @@ const PaginatedCommon = ({ fetchData, renderItem, showDeleteButton, showEditButt
 
     const fetchAndUpdateData = (pageNum, sizeNum, filter) => {
         setLoading(true);
+        setLoadError(false);
+        if (onResultChange) onResultChange({ status: 'loading', total: 0 });
         fetchData(pageNum, sizeNum, filter).then((result) => {
             const totalCount = result.dataContent.total;
             const list = result.dataContent.list;
             setData(list);
             setTotal(totalCount);
             setLoading(false);
+            if (onResultChange) onResultChange({ status: 'ready', total: totalCount });
         }).catch(() => {
             setLoading(false);
+            setLoadError(true);
+            if (onResultChange) onResultChange({ status: 'error', total: 0 });
         });
     };
 
@@ -65,14 +73,18 @@ const PaginatedCommon = ({ fetchData, renderItem, showDeleteButton, showEditButt
 
     return (
         <div style={{ width: '100%' }}>
-            {data.map((item, index) => renderItem(item, index, handleDelete, handleEdit, showDeleteButton, showEditButton, handleRefresh))}
-            <Pagination
+            {onResultChange && loading && loadingState}
+            {onResultChange && !loading && loadError && errorState}
+            {onResultChange && !loading && !loadError && data.length === 0 && emptyState}
+            {(!onResultChange || (!loading && !loadError)) &&
+                data.map((item, index) => renderItem(item, index, handleDelete, handleEdit, showDeleteButton, showEditButton, handleRefresh))}
+            {(!hidePaginationWhenSinglePage || total > pageSize) && !loadError && <Pagination
                 current={page}
                 pageSize={pageSize}
                 total={total}
                 onChange={handlePageChange}
                 showSizeChanger={true}
-            />
+            />}
         </div>
     );
 };

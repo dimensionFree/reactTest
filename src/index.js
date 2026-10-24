@@ -14,6 +14,7 @@ import ArticleSearch from "./pages/ArticleSearch";
 import ArticleReadHistory from "./pages/ArticleReadHistory";
 import BrowseRecordManage from "./pages/BrowseRecordManage";
 import About from "./pages/About";
+import Projects from "./pages/Projects";
 import TokyoHexMap from "./pages/TokyoHexMap";
 import Changelog from "./pages/Changelog";
 import AssistantWidget from "./components/assistant/AssistantWidget";
@@ -128,6 +129,7 @@ const AppRouter = () => (
       <Route path="/articleManage" component={ArticleManage} />
       <Route path="/article/search/:keyword" component={ArticleSearch} />
       <Route path="/about" component={About} />
+      <Route path="/projects" component={Projects} />
       <Route path="/geo-lab/tokyo-hex" component={TokyoHexMap} />
       <Route path="/changelog" component={Changelog} />
       <Route path="/" component={App} />

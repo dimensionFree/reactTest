@@ -5,7 +5,7 @@ import ArchiveByMonthCard from "../components/article/ArchiveByMonthCard";
 import HomeArticleList from "../components/article/HomeArticleList";
 import { SITE_NAME } from "../components/common/constants";
 import Helmet from "react-helmet";
-import RequestSendUtils from "../Utils/RequestSendUtils";
+import { fetchAllArticles } from "../Utils/articleApi";
 import "../css/homeTheme.css";
 
 const HP = () => {
@@ -77,19 +77,14 @@ const HP = () => {
   );
 
   useEffect(() => {
-    const fetchAllArticles = async () => {
+    const loadArticles = async () => {
       try {
-        const response = await RequestSendUtils.sendGetWithReturn(
-          "/article/findAll/?currentPage=1&pageSize=500",
-          null
-        );
-        const list = response?.dataContent?.list || [];
-        setAllArticles(Array.isArray(list) ? list : []);
+        setAllArticles(await fetchAllArticles());
       } catch (error) {
         setAllArticles([]);
       }
     };
-    fetchAllArticles();
+    loadArticles();
   }, []);
 
   const filteredArticles = useMemo(() => {

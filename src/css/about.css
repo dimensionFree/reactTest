@@ -56,6 +56,29 @@
   line-height: 1.75;
 }
 
+.about-card__projects {
+  margin-top: 28px;
+  padding: 22px;
+  border: 1px solid rgba(133, 226, 255, 0.28);
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(42, 101, 135, 0.3), rgba(6, 31, 52, 0.45));
+}
+
+.about-card__projects h2 {
+  margin: 0 0 8px;
+  color: var(--text-main);
+  font-size: 1.3rem;
+}
+
+.about-card__projects a {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+  color: #9fe3ff;
+  font-weight: 700;
+}
+
 @media (max-width: 768px) {
   .about-shell {
     width: calc(100% - 20px);
