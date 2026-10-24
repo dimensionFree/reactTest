@@ -175,6 +175,36 @@
   background: rgba(75, 151, 215, 0.72);
 }
 
+.projects-secondary {
+  margin-top: 20px;
+  padding: clamp(24px, 4vw, 36px);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  background: rgba(8, 24, 39, 0.58);
+}
+
+.projects-secondary h2 {
+  margin: 0 0 12px;
+  color: var(--text-main);
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+}
+
+.projects-secondary > p:not(.projects-page__kicker) {
+  max-width: 70ch;
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.projects-secondary .projects-feature__stack {
+  margin: 18px 0;
+}
+
+.projects-secondary > a {
+  color: #a6e5ff;
+  font-weight: 700;
+}
+
 @media (max-width: 760px) {
   .projects-shell {
     width: calc(100% - 24px);

@@ -4,6 +4,7 @@ import SEO from "../components/common/SEO";
 import "../css/projects.css";
 
 const TOKYO_HEX_ARTICLE = "/article/read/c16bd235375769906386ff107b0b7dc7";
+const FILE_ZIPER_REPOSITORY = "https://github.com/dimensionFree/FileZiper";
 
 const copy = {
   ja: {
@@ -13,6 +14,9 @@ const copy = {
     projectDescription: "東京23区の公開GISデータをQGISで前処理し、Civilization風の六角形マップとして表示しました。地図を動かしながら、各タイルの分類を見ることができます。",
     openProject: "マップを試す",
     readArticle: "制作記録を読む",
+    fileZiperType: "ローカルツール・メディア整理",
+    fileZiperDescription: "画像の整理・圧縮と、FFmpegを使ったMP4動画の一括圧縮を行うJava製のローカルツールです。",
+    viewSource: "GitHubでコードを見る",
     backToAbout: "自己紹介に戻る",
   },
   en: {
@@ -22,6 +26,9 @@ const copy = {
     projectDescription: "I processed public GIS data for Tokyo's 23 wards in QGIS and displayed it as a Civilization-inspired hex map. Explore the map and inspect how each tile is classified.",
     openProject: "Explore the map",
     readArticle: "Read the build notes",
+    fileZiperType: "Local utility · Media processing",
+    fileZiperDescription: "A local Java tool for organizing and compressing images and batch compressing MP4 videos with FFmpeg.",
+    viewSource: "View source on GitHub",
     backToAbout: "Back to About",
   },
   zh: {
@@ -31,6 +38,9 @@ const copy = {
     projectDescription: "使用 QGIS 预处理东京 23 区的公开地理数据，再以《文明》风格的六边形地图展示。可以拖动地图，查看每个格子的分类。",
     openProject: "体验地图",
     readArticle: "阅读制作记录",
+    fileZiperType: "本地工具 · 媒体处理",
+    fileZiperDescription: "一个 Java 本地工具，用于整理和压缩图片，以及借助 FFmpeg 批量压缩 MP4 视频。",
+    viewSource: "在 GitHub 查看源码",
     backToAbout: "返回关于我",
   },
 };
@@ -79,6 +89,19 @@ const Projects = () => {
             </div>
             <span className="projects-feature__visual-footer">GIS × CIVILIZATION</span>
           </div>
+        </article>
+        <article className="projects-secondary">
+          <p className="projects-page__kicker">02 / {text.fileZiperType}</p>
+          <h2>FileZiper</h2>
+          <p>{text.fileZiperDescription}</p>
+          <ul className="projects-feature__stack" aria-label="Technologies">
+            <li>Java</li>
+            <li>Maven</li>
+            <li>FFmpeg</li>
+          </ul>
+          <a href={FILE_ZIPER_REPOSITORY} target="_blank" rel="noopener noreferrer">
+            {text.viewSource} <span aria-hidden="true">↗</span>
+          </a>
         </article>
       </main>
     </div>
