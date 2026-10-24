@@ -57,26 +57,21 @@
 }
 
 .about-card__projects {
-  margin-top: 28px;
-  padding: 22px;
-  border: 1px solid rgba(133, 226, 255, 0.28);
-  border-radius: 16px;
-  background: linear-gradient(135deg, rgba(42, 101, 135, 0.3), rgba(6, 31, 52, 0.45));
-}
-
-.about-card__projects h2 {
-  margin: 0 0 8px;
-  color: var(--text-main);
-  font-size: 1.3rem;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(176, 215, 245, 0.16);
 }
 
 .about-card__projects a {
   display: inline-flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
-  margin-top: 4px;
-  color: #9fe3ff;
-  font-weight: 700;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.about-card__projects a:hover {
+  color: #a6e5ff;
 }
 
 @media (max-width: 768px) {

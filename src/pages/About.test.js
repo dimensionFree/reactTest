@@ -6,8 +6,8 @@ import About from "./About";
 test("About 页提供 Projects 入口并随语言切换文案", () => {
   render(<MemoryRouter><About /></MemoryRouter>);
 
-  expect(screen.getByRole("link", { name: /制作したものを見る/ })).toHaveAttribute("href", "/projects");
+  expect(screen.getByRole("link", { name: /制作したもの/ })).toHaveAttribute("href", "/projects");
+  expect(screen.queryByText(/まずは東京23区の地図実験から/)).not.toBeInTheDocument();
   userEvent.click(screen.getByRole("button", { name: "中文" }));
-  expect(screen.getByRole("heading", { name: "做过的项目" })).toBeInTheDocument();
-  expect(screen.getByRole("link", { name: /查看项目/ })).toHaveAttribute("href", "/projects");
+  expect(screen.getByRole("link", { name: /做过的项目/ })).toHaveAttribute("href", "/projects");
 });

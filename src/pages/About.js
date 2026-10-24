@@ -15,9 +15,7 @@ const About = () => {
         p1: "后端工程师，现居日本。日常使用 Java / TypeScript，主要关注系统设计与 AI 工程实践。",
         p2: "工作之外，我是策略和系统类游戏爱好者。常玩的有 Dota2、文明6、骑马与砍杀，也会接触一些剧情向作品（包括 gal）。",
         p3: "对我来说，游戏里的规则、资源分配和长期决策，与工程实践有很多共通之处。这个博客会持续记录技术笔记，也写一些投资、历史与日常思考。",
-        projectsTitle: "做过的项目",
-        projectsDesc: "也整理了一些动手做的小项目，从地图实验开始。",
-        projectsLink: "查看项目"
+        projectsTitle: "做过的项目"
       },
       ja: {
         title: "自己紹介",
@@ -26,9 +24,7 @@ const About = () => {
         p1: "日本在住のバックエンドエンジニアです。Java / TypeScript を中心に、システム設計と AI の実装を主に扱っています。",
         p2: "仕事以外では、戦略・シミュレーション系のゲームが好きです。Dota2、Civilization VI、Mount & Blade をよく遊び、物語系作品（gal）にも触れます。",
         p3: "ゲームにおけるルール設計、資源配分、長期的な意思決定は、実務のエンジニアリングと通じる部分が多いと感じています。このブログでは技術メモを中心に、投資・歴史・日常の思考も記録しています。",
-        projectsTitle: "制作したもの",
-        projectsDesc: "自分で作った小さなプロジェクトをまとめています。まずは東京23区の地図実験から。",
-        projectsLink: "制作したものを見る"
+        projectsTitle: "制作したもの"
       },
       en: {
         title: "About Me",
@@ -37,9 +33,7 @@ const About = () => {
         p1: "Backend engineer based in Japan. I mainly work with Java and TypeScript, focusing on system design and practical AI engineering.",
         p2: "Outside work, I enjoy strategy and systems-oriented games. I regularly play Dota2, Civilization VI, and Mount & Blade, and also explore story-driven titles (including gal games).",
         p3: "To me, game mechanics such as rules, resource allocation, and long-term decision-making are closely related to engineering practice. This blog records technical notes, along with thoughts on investing, history, and everyday life.",
-        projectsTitle: "Projects",
-        projectsDesc: "A collection of things I have built, starting with an experiment in mapping Tokyo.",
-        projectsLink: "Explore Projects"
+        projectsTitle: "Projects"
       }
     }),
     []
@@ -82,12 +76,9 @@ const About = () => {
         <p>{current.p1}</p>
         <p>{current.p2}</p>
         <p>{current.p3}</p>
-        <section className="about-card__projects" aria-labelledby="about-projects-title">
-          <p className="about-card__kicker">Projects</p>
-          <h2 id="about-projects-title">{current.projectsTitle}</h2>
-          <p>{current.projectsDesc}</p>
-          <a href="/projects">{current.projectsLink} <span aria-hidden="true">↗</span></a>
-        </section>
+        <div className="about-card__projects">
+          <a href="/projects">{current.projectsTitle} <span aria-hidden="true">→</span></a>
+        </div>
       </section>
     </div>
   );
