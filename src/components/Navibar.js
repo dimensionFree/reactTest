@@ -88,6 +88,9 @@ const Navibar = ({ initialSearchKeyword = "" }) => {
           <a className="dropdown-item" href={`/articleManage/${userId}`}>
             article management
           </a>
+          <a className="dropdown-item" href="/change-password">
+            パスワード変更
+          </a>
           <a className="dropdown-item" onClick={quit} href="#">
             quit
           </a>

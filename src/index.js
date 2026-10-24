@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import { BrowserRouter as Router, Redirect, Route, Switch } from "react-router-dom";
 import Login from "./pages/Login";
+import ChangePassword from "./pages/ChangePassword";
 import UserManage from "./pages/UserManage";
 import UserDetail from "./pages/UserDetail";
 import ReadArticle from "./pages/ReadArticle";
@@ -120,6 +121,7 @@ const AppRouter = () => (
   <Router>
     <Switch>
       <Route path="/login" component={Login} />
+      <Route path="/change-password" component={ChangePassword} />
       <Route path="/userManage" component={UserManage} />
       <Route path="/userDetail/:id" component={UserDetail} />
       <Route path="/article/read/:id" component={ReadArticle} />
